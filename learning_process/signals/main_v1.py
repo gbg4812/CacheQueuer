@@ -1,4 +1,4 @@
-from PySide2.QtWidgets import QMainWindow, QApplication, QListWidget, QVBoxLayout, QPushButton, QLabel, QMenu, QAction
+from PySide2.QtWidgets import QMainWindow, QApplication, QListWidget, QVBoxLayout, QPushButton
 from PySide2.QtCore import Qt, QSize
 import hou
 import sys
@@ -10,8 +10,27 @@ class CacheQueuer(QMainWindow):
         
         #Configure Main Window
         self.setWindowTitle("My App")
+        self.setFixedSize(QSize(600, 400))
+             
+        button = QPushButton("Press Me!")
+        button.setCheckable(True)
+        button.clicked.connect(self.the_button_was_clicked)
+        button.clicked.connect(self.the_button_was_toggled)
         
+        #place button in the center
+        self.setCentralWidget(button)
+    
+    #custom slot
+    def the_button_was_clicked(self):
+        print("Clicked!")
+    
+    #custom slot that takes the checked argument that the clicked signal passes
+    def the_button_was_toggled(self, checked):
+        print("Checked?", checked)
         
+
+
+
 
 class Task():
     def __init__(self, name, roppath):
