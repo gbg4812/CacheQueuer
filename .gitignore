@@ -1,2 +1,3 @@
-/geo
-/backup
+geo/
+backup/
+.vscode/
