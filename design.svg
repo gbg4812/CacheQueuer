@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1920"
+   height="1080"
+   viewBox="0 0 1920 1080"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   sodipodi:docname="design.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="0.62864583"
+     inkscape:cx="1015.6752"
+     inkscape:cy="502.66777"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer2" />
+  <defs
+     id="defs2">
+    <rect
+       x="725.36868"
+       y="92.016308"
+       width="1115.7546"
+       height="75.009376"
+       id="rect12147" />
+    <rect
+       x="1329.1833"
+       y="82.717484"
+       width="224.15552"
+       height="65.219559"
+       id="rect8387" />
+    <rect
+       x="1329.1833"
+       y="82.717484"
+       width="224.15552"
+       height="65.219559"
+       id="rect8381" />
+    <rect
+       x="1329.1833"
+       y="82.717484"
+       width="224.15552"
+       height="65.219559"
+       id="rect7516" />
+    <rect
+       x="78.740738"
+       y="227.47308"
+       width="1173.9519"
+       height="92.26181"
+       id="rect1541" />
+  </defs>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="bg">
+    <rect
+       style="fill:#666666"
+       id="rect251"
+       width="1920"
+       height="1080"
+       x="0"
+       y="0" />
+    <text
+       xml:space="preserve"
+       id="text12145"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:sans-serif;-inkscape-font-specification:sans-serif;white-space:pre;shape-inside:url(#rect12147);fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:normal" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.3333px;font-family:sans-serif;-inkscape-font-specification:sans-serif;white-space:pre;inline-size:956.932;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+       x="758.7738"
+       y="115.32725"
+       id="text12257"
+       transform="translate(326.09776,28.587235)"><tspan
+         x="758.7738"
+         y="115.32725"
+         id="tspan32274"><tspan
+           style="stroke:none"
+           id="tspan32272">M emory Usage: 59% Cpu usage: 100%</tspan></tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="TaskList">
+    <rect
+       style="fill:#666666;stroke:#000000;stroke-width:5;stroke-dasharray:none;stroke-opacity:1;stroke-linejoin:round;stroke-linecap:round;paint-order:normal"
+       id="rect462"
+       width="1210.5386"
+       height="812.85834"
+       x="60.447403"
+       y="206.74399"
+       ry="0" />
+    <rect
+       style="fill:#808080;stroke:#000000;stroke-width:4.5;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       id="rect1409"
+       width="1173.9519"
+       height="92.261803"
+       x="78.740738"
+       y="338.82355" />
+    <rect
+       style="fill:#4a8c40;stroke:#000000;stroke-width:4.5;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
+       id="rect1463"
+       width="1173.9519"
+       height="92.261803"
+       x="78.740738"
+       y="227.4731" />
+    <rect
+       style="fill:#666666;stroke:#000000;stroke-width:4.5;stroke-dasharray:none;stroke-opacity:1;stroke-linejoin:round"
+       id="rect1465"
+       width="1173.9519"
+       height="92.261803"
+       x="78.740738"
+       y="450.17401" />
+    <rect
+       style="fill:#666666;stroke:#000000;stroke-width:4.5;stroke-dasharray:none;stroke-opacity:1;stroke-linejoin:round"
+       id="rect1467"
+       width="1173.9519"
+       height="92.261803"
+       x="78.740738"
+       y="561.52448" />
+    <rect
+       style="fill:#666666;stroke:#000000;stroke-width:4.5;stroke-dasharray:none;stroke-opacity:1;stroke-linejoin:round"
+       id="rect1469"
+       width="1173.9519"
+       height="92.261803"
+       x="78.740738"
+       y="672.87494" />
+    <rect
+       style="fill:#666666;stroke:#000000;stroke-width:4.5;stroke-dasharray:none;stroke-opacity:1;stroke-linejoin:round"
+       id="rect1471"
+       width="1173.9519"
+       height="92.261803"
+       x="78.740738"
+       y="784.2254" />
+    <rect
+       style="fill:#666666;stroke:#000000;stroke-width:4.5;stroke-dasharray:none;stroke-opacity:1;stroke-linejoin:round"
+       id="rect1473"
+       width="1173.9519"
+       height="92.261803"
+       x="78.740738"
+       y="895.57587" />
+    <text
+       xml:space="preserve"
+       id="text1539"
+       style="font-size:42.6667px;white-space:pre;shape-inside:url(#rect1541);fill:#666666;stroke:#000000;stroke-width:4.5;stroke-dasharray:none;stroke-opacity:1"
+       transform="translate(27.042251,134.44111)"><tspan
+         x="78.740234"
+         y="266.39878"
+         id="tspan32278"><tspan
+           style="-inkscape-font-specification:sans-serif;fill:#1d1d1d;stroke:none;stroke-width:1"
+           id="tspan32276">Render Scene 1</tspan></tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="Parameters">
+    <rect
+       style="fill:#666666;stroke:#000000;stroke-width:4.5;stroke-dasharray:none;stroke-opacity:1"
+       id="rect1297"
+       width="507.43994"
+       height="817.35834"
+       x="1331.4333"
+       y="204.49399"
+       ry="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#1d1d1d;fill-opacity:1;stroke:none;stroke-width:1;stroke-dasharray:none;stroke-opacity:1"
+       x="1416.5386"
+       y="272.95816"
+       id="text2953"><tspan
+         sodipodi:role="line"
+         id="tspan2951"
+         x="1416.5386"
+         y="272.95816">Render Scene 1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#1d1d1d;fill-opacity:1;stroke:none;stroke-width:1;stroke-dasharray:none;stroke-opacity:1"
+       x="1399.8344"
+       y="346.77713"
+       id="text2957"><tspan
+         sodipodi:role="line"
+         id="tspan2955"
+         x="1399.8344"
+         y="346.77713"
+         style="font-size:24px">Render Node: Rop1</tspan><tspan
+         sodipodi:role="line"
+         x="1399.8344"
+         y="376.77713"
+         style="font-size:24px"
+         id="tspan2959" /><tspan
+         sodipodi:role="line"
+         x="1399.8344"
+         y="406.77713"
+         style="font-size:24px"
+         id="tspan2961">Frame Range: 1001 - 1240</tspan><tspan
+         sodipodi:role="line"
+         x="1399.8344"
+         y="436.77713"
+         style="font-size:24px"
+         id="tspan2963" /><tspan
+         sodipodi:role="line"
+         x="1399.8344"
+         y="466.77713"
+         style="font-size:24px"
+         id="tspan2965">File output location: P:/River/geo</tspan><tspan
+         sodipodi:role="line"
+         x="1399.8344"
+         y="496.77713"
+         style="font-size:24px"
+         id="tspan2967" /><tspan
+         sodipodi:role="line"
+         x="1399.8344"
+         y="526.7771"
+         style="font-size:24px"
+         id="tspan2969" /></text>
+    <rect
+       style="fill:#62c415;fill-opacity:1;stroke:none;stroke-width:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4224"
+       width="199.67578"
+       height="68.487389"
+       x="1402.1781"
+       y="544.68579" />
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#2c2c2c;stroke-width:3.83456;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3023"
+       width="366.11588"
+       height="68.652786"
+       x="1402.0953"
+       y="544.60309" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="Utility Buttons">
+    <g
+       id="g8402"
+       inkscape:label="ReloadBttn">
+      <rect
+         style="fill:#478555;fill-opacity:1;stroke:none;stroke-width:3.74318;stroke-dasharray:none;stroke-opacity:1"
+         id="rect6834"
+         width="224.15552"
+         height="65.219551"
+         x="62.969597"
+         y="92.016312" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:4;stroke-dasharray:none;stroke-opacity:1"
+         x="134.50049"
+         y="133.56163"
+         id="text8393"><tspan
+           id="tspan8391"
+           x="134.50049"
+           y="133.56163"
+           sodipodi:role="line">Reload</tspan></text>
+    </g>
+    <g
+       id="g8407"
+       inkscape:label="RenderBttn"
+       transform="translate(-1290.0767,9.2988243)">
+      <rect
+         style="fill:#478555;fill-opacity:1;stroke:none;stroke-width:3.66705;stroke-dasharray:none;stroke-opacity:1"
+         id="rect7460"
+         width="215.13054"
+         height="65.219551"
+         x="1621.3567"
+         y="82.717484" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:4;stroke-dasharray:none;stroke-opacity:1"
+         x="1685.1642"
+         y="124.2628"
+         id="text8397"><tspan
+           id="tspan8395"
+           x="1685.1642"
+           y="124.2628"
+           sodipodi:role="line">Render</tspan></text>
+    </g>
+  </g>
+</svg>

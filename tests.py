@@ -1,9 +1,3 @@
-import contextlib
-import io
+tasks = ["hello", 2, 80]
 
-outputstr = io.StringIO()
-
-with contextlib.redirect_stdout(outputstr):
-    print("hello world")
-
-print("the output string value: " + outputstr.getvalue())
+print(type(tasks))
