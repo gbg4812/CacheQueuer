@@ -2,11 +2,13 @@ import sys
 import psutil
 import hou
 import csv
+import os
 
 from PySide2.QtWidgets import (
     QMainWindow, QApplication,
     QLabel, QCheckBox, QComboBox, QListWidget, QLineEdit,
-    QLineEdit, QSpinBox, QDoubleSpinBox, QSlider, QGridLayout, QPushButton, QHBoxLayout, QVBoxLayout, QWidget, QSpacerItem, QListWidgetItem
+    QLineEdit, QSpinBox, QDoubleSpinBox, QSlider, QGridLayout, QPushButton, 
+    QHBoxLayout, QVBoxLayout, QWidget, QSpacerItem, QListWidgetItem, QSizePolicy
 )
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QPixmap
@@ -49,8 +51,6 @@ class MainWindow(QMainWindow):
         self.task_list = QListWidget()
         gridl.addWidget(self.task_list, 1, 0, 1, 2)
         
-        
-        
         #Parameters
         parmsl = QVBoxLayout()
         gridl.addLayout(parmsl, 1, 2)
@@ -62,6 +62,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central_w)
         
     def render_task(self, task):
+        hou.hipFile.load(task['hip_file'])
         node = hou.node(task['rop_path'])
         try:
             node.render()
@@ -77,19 +78,46 @@ class MainWindow(QMainWindow):
             self.render_task(task)
             
     def reload(self):
-        self.task_list.clear()
         try:
             with open(self.data_file, 'r') as file:
-                self.tasks = list(csv.DictReader(file, fieldnames=self.field_names))
-                
-                for task in self.tasks:
-                    item = QListWidgetItem(task["name"])
+                newTasks = list(csv.DictReader(file, fieldnames=self.field_names))
+                self.tasks += newTasks
+                print(self.tasks)
+                for task in newTasks:
+                    item = QListWidgetItem()
                     self.task_list.addItem(item)
+                    
+                    item_widget = ItemWidget(task.get("name"))
+                    item_widget.rmButton.clicked.connect(self.rm_task)
+                    
+                    self.task_list.setItemWidget(item, item_widget)
+                    item.setSizeHint(item_widget.sizeHint())
+
+                file.close()
+
+            os.remove(self.data_file)
 
         except FileNotFoundError:
             print("We couldn't find any tasks")
+    def rm_task(self):
+        print(self.task_list.currentItem())
     
-    
+class ItemWidget(QWidget):
+    def __init__(self, label):
+        super(ItemWidget, self).__init__()
+        
+        layout = QHBoxLayout()
+        
+        label = QLabel(label)
+        self.renderButton = QPushButton("Render")
+        self.rmButton = QPushButton("Remove")
+        
+        layout.addWidget(label)
+        layout.addWidget(self.renderButton)
+        layout.addWidget(self.rmButton)
+        
+        self.setLayout(layout)
+        
         
         
 
