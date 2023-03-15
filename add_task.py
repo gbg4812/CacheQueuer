@@ -3,7 +3,7 @@ import hou
 
 #Global Variables
 userdir = hou.getenv("HOUDINI_USER_PREF_DIR")
-data_file = userdir + "Scripts/CacheQueuer/" + "task_data.csv"
+data_file = userdir + "Scripts/CacheQueuer/" + "res/task_data.csv"
 field_names = ("name", "rop_path", "state")
         
 nodes = hou.selectedNodes()
