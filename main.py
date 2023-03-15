@@ -8,7 +8,7 @@ from PySide2.QtWidgets import (
     QMainWindow, QApplication,
     QLabel, QCheckBox, QComboBox, QListWidget, QLineEdit,
     QLineEdit, QSpinBox, QDoubleSpinBox, QSlider, QGridLayout, QPushButton, 
-    QHBoxLayout, QVBoxLayout, QWidget, QSpacerItem, QListWidgetItem, QSizePolicy
+    QHBoxLayout, QVBoxLayout, QWidget, QSpacerItem, QListWidgetItem, QSizePolicy, QTreeWidget, QTreeWidgetItem
 )
 from PySide2.QtCore import Qt, Signal, QSize
 from PySide2.QtGui import QPixmap, QIcon
@@ -48,7 +48,7 @@ class MainWindow(QMainWindow):
         utilsl.addWidget(syslab)
         
         #Task List
-        self.task_list = QListWidget()
+        self.task_list = QTreeWidget()
         gridl.addWidget(self.task_list, 1, 0, 1, 2)
         
         #Parameters
@@ -78,25 +78,26 @@ class MainWindow(QMainWindow):
         for i, task in enumerate(self.tasks):
             self.render_task(i)
 
-    def remove_task(self, row):
-        del self.tasks[row]
-        self.task_list.removeItemWidget(self.task_list.item(row))
-        self.task_list.takeItem(row)
+    def remove_task(self, index):
+        del self.tasks[index]
+        self.task_list.removeItemWidget(index)
+        self.task_list.takeTopLevelItem(index)
             
     def reload(self):
         try:
             with open(self.data_file, 'r') as file:
                 newTasks = list(csv.DictReader(file, fieldnames=self.field_names))
                 self.tasks += newTasks
-                for task in newTasks:
-                    item = QListWidgetItem()
-                    self.task_list.addItem(item)
+                for i, task in enumerate(newTasks):
+                    item = QTreeWidgetItem()
+                    item.setData(Qt.UserRole, i+len(self.tasks))
+                    self.task_list.addTopLevelItem(item)
                     item_widget = ItemWidget(task.get("name"), item)
                     item_widget.render_clicked.connect(self.render_task)
                     item_widget.remove_clicked.connect(self.remove_task)
 
-                    self.task_list.setItemWidget(item, item_widget)
-                    item.setSizeHint(item_widget.sizeHint())
+                    self.task_list.setItemWidget(item, 0, item_widget)
+                    item.setSizeHint(0, item_widget.sizeHint())
 
                 file.close()
 
@@ -107,8 +108,9 @@ class MainWindow(QMainWindow):
     
 class ItemWidget(QWidget):
 
-    render_clicked = Signal(int)
-    remove_clicked = Signal(int)
+    #First Int => index_from_parent, Second Int => index in the tasks list
+    render_clicked = Signal(int, int)
+    remove_clicked = Signal(int, int)
 
     def __init__(self, label, item):
         super(ItemWidget, self).__init__()
@@ -145,12 +147,11 @@ class ItemWidget(QWidget):
         self.setLayout(layout)
     
     def rm_task(self):
-        list_w = self.item.listWidget()
-        self.remove_clicked.emit(list_w.row(self.item))
+        tree_w = self.item.treeWidget()
+        self.remove_clicked.emit(tree_w.indexFromItem(self.item).row())
     def rndr_task(self):
-        list_w = self.item.listWidget()
-        self.render_clicked.emit(list_w.row(self.item))
-        
+        tree_w = self.item.treeWidget()
+        self.render_clicked.emit(tree_w.indexFromItem(self.item).row())
 class TaskState(enum.Enum):
     WAITING = 0
     RENDERING = 1
