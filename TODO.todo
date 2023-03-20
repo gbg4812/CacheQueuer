@@ -1,0 +1,5 @@
+Correct dir_item implementation
+Pass all task responsabilityes to tasks_tree
+
+Render in diferent thread to avoid colapsing
+Implement right panel
