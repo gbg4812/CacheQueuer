@@ -70,8 +70,10 @@ class TasksTree(QTreeWidget):
             elif drop_pos == DIP.BelowItem:
                 if tg_parent:
                     tg_parent.insertChild(tg_parent.indexOfChild(tg_item) + 1, nitem)
-                elif tg_item.isExpanded():
-                    tg_item.addChild(nitem)
+                    
+                elif tg_item == current_item.parent():
+                    event.ignore()
+                    return None
                 else:
                     self.insertTopLevelCustomItem(self.indexOfTopLevelItem(tg_item) + 1, nitem)
             else:

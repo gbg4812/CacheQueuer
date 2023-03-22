@@ -65,6 +65,8 @@ class DirItem(QTreeWidgetItem):
         self.widget.remove_clicked.connect(self.self_remove)
         self.widget.dependency_changed.connect(self.set_dependency)
 
+        self.setSizeHint(0, self.widget.sizeHint())
+
     def rndr_clicked(self):
         self.render_clicked.emit(self)
 

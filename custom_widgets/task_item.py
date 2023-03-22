@@ -109,7 +109,8 @@ class TaskItem(QTreeWidgetItem):
         self.widget.render_clicked.connect(self.rndr_clicked)
         self.widget.remove_clicked.connect(self.self_remove)
         self.widget.state_changed.connect(self.setState)
-
+        
+        self.setSizeHint(0, self.widget.sizeHint())
     def updateWidget(self):
         self.widget.setState(self.state)
         self.widget.setName(self.name)

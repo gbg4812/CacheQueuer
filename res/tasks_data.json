@@ -1,0 +1,27 @@
+[
+
+    {
+        "name":"hello world",
+        "rop_path": "/obj/geo1/cache1",
+        "state": 0,
+        "hip_file":"P:/Tests/test.hiplc"
+    },
+    {
+        "name":"hello world",
+        "rop_path": "/obj/geo1/cache1",
+        "state": 0,
+        "hip_file":"P:/Tests/test.hiplc"
+    },
+    {
+        "name":"hello world",
+        "rop_path": "/obj/geo1/cache1",
+        "state": 0,
+        "hip_file":"P:/Tests/test.hiplc"
+    },
+    {
+        "name":"hello world",
+        "rop_path": "/obj/geo1/cache1",
+        "state": 0,
+        "hip_file":"P:/Tests/test.hiplc"
+    }
+]

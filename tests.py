@@ -1,7 +1,8 @@
+import json
 from PySide2.QtWidgets import *
-from PySide2.QtCore import Qt, QSize
+from PySide2.QtCore import Qt, QSize, QJsonValue
 from PySide2.QtGui import QPixmap, QIcon, QDropEvent
-
+from custom_widgets import TaskDelegate
 import sys
 
 app = QApplication(sys.argv)
@@ -9,16 +10,18 @@ app = QApplication(sys.argv)
 tree = QTreeWidget()
 tree.setDragDropMode(tree.DragDropMode.InternalMove)
 tree.setDragEnabled(True)
-tree_item1 = QTreeWidgetItem('item 1')
-tree_item2 = QTreeWidgetItem('item 2')
-tree_item3 = QTreeWidgetItem('item 3')
-tree_item4 = QTreeWidgetItem('item 4')
-tree.addTopLevelItem(tree_item1)
-tree.addTopLevelItem(tree_item3)
-tree.addTopLevelItem(tree_item2)
-tree_item3.insertChild(0, tree_item4)
+
+tree.setItemDelegate(TaskDelegate())
+with open('res/tasks_data.json', 'r') as f:
+    tasks = json.load(f)
+    for task in tasks:
+        task : dict
+        item = QTreeWidgetItem()
+        item.setData(0, Qt.DisplayRole,task)
+        tree.addTopLevelItem(item)
+
 w = QMainWindow()
 w.setCentralWidget(tree)
 
 w.show()
-app.exec_()
+sys.exit(app.exec_())
