@@ -1,5 +1,4 @@
-Correct dir_item implementation
-Pass all task responsabilityes to tasks_tree
+1. Qt.DisplayRole store the name, the enable/disabled state of the checkbox and the state of the 
+Buttons the state of the buttons and checkbox are QStyle.State enums
 
-Render in diferent thread to avoid colapsing
-Implement right panel
+2. Qt.UserRole store the task (rop_path, hip_file, state) the state of the task is the task state enum

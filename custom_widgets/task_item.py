@@ -1,8 +1,9 @@
 from __future__ import annotations
+import copy
 
-from PySide2.QtWidgets import QTreeWidgetItem, QWidget, QHBoxLayout, QPushButton, QComboBox, QTreeWidget
-from PySide2.QtCore import Qt, Signal, QSize
-from PySide2.QtGui import QPixmap, QIcon
+from PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplication, QStyle
+from PySide2.QtCore import Qt, Signal, QModelIndex, QRect, QPoint, QObject
+from PySide2.QtGui import  QPainter, QMouseEvent
 from .name_label_widget import NameLabelWidget
 
 import enum
@@ -13,130 +14,84 @@ class TaskState(enum.IntEnum):
     RENDERING = 1
     SUCCESFUL = 2
     FAILED = 3
+    DISABLED = 4
 
-#Custom Widget For the TreeWidgetItems that has controls to manipulate every task separately.
-#It emits rm_task and rndr_task signals
-class TaskItemWidget(QWidget):
 
-    #First Int => TaskId
-    render_clicked = Signal()
+class TaskItemWidget(QObject):
     remove_clicked = Signal()
-    
-    #Second the new state of the task
-    state_changed = Signal(TaskState)
-    name_changed = Signal(str)
-
-    def __init__(self, name: str):
+    render_clicked = Signal()
+    def __init__(self):
         super(TaskItemWidget, self).__init__()
 
-        layout = QHBoxLayout()
+        self._enable = QStyleOptionButton()
+        self._enable.state = QStyle.State_Enabled
+        self._enable.state = QStyle.State_Off
+        self._render = QStyleOptionButton()
+        self._remove = QStyleOptionButton()
+        self._name = ""
+
+    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex):
+        rect : QRect = copy.copy(option.rect)
+        style = QApplication.style()
+        painter.save()
+        painter.translate(rect.topLeft())
+        rect.moveTo(QPoint(0, 0))
+        rect.adjust(rect.height()/2, 0, rect.height()/2, 0)
         
-        #Label Name
-        self.label = NameLabelWidget(name)
+        #Layout and  paint _enabled checkbox
+        self._enable.rect = rect.adjusted(0, 0, - rect.width()/3, 0)
+        state = index.model().data(index, Qt.DisplayRole).get("state") 
 
-        #Buttons
-        renderButton = QPushButton("Render")
-        renderButton.clicked.connect(self.rndr_task)
-        rmButton = QPushButton("Remove")
-        rmButton.clicked.connect(self.rm_task)
+        if state == TaskState.WAITING or state == TaskState.FAILED or state == TaskState.RENDERING:
+            self._enable.state = QStyle.State_On | QStyle.State_Enabled
+        elif state == TaskState.DISABLED or state == TaskState.SUCCESFUL:
+            self._enable.state = QStyle.State_Off
+        style.drawControl(QStyle.CE_CheckBox, self._enable, painter)
         
-        #Label State
-        self.stateMenu = QComboBox()
-        stateItems = ((QPixmap("res/clock.svg").scaled(QSize(30, 30), Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation), "Waiting"),
-                      (QPixmap("res/clock.svg").scaled(QSize(30, 30), Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation), "Rendering"),
-                      (QPixmap("res/clock.svg").scaled(QSize(30, 30), Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation), "Complete"),
-                      (QPixmap("res/clock.svg").scaled(QSize(30, 30), Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation), "Failed"))
-        for pixmap, lab in stateItems: 
-            self.stateMenu.addItem(QIcon(pixmap), lab)
-        self.stateMenu.currentIndexChanged.connect(self.st_changed)
+        #Layout and  paint render button
+        self._render.rect = rect.adjusted(rect.width()/3, 0, - rect.width()/3, 0)
+        style.drawControl(QStyle.CE_PushButton, self._render, painter)
         
-        layout.addWidget(self.label)
-        layout.addWidget(renderButton)
-        layout.addWidget(rmButton)
-        layout.addWidget(self.stateMenu)
-
-        self.setLayout(layout)
+        painter.restore()
     
-    #<---- SLOTS ---->
+    def setName(self, name: str) -> None:
+        self._name = name 
 
-    def rm_task(self):
-        self.remove_clicked.emit()      
-        self.deleteLater()
-        
-    def rndr_task(self):
-        self.render_clicked.emit()
-        
-    def st_changed(self, index):
-        self.state_changed.emit(index)
-
-    def nm_chaged(self,  name: str):
-        self.name_changed.emit(name)
-    
-    #<---- Getters and Setters ---->
-
-    def setState(self, state: TaskState):
-        self.stateMenu.setCurrentIndex(state)
-    
-    def getState(self) -> TaskState:
-        return TaskState(self.stateMenu.currentIndex())
-    
-    def setName(self, name: str):
-        self.label.setText(name)
-
-    def getName(self) -> str:
-        return self.label.getText()
-    
-
-
-# <---- Task Item Class ---->
-class TaskItem(QTreeWidgetItem):
-
-    render_clicked = Signal()
-
-    def __init__(self, task: dict):
-        super(TaskItem, self).__init__()
-
-        self.setFlags(self.flags() ^ Qt.ItemFlag.ItemIsDropEnabled)
-
-        self.name = task.get("name")
-        self.rop_path = task.get("rop_path")
-        self.hip_file = task.get("hip_file")
-
-        self.widget = TaskItemWidget(self.name)
-
-        self.setState(task.get('state'))
-
-        self.widget.render_clicked.connect(self.rndr_clicked)
-        self.widget.remove_clicked.connect(self.self_remove)
-        self.widget.state_changed.connect(self.setState)
-        
-        self.setSizeHint(0, self.widget.sizeHint())
-    def updateWidget(self):
-        self.widget.setState(self.state)
-        self.widget.setName(self.name)
-    
-    def updateDataFromWidget(self):
-        self.name = self.widget.getName()
-        self.state = self.widget.getState()
-
-    def rndr_clicked(self):
-        self.render_clicked.emit()
-    
-    def self_remove(self):
-        tree_w = self.treeWidget()
-        parent = self.parent()
-        tree_w.removeItemWidget(self, 0)
-        if parent:
-            parent.takeChild(parent.indexOfChild(self))
-
+    def mousePressEvent(self, event: QMouseEvent, option: QStyleOptionViewItem) -> bool:
+        pos = event.pos()
+        pos -= option.rect.topLeft()
+        if self._remove.rect.contains(pos):
+            self._remove.state = QStyle.State_Sunken
+            self.remove_clicked.emit()
+            return True
+        elif self._render.rect.contains(pos):
+            self._render.state = QStyle.State_Sunken
+            self.render_clicked.emit()
+            return True
         else:
-            tree_w.takeTopLevelItem(tree_w.indexOfTopLevelItem(self))
-    
-    def setState(self, state: TaskState):
-        self.state = state
-        self.widget.setState(state)
+            return False
 
-    def getTaskDict(self) -> dict:
-        return dict(name=self.name, state=self.state, rop_path=self.rop_path, hip_file=self.hip_file)
+    def mouseReleaseEvent(self, event: QMouseEvent, option: QStyleOptionViewItem, index: QModelIndex) -> bool:
+        pos = event.pos()
+        pos -= option.rect.topLeft()
+        self._remove.state = QStyle.State_Enabled
+        self._render.state = QStyle.State_Enabled
+
+        task = index.data(Qt.DisplayRole)
+        state =  task.get("state")
+
+        enable_rect = QApplication.style().subElementRect(QStyle.SE_CheckBoxClickRect, self._enable)
+        if enable_rect.contains(pos):
+            print("Mouse Included")
+            if state == TaskState.WAITING or state == TaskState.FAILED or state == TaskState.RENDERING:
+                print("State Toggled")
+                task["state"] = TaskState.DISABLED
+            elif state == TaskState.DISABLED or state == TaskState.SUCCESFUL:
+                print("State Toggled")
+                task["state"] = TaskState.WAITING
+
+            index.model().setData(index, task, Qt.DisplayRole)
+            return True
         
-
+        else:
+            return False

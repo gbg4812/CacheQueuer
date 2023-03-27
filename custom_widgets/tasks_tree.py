@@ -4,7 +4,7 @@ from __future__ import annotations
 from PySide2.QtWidgets import QTreeWidget, QTreeWidgetItemIterator, QWidget, QPushButton, QLabel, QHBoxLayout, QTreeWidgetItem
 from PySide2.QtCore import Qt, Signal
 from PySide2.QtGui import QDropEvent
-from .task_item import TaskItem, TaskState
+from .task_item import  TaskState
 from .dir_item import DirItem
 from .hou_task_renderer import HouRenderer
 #Subclass Of The TreeWidget 
