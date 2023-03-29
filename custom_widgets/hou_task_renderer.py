@@ -1,5 +1,5 @@
 import hou
-from .task_item import TaskItem
+from .task_item_widget import TaskItem
 
 
 #renders a single task given a id

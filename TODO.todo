@@ -1,4 +1,5 @@
-1. Qt.DisplayRole store the name, the enable/disabled state of the checkbox and the state of the 
-Buttons the state of the buttons and checkbox are QStyle.State enums
+1. Qt.DisplayRole store the name
+2. The enable/disabled state of the checkbox and the state of the 
+Buttons stored in Qt.UserRole + 1, + 2 and + 3
 
 2. Qt.UserRole store the task (rop_path, hip_file, state) the state of the task is the task state enum

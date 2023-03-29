@@ -4,14 +4,12 @@ from __future__ import annotations
 from PySide2.QtWidgets import QTreeWidget, QTreeWidgetItemIterator, QWidget, QPushButton, QLabel, QHBoxLayout, QTreeWidgetItem
 from PySide2.QtCore import Qt, Signal
 from PySide2.QtGui import QDropEvent
-from .task_item import  TaskState
-from .dir_item import DirItem
 from .hou_task_renderer import HouRenderer
+
+from task_item_delegate import TaskDelegate
 #Subclass Of The TreeWidget 
 class TasksTree(QTreeWidget):
 
-    render_task = Signal(TaskItem)
-    
     def __init__(self):
         super(TasksTree, self).__init__()
 
@@ -43,85 +41,25 @@ class TasksTree(QTreeWidget):
         #Enable Drag And Drop
         self.setDragEnabled(True)
         self.setDragDropMode(self.InternalMove)
+
+        #Enable Item Editing and se Correct Delegate
+        self.setEditTriggers(QTreeWidget.EditTrigger.DoubleClicked)
+        self.setItemDelegate(TaskDelegate)
         
     def dropEvent(self, event: QDropEvent) -> None:
         
         #Item where user drops and its parent
         current_item  = self.currentItem()
         tg_item  = self.itemAt(event.pos())
-        tg_parent : DirItem = tg_item.parent()
         drop_pos = self.dropIndicatorPosition()
 
         
         #nitem.setFlags(nitem.flags() ^ Qt.ItemIsDropEnabled)
         DIP = QTreeWidget.DropIndicatorPosition            
-        if isinstance(current_item, TaskItem):
-
-            nitem = TaskItem(current_item.getTaskDict())
-            if drop_pos == DIP.OnItem and tg_item != current_item.parent():
-                tg_item.addChild(nitem)
-                
-            elif drop_pos == DIP.AboveItem:
-                if tg_parent:
-                    tg_parent.insertChild(tg_parent.indexOfChild(tg_item), nitem)
-                else:
-                    self.insertTopLevelCustomItem(self.indexOfTopLevelItem(tg_item), nitem)
-                
-            elif drop_pos == DIP.BelowItem:
-                if tg_parent:
-                    tg_parent.insertChild(tg_parent.indexOfChild(tg_item) + 1, nitem)
-                    
-                elif tg_item == current_item.parent():
-                    event.ignore()
-                    return None
-                else:
-                    self.insertTopLevelCustomItem(self.indexOfTopLevelItem(tg_item) + 1, nitem)
-            else:
-                event.ignore()
-                return None
-
-        elif isinstance(current_item, DirItem):
-
-            nitem = DirItem(current_item.getName(), current_item.getDependent())
-            if drop_pos == DIP.OnItem:
-                event.ignore()
-                return None
-                
-            elif drop_pos == DIP.AboveItem:
-                if tg_parent:
-                    event.ignore()
-                    return None
-                else:
-                    self.insertTopLevelCustomItem(self.indexOfTopLevelItem(tg_item), nitem)
-                
-            elif drop_pos == DIP.BelowItem:
-                if tg_parent:
-                    event.ignore()
-                    return None
-                else:
-                    self.insertTopLevelCustomItem(self.indexOfTopLevelItem(tg_item) + 1, nitem)
-            
-            #Move directory contents 
-            for index in range(current_item.childCount()):
-                item : TaskItem = current_item.child(index)
-                nchild_item = TaskItem(item.getTaskDict())
-                nitem.addChild(nchild_item)
-       
-        #accept event       
-        event.accept()
-    
-    def addTopLevelCustomItem(self, item: TaskItem) -> None:
-        super().addTopLevelItem(item)
-        self.setItemWidget(item, 0, item.widget)
-
-    
-    def insertTopLevelCustomItem(self, index: int, item: TaskItem) -> None:
-        super().insertTopLevelItem(index, item)
-        self.setItemWidget(item, 0, item.widget)
+        return super().dropEvent(event) 
 
     def add_dir(self):
-        dir = DirItem()
-        self.addTopLevelCustomItem(dir)
+       print("Adding dir") 
 
     #renders all the tasks
     def render(self):
