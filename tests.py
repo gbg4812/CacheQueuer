@@ -2,7 +2,7 @@ import json
 from PySide2.QtWidgets import *
 from PySide2.QtCore import Qt, QSize, QJsonValue
 from PySide2.QtGui import QPixmap, QIcon, QDropEvent
-from custom_widgets import TaskDelegate, WidgetState
+from custom_widgets import TaskDelegate, WidgetState, CustomRoles, ItemTypes
 import sys
 
 app = QApplication(sys.argv)
@@ -19,11 +19,12 @@ with open('res/tasks_data.json', 'r') as f:
         task: dict
         item = QTreeWidgetItem()
         item.setData(0, Qt.DisplayRole, task.pop("name"))
-        item.setData(0, Qt.UserRole+1,  WidgetState.ENABLED)
+        item.setData(0, CustomRoles.DependentState,  WidgetState.ENABLED)
+        item.setData(0, CustomRoles.EnableState,  WidgetState.ENABLED)
+        item.setData(0, CustomRoles.ItemType, ItemTypes.TaskItem)   
         item.setData(0, Qt.UserRole, task)
         item.setFlags( item.flags() | Qt.ItemIsEditable)
         tree.addTopLevelItem(item)
-Qt.ItemDataRole.CheckStateRole
 w = QMainWindow()
 w.setCentralWidget(tree)
 

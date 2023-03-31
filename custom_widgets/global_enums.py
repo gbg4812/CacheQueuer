@@ -20,7 +20,7 @@ class WidgetState(enum.IntEnum):
 class TaskEvent(enum.IntEnum):
     RENDER = 0,
     DELETE = 1,
-
+    NONE = 2,
 
 class CustomRoles(enum.IntEnum):
     TaskName = Qt.DisplayRole,
@@ -29,4 +29,10 @@ class CustomRoles(enum.IntEnum):
     RemoveState = Qt.UserRole + 2,
     RenderState = Qt.UserRole + 3,
     EditName = Qt.UserRole + 4,
-    ItemType = Qt.UserRole + 5
+    ItemType = Qt.UserRole + 5,
+    DependentState = Qt.UserRole + 6,
+    TaskState = Qt.UserRole + 7
+
+class ItemTypes(enum.IntEnum):
+    TaskItem = 1,
+    DirItem = 2

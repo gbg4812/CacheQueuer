@@ -4,11 +4,9 @@ from PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplica
 from PySide2.QtCore import Qt, QModelIndex, QRect, QAbstractItemModel, QSize, QMargins
 from PySide2.QtGui import QPainter, QMouseEvent 
 
-# Class defining the state of a task
+from .global_enums import *
 
-
-
-
+#TaskItemWidget is a class that paints and handles events of a task item
 class TaskItemWidget():
     def __init__(self):
         super(TaskItemWidget, self).__init__()
@@ -24,7 +22,6 @@ class TaskItemWidget():
 
     def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex):
         rect: QRect = copy.copy(option.rect)
-        print(rect.width())
         rect.moveTo(0, 0)
         style = QApplication.style()
         painter.save()
@@ -91,13 +88,13 @@ class TaskItemWidget():
             if self.remove.rect.contains(pos):
                 model.setData(index, WidgetState.CLICKED,
                               CustomRoles.RemoveState)
-                return True
+                return TaskEvent.DELETE
             elif self.render.rect.contains(pos):
                 model.setData(index, WidgetState.CLICKED,
                               CustomRoles.RenderState)
-                return True
+                return TaskEvent.RENDER
             else:
-                return False
+                return TaskEvent.NONE
 
         # Handle mouse button release
         elif event.type() == QMouseEvent.Type.MouseButtonRelease:
@@ -123,6 +120,8 @@ class TaskItemWidget():
                 model.setData(index, True, CustomRoles.EditName)
             else:
                 model.setData(index, False, CustomRoles.EditName)
+
+        return TaskEvent.NONE
 
     def divideHRect(self, rect: QRect, chunks: int, spawns: list = None) -> list:
         result = []

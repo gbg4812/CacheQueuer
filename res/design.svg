@@ -25,8 +25,8 @@
      inkscape:document-units="px"
      showgrid="false"
      inkscape:zoom="0.62864583"
-     inkscape:cx="1015.6752"
-     inkscape:cy="502.66777"
+     inkscape:cx="963.18145"
+     inkscape:cy="571.06877"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
      inkscape:window-x="1912"
@@ -90,9 +90,9 @@
        transform="translate(326.09776,28.587235)"><tspan
          x="758.7738"
          y="115.32725"
-         id="tspan32274"><tspan
+         id="tspan2424"><tspan
            style="stroke:none"
-           id="tspan32272">M emory Usage: 59% Cpu usage: 100%</tspan></tspan></text>
+           id="tspan2422">M emory Usage: 59% Cpu usage: 100%</tspan></tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
@@ -159,12 +159,50 @@
        xml:space="preserve"
        id="text1539"
        style="font-size:42.6667px;white-space:pre;shape-inside:url(#rect1541);fill:#666666;stroke:#000000;stroke-width:4.5;stroke-dasharray:none;stroke-opacity:1"
-       transform="translate(27.042251,134.44111)"><tspan
+       transform="translate(92.140452,134.44111)"><tspan
          x="78.740234"
          y="266.39878"
-         id="tspan32278"><tspan
+         id="tspan2428"><tspan
            style="-inkscape-font-specification:sans-serif;fill:#1d1d1d;stroke:none;stroke-width:1"
-           id="tspan32276">Render Scene 1</tspan></tspan></text>
+           id="tspan2426">Render Scene 1</tspan></tspan></text>
+    <rect
+       style="fill:#000000;stroke-width:0.441515;stroke-linecap:round;stroke-linejoin:round"
+       id="rect1114"
+       width="27.666294"
+       height="27.666294"
+       x="109.44772"
+       y="371.12131" />
+    <text
+       xml:space="preserve"
+       style="font-size:37.3333px;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#000000;stroke-linecap:round;stroke-linejoin:round"
+       x="830.35626"
+       y="368.42319"
+       id="text1124"><tspan
+         sodipodi:role="line"
+         id="tspan1122"
+         x="830.35626"
+         y="368.42319" /></text>
+    <ellipse
+       style="fill:#e3f400;fill-opacity:1;stroke-width:0.460649;stroke-linecap:round;stroke-linejoin:round"
+       id="path1181"
+       cx="676.0564"
+       cy="384.95447"
+       rx="24.656172"
+       ry="24.042046" />
+    <rect
+       style="fill:#656565;fill-opacity:1;stroke-linecap:round;stroke-linejoin:round"
+       id="rect1271"
+       width="181.34218"
+       height="48.084076"
+       x="826.37946"
+       y="360.91241" />
+    <rect
+       style="fill:#636363;fill-opacity:1;stroke-linecap:round;stroke-linejoin:round"
+       id="rect1273"
+       width="186.9097"
+       height="48.084076"
+       x="1042.7175"
+       y="360.91241" />
   </g>
   <g
      inkscape:groupmode="layer"
