@@ -4,7 +4,7 @@ from PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplica
 from PySide2.QtCore import Qt, QModelIndex, QRect, QAbstractItemModel, QSize, QMargins
 from PySide2.QtGui import QPainter, QMouseEvent 
 
-from .global_enums import *
+from global_enums import *
 
 #TaskItemWidget is a class that paints and handles events of a task item
 class TaskItemWidget():

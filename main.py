@@ -4,17 +4,19 @@ import hou
 import json
 import os
 
-from custom_widgets import TaskState, TaskDelegate, CustomRoles, WidgetState, ItemTypes, RenderHelpers
+from custom_widgets import TasksTree
+from global_enums import *
+from utils import ThreadingUtils
+from renderers import *
+
 
 from PySide2.QtWidgets import (
     QMainWindow, QApplication,
-    QLabel, QCheckBox, QComboBox, QLineEdit,
-    QLineEdit, QSpinBox, QDoubleSpinBox, QSlider, QGridLayout, QPushButton, 
-    QHBoxLayout, QVBoxLayout, QWidget, QSpacerItem, QSizePolicy, QTreeWidget, 
-    QTreeWidgetItem, QTreeWidgetItemIterator, QHeaderView
+    QLabel, QGridLayout, QPushButton, 
+    QHBoxLayout, QVBoxLayout, QWidget,
+    QTreeWidgetItem 
 )
-from PySide2.QtCore import Qt, Signal, QSize
-from PySide2.QtGui import QPixmap, QIcon, QDragEnterEvent, QDropEvent
+from PySide2.QtCore import Qt
 
 #Class that represents the main application window
 class MainWindow(QMainWindow):
@@ -35,13 +37,7 @@ class MainWindow(QMainWindow):
         
         
         #Task Tree
-        self.task_tree = QTreeWidget()
-        self.task_tree.setHeaderHidden(True)
-        self.task_tree.setDragDropMode(self.task_tree.DragDropMode.InternalMove)
-        self.task_tree.setDragEnabled(True)
-        self.task_tree.setEditTriggers(self.task_tree.EditTrigger.DoubleClicked)
-
-        self.task_tree.setItemDelegate(TaskDelegate())
+        self.task_tree = TasksTree()
         gridl.addWidget(self.task_tree, 1, 0, 1, 2)
 
        
@@ -57,12 +53,6 @@ class MainWindow(QMainWindow):
         render_bttn.clicked.connect(self.render)
         utilsl.addWidget(render_bttn)
 
-        addDir_bttn = QPushButton("Add directory")
-        addDir_bttn.clicked.connect(self.addDir)
-        utilsl.addWidget(addDir_bttn)
-
-        
-        
         utilsl.addSpacing(50)
         
         syslab = QLabel("Memory: {mem}% Cpu: {cpu}%".format(mem=psutil.virtual_memory()[2], cpu=psutil.cpu_percent(1)))
@@ -101,27 +91,8 @@ class MainWindow(QMainWindow):
             print("We couldn't find any tasks")      
 
     def render(self):
-        for topitem in range(self.task_tree.topLevelItemCount()):
-            model = self.task_tree.model()
-            item_index = model.index(topitem, 0, self.task_tree.rootIndex())
-
-            if item_index.data(CustomRoles.ItemType) == ItemTypes.TaskItem:
-                RenderHelpers.render_task(item_index, model)
-            elif item_index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
-                RenderHelpers.render_dir(item_index, model)
-    def addDir(self):
-        item = QTreeWidgetItem()
-        item.setData(0, CustomRoles.TaskName, "New Directory")
-        item.setData(0, CustomRoles.EnableState, WidgetState.ENABLED)
-        item.setData(0, CustomRoles.DependentState, WidgetState.DISABLED)
-        item.setData(0, CustomRoles.ItemType, ItemTypes.DirItem)
-        item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEditable)
-        self.task_tree.addTopLevelItem(item)
-        self.task_tree.resizeColumnToContents(0)
-
-
-                
-
+        tasks_list = self.task_tree.flatten_tree(self.task_tree.rootIndex())
+        ThreadingUtils.startThread(ThreadNames.RENDER_THREAD, RenderHelpers.render_list, (tasks_list, ))
     
 if __name__ == '__main__':
     app = QApplication(sys.argv)

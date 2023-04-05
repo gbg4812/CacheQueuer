@@ -1,6 +1,5 @@
 import enum
 from PySide2.QtCore import Qt
-
 class TaskState(enum.IntEnum):
     WAITING = 0
     RENDERING = 1
@@ -34,5 +33,11 @@ class CustomRoles(enum.IntEnum):
     TaskState = Qt.UserRole + 7
 
 class ItemTypes(enum.IntEnum):
+    HeaderItem = 0,
     TaskItem = 1,
     DirItem = 2
+
+class ThreadNames():
+    RENDER_THREAD = "RenderThread"
+    
+    

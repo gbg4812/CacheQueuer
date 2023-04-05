@@ -1,1 +1,0 @@
-from .tasks_list import TaskList

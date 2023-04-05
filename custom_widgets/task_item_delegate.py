@@ -6,13 +6,13 @@ from PySide2.QtGui import QPainter, QRegion, QMouseEvent, QPixmap
 
 from .task_item_widget import TaskItemWidget
 from .dir_item_widget import DirItemWidget
-from .global_enums import CustomRoles, TaskEvent, ItemTypes, WidgetState, TaskState
-from .hou_task_renderer import HouRenderer
-
-import threading
-
+from global_enums import *
+from utils import ThreadingUtils
+from renderers import RenderHelpers
 
 class TaskDelegate(QStyledItemDelegate):
+    render_dir = Signal(QModelIndex)
+    render_task = Signal(QModelIndex)
     def __init__(self, parent=None):
         super(TaskDelegate, self).__init__(parent)
         self.DirWidget = DirItemWidget()
@@ -36,6 +36,8 @@ class TaskDelegate(QStyledItemDelegate):
             return self.TaskWidget.sizeHint()
         elif index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
             return self.DirWidget.sizeHint()
+        elif index.data(CustomRoles.ItemType) == ItemTypes.HeaderItem:
+            return super().sizeHint(option, index)
 
     def editorEvent(self, event: QEvent, model: QAbstractItemModel, option: QStyleOptionViewItem, index: QModelIndex) -> bool:
 
@@ -46,35 +48,17 @@ class TaskDelegate(QStyledItemDelegate):
                 return model.removeRow(index.row(), index.parent())
             
             elif task_event == TaskEvent.RENDER:
-                for thread in threading.enumerate():
-                    if thread.getName() == "RenderThread":
-                        print("alredy rendering")
-                        return False
-
-                render_thread = threading.Thread(target=HouRenderer.render_task, name="RenderThread", args=(index.data(CustomRoles.TaskData),))
-                render_thread.start()
-
-                return True
+                task = index.data(CustomRoles.TaskData)
+                ThreadingUtils.startThread(ThreadNames.RENDER_THREAD, RenderHelpers.render_task, (task, ), True)
+                
         elif index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
             task_event = self.DirWidget.eventHandler(event, model, option, index)
             if task_event == TaskEvent.DELETE:
                 return model.removeRow(index.row(), index.parent())
             
             elif task_event == TaskEvent.RENDER:
-                dependent = index.data(CustomRoles.DependentState)
-                child_data = []
-                for child in range(model.rowCount(index)):
-                    child_index = model.index(child, 0, index)
-                    child_data.append(model.data(child_index, CustomRoles.TaskData))
-                
-                for thread in threading.enumerate():
-                    if thread.getName() == "RenderThread":
-                        print("alredy rendering")
-                        return False
-
-                render_thread = threading.Thread(target=HouRenderer.render_task, name="RenderThread", args=(child_data,))
-                render_thread.start()
-                return True 
+                self.render_dir.emit(index)
+                return True
         return super().editorEvent(event, model, option, index)
 
     def createEditor(self, parent: QWidget, option: QStyleOptionViewItem, index: QModelIndex) -> QWidget:

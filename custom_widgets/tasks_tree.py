@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-
-from PySide2.QtWidgets import QTreeWidget, QTreeWidgetItemIterator, QWidget, QPushButton, QLabel, QHBoxLayout, QTreeWidgetItem
-from PySide2.QtCore import Qt, Signal
+from global_enums import CustomRoles, ItemTypes, WidgetState, ThreadNames
+        
+from PySide2.QtWidgets import QTreeWidget, QWidget, QPushButton, QLabel, QHBoxLayout, QTreeWidgetItem
+from PySide2.QtCore import Qt, Signal, QModelIndex 
 from PySide2.QtGui import QDropEvent
-from .hou_task_renderer import HouRenderer
 
-from task_item_delegate import TaskDelegate
+from .task_item_delegate import TaskDelegate
+from utils import ThreadingUtils
+from renderers import RenderHelpers
 #Subclass Of The TreeWidget 
 class TasksTree(QTreeWidget):
 
@@ -17,6 +19,7 @@ class TasksTree(QTreeWidget):
         
         #Create Header
         header_item = QTreeWidgetItem()
+        header_item.setData(0, CustomRoles.ItemType, ItemTypes.HeaderItem)
     
         #Header Widget
         header_w = QWidget()
@@ -37,14 +40,16 @@ class TasksTree(QTreeWidget):
         self.setHeaderHidden(True)
         self.setItemWidget(header_item, 0, header_w)
 
-        
         #Enable Drag And Drop
         self.setDragEnabled(True)
         self.setDragDropMode(self.InternalMove)
 
         #Enable Item Editing and se Correct Delegate
         self.setEditTriggers(QTreeWidget.EditTrigger.DoubleClicked)
-        self.setItemDelegate(TaskDelegate)
+        self.delegate = TaskDelegate()
+        self.delegate.render_dir.connect(self.render_dir)
+        self.setItemDelegate(self.delegate)
+
         
     def dropEvent(self, event: QDropEvent) -> None:
         
@@ -54,70 +59,47 @@ class TasksTree(QTreeWidget):
         drop_pos = self.dropIndicatorPosition()
 
         
-        #nitem.setFlags(nitem.flags() ^ Qt.ItemIsDropEnabled)
         DIP = QTreeWidget.DropIndicatorPosition            
+        if drop_pos == DIP.OnItem:
+            if current_item.data(0, CustomRoles.ItemType) == ItemTypes.DirItem:
+                event.ignore()
+                return
         return super().dropEvent(event) 
+    
+    def render_dir(self, parent_index: QModelIndex) -> None:
+        data = self.flatten_tree(parent=parent_index)
+        ThreadingUtils.startThread(ThreadNames.RENDER_THREAD, RenderHelpers.render_list, (data, ), True)
+
+        
+        
 
     def add_dir(self):
-       print("Adding dir") 
+        item = QTreeWidgetItem()
+        item.setData(0, CustomRoles.TaskName, "New Directory")
+        item.setData(0, CustomRoles.EnableState, WidgetState.ENABLED)
+        item.setData(0, CustomRoles.DependentState, WidgetState.DISABLED)
+        item.setData(0, CustomRoles.ItemType, ItemTypes.DirItem)
+        item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEditable)
+        self.addTopLevelItem(item)
+        self.resizeColumnToContents(0)
+    
 
-    #renders all the tasks
-    def render(self):
-        it = QTreeWidgetItemIterator(self)
-        dependent = False
-        success = True
-        while it.value():
-            #Select Task Folders With dependency disabled
-            item = it.value()
-            
-            if type(item) == DirItem:
-                item : DirItem
-                dependent = item.getDependent()
-                success = True
-                
-            #Selects Tasks
-            elif type(item) == TaskItem:
-                item : TaskItem
-                if item.state == TaskState.WAITING:
-                    item.setState(TaskState.RENDERING)
-                    #Handles dependent tasks
-                    if item.parent() == None:
-                        success = HouRenderer.render_task(item)
-                        
-                    elif dependent == True and success == True:
-                        success = HouRenderer.render_task(item)
-                    
-                    #Handles independent tasks
-                    elif dependent == False:
-                        success = HouRenderer.render_task(item)
+    def flatten_tree(self, parent: QModelIndex) -> list:
+        result = []
+        model = self.model()
+        if parent.data(CustomRoles.DependentState) == WidgetState.ENABLED:
+            result.append({"dependent" : True})
+        if model.hasChildren(parent):
 
-                    #Sets state after rendering
-                    if success:
-                        item.setState(TaskState.SUCCESFUL)
-                    else:
-                        item.setState(TaskState.FAILED)
-            it+=1
+            for row in range(model.rowCount(parent)):
+                child_index = model.index(row, 0, parent)
+                if child_index.data(CustomRoles.ItemType) == ItemTypes.TaskItem:
+                    result.append(child_index.data(CustomRoles.TaskData))
+                elif child_index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
+                    result.extend(self.flatten_tree(child_index))
 
-    def render_dir(self, item: DirItem):
-        it = QTreeWidgetItemIterator(item)
-        success = True
-        dependent = item.getDependent()
+            result.append({"dependent": False})
 
-        while it.value():
-            #Handles dependent tasks
-            child_item : TaskItem = it.value()
-            if child_item.state == TaskState.WAITING:
-                
-                if dependent == True and success == True:
-                    success = HouRenderer.render_task(item)
-                
-                #Handles independent tasks
-                elif dependent == False:
-                    success = HouRenderer.render_task(item)
+        return result
 
-                #Sets state after rendering
-                if success:
-                    child_item.setState(TaskState.SUCCESFUL)
-                else:
-                    child_item.setState(TaskState.FAILED)
-            it+=1
+
