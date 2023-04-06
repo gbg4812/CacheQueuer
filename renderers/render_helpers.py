@@ -5,14 +5,15 @@ class RenderHelpers:
         HouRenderer.render_task(task_data)
 
     def render_list(task_list: list) -> bool:
+        print("Rendering list: {}".format(task_list))
         dependent = False
         success = True
         for task in task_list:
             task : dict
-            try:
+            if task.get("dependent") != None:
                 dependent = task.get("dependent")
                 success = True
-            except KeyError:
+            else:
                 if dependent and not success: 
                     continue
                 else:

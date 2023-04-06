@@ -60,6 +60,11 @@ class TasksTree(QTreeWidget):
 
         
         DIP = QTreeWidget.DropIndicatorPosition            
+        if current_item.data(0, CustomRoles.ItemType) == ItemTypes.DirItem:
+            if tg_item.parent():
+                event.ignore()
+                return
+
         if drop_pos == DIP.OnItem:
             if current_item.data(0, CustomRoles.ItemType) == ItemTypes.DirItem:
                 event.ignore()

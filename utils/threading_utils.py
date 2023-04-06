@@ -1,5 +1,5 @@
 import threading
-
+from typing import Callable, Iterable
 class ThreadingUtils():
     def startThread(name: str, func: Callable, args: Iterable, check_if_isrunning: bool) -> bool:
         if check_if_isrunning:

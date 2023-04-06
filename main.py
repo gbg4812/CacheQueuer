@@ -4,7 +4,7 @@ import hou
 import json
 import os
 
-from custom_widgets import TasksTree
+from custom_widgets import TasksTree, ParmsWidget
 from global_enums import *
 from utils import ThreadingUtils
 from renderers import *
@@ -59,13 +59,11 @@ class MainWindow(QMainWindow):
         utilsl.addWidget(syslab)
         
         #Parameters
-        parmsl = QVBoxLayout()
-        gridl.addLayout(parmsl, 1, 2)
-        
-        name_lab = QLabel("Task 1")
-        name_lab.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
-        parmsl.addWidget(name_lab)
+        self.parms = ParmsWidget()
+        gridl.addLayout(self.parms, 1, 2)
 
+        self.task_tree.itemSelectionChanged.connect(self.parms.itemSelected)
+        
         self.setCentralWidget(central_w)
 
             
@@ -92,7 +90,7 @@ class MainWindow(QMainWindow):
 
     def render(self):
         tasks_list = self.task_tree.flatten_tree(self.task_tree.rootIndex())
-        ThreadingUtils.startThread(ThreadNames.RENDER_THREAD, RenderHelpers.render_list, (tasks_list, ))
+        ThreadingUtils.startThread(ThreadNames.RENDER_THREAD, RenderHelpers.render_list, (tasks_list, ), True)
     
 if __name__ == '__main__':
     app = QApplication(sys.argv)
