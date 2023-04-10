@@ -1,6 +1,5 @@
 import sys
 import psutil
-import hou
 import json
 import os
 
@@ -14,9 +13,9 @@ from PySide2.QtWidgets import (
     QMainWindow, QApplication,
     QLabel, QGridLayout, QPushButton, 
     QHBoxLayout, QVBoxLayout, QWidget,
-    QTreeWidgetItem 
+    QTreeWidgetItem, QSplitter, QSizePolicy
 )
-from PySide2.QtCore import Qt
+from PySide2.QtCore import Qt, QTimer
 
 #Class that represents the main application window
 class MainWindow(QMainWindow):
@@ -26,24 +25,21 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Cache Queuer")
         
-        userdir = hou.getenv("HOUDINI_USER_PREF_DIR")
-        self.data_file = userdir + "/Scripts/CacheQueuer/" + "res/task_data.json"
-        self.field_names = ("name", "rop_path", "state", "hip_file")
-
+        self.data_file = "res/task_data.json"
         
         #Init UI
         central_w = QWidget()
-        gridl = QGridLayout(central_w)
+        layout = QVBoxLayout(central_w)
+        splitter = QSplitter(Qt.Horizontal)
         
         
         #Task Tree
         self.task_tree = TasksTree()
-        gridl.addWidget(self.task_tree, 1, 0, 1, 2)
-
+        splitter.addWidget(self.task_tree)
        
         #Utils Bar. Render and Reload buttons + system info
         utilsl = QHBoxLayout()
-        gridl.addLayout(utilsl, 0, 0, 1, 3)
+        layout.addLayout(utilsl, stretch=0)
         
         reload_bttn = QPushButton("Reload")
         reload_bttn.clicked.connect(self.reload)
@@ -55,14 +51,21 @@ class MainWindow(QMainWindow):
 
         utilsl.addSpacing(50)
         
-        syslab = QLabel("Memory: {mem}% Cpu: {cpu}%".format(mem=psutil.virtual_memory()[2], cpu=psutil.cpu_percent(1)))
-        utilsl.addWidget(syslab)
+        self.syslab = QLabel()
+        timer = QTimer()
+        timer.timeout.connect(self.updateSysLab)
+        timer.setInterval(500)
+        timer.start()
+        utilsl.addWidget(self.syslab)
         
         #Parameters
         self.parms = ParmsWidget()
-        gridl.addLayout(self.parms, 1, 2)
+        RenderHelpers.update_handler = self.parms.update_handler
+        splitter.addWidget(self.parms)
+        self.task_tree.itemSelectionChanged.connect(self.itemSelectionChanged)
 
-        self.task_tree.itemSelectionChanged.connect(self.parms.itemSelected)
+
+        layout.addWidget(splitter, stretch=1)
         
         self.setCentralWidget(central_w)
 
@@ -83,7 +86,7 @@ class MainWindow(QMainWindow):
                     self.task_tree.addTopLevelItem(item)
                     self.task_tree.resizeColumnToContents(0)
 
-            #os.remove(self.data_file)
+            os.remove(self.data_file)
 
         except FileNotFoundError:
             print("We couldn't find any tasks")      
@@ -92,8 +95,16 @@ class MainWindow(QMainWindow):
         tasks_list = self.task_tree.flatten_tree(self.task_tree.rootIndex())
         ThreadingUtils.startThread(ThreadNames.RENDER_THREAD, RenderHelpers.render_list, (tasks_list, ), True)
     
+    def itemSelectionChanged(self) -> None:
+        if self.task_tree.topLevelItemCount() > 0:
+            self.parms.itemSelected(self.task_tree.currentItem())
+
+    def updateSysLab(self) -> None:
+        self.syslab.setText("Memory: {mem}% Cpu: {cpu}%".format(mem=psutil.virtual_memory()[2], cpu=psutil.cpu_percent(1)))
+
+    
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     w = MainWindow()
     w.show()
-    app.exec_()      
+    sys.exit(app.exec_())     

@@ -16,6 +16,7 @@ class TasksTree(QTreeWidget):
         super(TasksTree, self).__init__()
 
         self.setColumnCount(1)
+
         
         #Create Header
         header_item = QTreeWidgetItem()

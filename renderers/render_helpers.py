@@ -1,8 +1,13 @@
 from .hou_renderer import HouRenderer
 from global_enums import *
-class RenderHelpers:
+from PySide2.QtCore import Signal, QObject
+class RenderHelpers(QObject):
+    progress_updated = Signal(float)
+
     def render_task(task_data: dict) -> bool:
-        HouRenderer.render_task(task_data)
+        renderer = HouRenderer()
+        renderer.progress_updated.connect()
+        HouRenderer.renderTask(task_data)
 
     def render_list(task_list: list) -> bool:
         print("Rendering list: {}".format(task_list))
@@ -17,6 +22,8 @@ class RenderHelpers:
                 if dependent and not success: 
                     continue
                 else:
-                    HouRenderer.render_task(task)
+                    HouRenderer.renderTask(task)
+    def progressUpdated(self, progress):
+        self.progress_updated.emit(progress)
                 
         
