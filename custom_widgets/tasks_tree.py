@@ -7,10 +7,10 @@ from PySide2.QtCore import Qt, Signal, QModelIndex
 from PySide2.QtGui import QDropEvent
 
 from .task_item_delegate import TaskDelegate
-from utils import ThreadingUtils
-from renderers import RenderHelpers
+from renderers import RenderManager
 #Subclass Of The TreeWidget 
 class TasksTree(QTreeWidget):
+    render_tasks = Signal(list)
 
     def __init__(self):
         super(TasksTree, self).__init__()
@@ -48,6 +48,7 @@ class TasksTree(QTreeWidget):
         #Enable Item Editing and se Correct Delegate
         self.setEditTriggers(QTreeWidget.EditTrigger.DoubleClicked)
         self.delegate = TaskDelegate()
+        self.delegate.render_task.connect(self.render_task)
         self.delegate.render_dir.connect(self.render_dir)
         self.setItemDelegate(self.delegate)
 
@@ -74,8 +75,14 @@ class TasksTree(QTreeWidget):
     
     def render_dir(self, parent_index: QModelIndex) -> None:
         data = self.flatten_tree(parent=parent_index)
-        ThreadingUtils.startThread(ThreadNames.RENDER_THREAD, RenderHelpers.render_list, (data, ), True)
-
+        print("Rendering {}".format(data))
+        self.render_tasks.emit(data)
+        
+        
+    def render_task(self, index: QModelIndex) -> None:
+        data = [index.data(CustomRoles.TaskData), ]
+        self.render_tasks.emit(data)
+        
         
         
 
@@ -99,10 +106,12 @@ class TasksTree(QTreeWidget):
 
             for row in range(model.rowCount(parent)):
                 child_index = model.index(row, 0, parent)
-                if child_index.data(CustomRoles.ItemType) == ItemTypes.TaskItem:
-                    result.append(child_index.data(CustomRoles.TaskData))
-                elif child_index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
-                    result.extend(self.flatten_tree(child_index))
+                if child_index.data(CustomRoles.EnableState) == WidgetState.ENABLED:
+
+                    if child_index.data(CustomRoles.ItemType) == ItemTypes.TaskItem:
+                            result.append(child_index.data(CustomRoles.TaskData))
+                    elif child_index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
+                            result.extend(self.flatten_tree(child_index))
 
             result.append({"dependent": False})
 

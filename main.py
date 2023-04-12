@@ -2,10 +2,11 @@ import sys
 import psutil
 import json
 import os
+import time
 
-from custom_widgets import TasksTree, ParmsWidget
+from custom_widgets import TasksTree, ParmsWidget, SysInfoWidget
 from global_enums import *
-from utils import ThreadingUtils
+from utils import TestTimer, ThreadingUtils
 from renderers import *
 
 
@@ -15,7 +16,7 @@ from PySide2.QtWidgets import (
     QHBoxLayout, QVBoxLayout, QWidget,
     QTreeWidgetItem, QSplitter, QSizePolicy
 )
-from PySide2.QtCore import Qt, QTimer
+from PySide2.QtCore import Qt, QThread
 
 #Class that represents the main application window
 class MainWindow(QMainWindow):
@@ -26,7 +27,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Cache Queuer")
         
         self.data_file = "res/task_data.json"
-        
+        self.renderManager = RenderManager()
         #Init UI
         central_w = QWidget()
         layout = QVBoxLayout(central_w)
@@ -35,6 +36,7 @@ class MainWindow(QMainWindow):
         
         #Task Tree
         self.task_tree = TasksTree()
+        self.task_tree.render_tasks.connect(self.renderManager.render)
         splitter.addWidget(self.task_tree)
        
         #Utils Bar. Render and Reload buttons + system info
@@ -49,18 +51,11 @@ class MainWindow(QMainWindow):
         render_bttn.clicked.connect(self.render)
         utilsl.addWidget(render_bttn)
 
-        utilsl.addSpacing(50)
-        
-        self.syslab = QLabel()
-        timer = QTimer()
-        timer.timeout.connect(self.updateSysLab)
-        timer.setInterval(500)
-        timer.start()
-        utilsl.addWidget(self.syslab)
-        
+        sysinfo = SysInfoWidget() 
+        utilsl.addWidget(sysinfo, alignment=Qt.AlignRight | Qt.AlignVCenter)
         #Parameters
         self.parms = ParmsWidget()
-        RenderHelpers.update_handler = self.parms.update_handler
+        self.renderManager.progress_update.connect(self.parms.update_handler)
         splitter.addWidget(self.parms)
         self.task_tree.itemSelectionChanged.connect(self.itemSelectionChanged)
 
@@ -91,20 +86,16 @@ class MainWindow(QMainWindow):
         except FileNotFoundError:
             print("We couldn't find any tasks")      
 
-    def render(self):
-        tasks_list = self.task_tree.flatten_tree(self.task_tree.rootIndex())
-        ThreadingUtils.startThread(ThreadNames.RENDER_THREAD, RenderHelpers.render_list, (tasks_list, ), True)
-    
     def itemSelectionChanged(self) -> None:
         if self.task_tree.topLevelItemCount() > 0:
             self.parms.itemSelected(self.task_tree.currentItem())
 
-    def updateSysLab(self) -> None:
-        self.syslab.setText("Memory: {mem}% Cpu: {cpu}%".format(mem=psutil.virtual_memory()[2], cpu=psutil.cpu_percent(1)))
-
     
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    
+    with open("style/style.qss", 'r') as f:
+        app.setStyleSheet(f.read())
     w = MainWindow()
     w.show()
     sys.exit(app.exec_())     

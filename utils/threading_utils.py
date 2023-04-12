@@ -1,7 +1,7 @@
 import threading
 from typing import Callable, Iterable
 class ThreadingUtils():
-    def startThread(name: str, func: Callable, args: Iterable, check_if_isrunning: bool) -> bool:
+    def startThread(name: str, func: Callable, args: Iterable = (), check_if_isrunning: bool = False) -> bool:
         if check_if_isrunning:
             if ThreadingUtils.threadIsRuning(name):
                 return False

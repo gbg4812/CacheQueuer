@@ -1,37 +1,15 @@
 import typing
-from PySide2.QtCore import Signal, QObject, QCoreApplication
 
-class Person(QObject):
-    speaked = Signal(str)
-    def __init__(self, name, age):
-        super(Person, self).__init__()
-        self.name = name
-        self.age = age
-    
-    def speak(words: str): 
-        Person.speaked.emit(words)
+from renderers import HouRenderer
+from threading import Thread
 
+task = {"name": "cache_vellum_cloth", "rop_path": "/obj/Sim_Test/cache_vellum_cloth", "state": 0, "hip_file": "D:/3D Objects/projects/PipelineDev/CacheQueuer/test_v1.hiplc"}
+th1 = Thread(target=HouRenderer.renderTask, args=((task), ))
+th2 = Thread(target=HouRenderer.getInfo, args=((task), ))
 
+th1.start()
 
-class Manager(QObject):
-    person_speaked = Signal(str)
-    def startConversation():
-        person = Person("guillem", 18)
-        person.speaked.connect(Manager.personSpeaked)
-        Person.speak("hello")
-        
-    def personSpeaked(self, words: str):
-        self.person_speaked.emit(words)
-   
-   
-def printWords(words: str):
-    print(words)
+th2.start()
+th1.join()
 
-    
-
-app = QCoreApplication()
-manager = Manager()
-manager.person_speaked.connect(printWords) 
-Manager.startConversation()
-app.exec_()
 

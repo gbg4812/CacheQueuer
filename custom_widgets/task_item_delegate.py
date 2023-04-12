@@ -8,7 +8,6 @@ from .task_item_widget import TaskItemWidget
 from .dir_item_widget import DirItemWidget
 from global_enums import *
 from utils import ThreadingUtils
-from renderers import RenderHelpers
 
 class TaskDelegate(QStyledItemDelegate):
     render_dir = Signal(QModelIndex)
@@ -19,7 +18,7 @@ class TaskDelegate(QStyledItemDelegate):
         self.TaskWidget = TaskItemWidget()
 
     def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex) -> None:
-
+        
         #Paint focus (selection) rect
         focus_rect = QStyleOptionViewItem()
         focus_rect.rect = option.rect
@@ -48,9 +47,7 @@ class TaskDelegate(QStyledItemDelegate):
                 return model.removeRow(index.row(), index.parent())
             
             elif task_event == TaskEvent.RENDER:
-                task = index.data(CustomRoles.TaskData)
-                ThreadingUtils.startThread(ThreadNames.RENDER_THREAD, RenderHelpers.render_task, (task, ), True)
-                
+                self.render_task.emit(index) 
         elif index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
             task_event = self.DirWidget.eventHandler(event, model, option, index)
             if task_event == TaskEvent.DELETE:

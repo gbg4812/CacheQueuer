@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="30.0px"
+   height="30.0px"
+   viewBox="0 0 30.0 30.0"
+   version="1.1"
+   id="SVGRoot"
+   sodipodi:docname="remove_and_reload.svg"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview3603"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     showgrid="true"
+     inkscape:zoom="16.871996"
+     inkscape:cx="15.439785"
+     inkscape:cy="12.802279"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer2">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3726" />
+  </sodipodi:namedview>
+  <defs
+     id="defs3598" />
+  <g
+     inkscape:label="DeleteIcon"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline"
+     sodipodi:insensitive="true">
+    <circle
+       style="fill:#4f6675;fill-opacity:1;stroke:#a82300;stroke-width:3.77953;stroke-linecap:round;stroke-miterlimit:3.8;stroke-dasharray:none;stroke-opacity:1"
+       id="path3787"
+       cx="15"
+       cy="15"
+       r="12" />
+    <g
+       id="g6703"
+       transform="rotate(45,15,15)">
+      <path
+         style="fill:#4f6675;fill-opacity:1;stroke:#a82300;stroke-width:3.77953;stroke-linecap:round;stroke-miterlimit:3.8;stroke-dasharray:none;stroke-opacity:1"
+         d="M 10,15 H 20"
+         id="path6697" />
+      <path
+         style="fill:#4f6675;fill-opacity:1;stroke:#a82300;stroke-width:3.77953;stroke-linecap:round;stroke-miterlimit:3.8;stroke-dasharray:none;stroke-opacity:1"
+         d="M 15,20 V 10"
+         id="path6699" />
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="ReloadIcon">
+    <circle
+       style="fill:#4f6675;fill-opacity:1;stroke:#28b1ff;stroke-width:3.77953;stroke-linecap:round;stroke-miterlimit:3.8;stroke-dasharray:none;stroke-opacity:1"
+       id="path7121"
+       cx="15"
+       cy="15"
+       r="13" />
+    <path
+       style="fill:#4f6675;fill-opacity:1;stroke:#28b1ff;stroke-width:3.77953;stroke-linecap:round;stroke-miterlimit:3.8;stroke-dasharray:none;stroke-opacity:1"
+       id="path8475"
+       sodipodi:type="arc"
+       sodipodi:cx="15"
+       sodipodi:cy="15"
+       sodipodi:rx="6"
+       sodipodi:ry="6"
+       sodipodi:start="0.23748713"
+       sodipodi:end="4.818135"
+       sodipodi:arc-type="arc"
+       d="M 20.831593,16.411566 A 6,6 0 0 1 13.845799,20.887939 6,6 0 0 1 9.0670688,14.10539 6,6 0 0 1 15.633294,9.0335154"
+       sodipodi:open="true" />
+    <path
+       style="fill:#28b1ff;fill-opacity:1;stroke:#28b1ff;stroke-width:1;stroke-linecap:round;stroke-miterlimit:3.8;stroke-dasharray:none;stroke-opacity:1;stroke-linejoin:round"
+       d="m 16,9 v 4 L 20,9 16,6 Z"
+       id="path8531" />
+  </g>
+</svg>

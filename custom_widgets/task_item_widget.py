@@ -1,6 +1,6 @@
 from __future__ import annotations
 import copy
-from PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplication, QStyle, QLineEdit, QWidget
+from PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplication, QStyle, QLineEdit, QWidget, QPushButton
 from PySide2.QtCore import Qt, QModelIndex, QRect, QAbstractItemModel, QSize, QMargins
 from PySide2.QtGui import QPainter, QMouseEvent 
 
@@ -14,7 +14,7 @@ class TaskItemWidget():
         self.button_size = QSize(100, 20)
         self.content_margins = QMargins(5, 5, 5, 5)
         self.separation = 5
-
+        
         self.remove = QStyleOptionButton()
         self.render = QStyleOptionButton()
         self.enable = QStyleOptionButton()
@@ -26,6 +26,7 @@ class TaskItemWidget():
         style = QApplication.style()
         painter.save()
         painter.translate(option.rect.topLeft())
+        
 
         # Layout and  paint _enabled checkbox
         enable_rect = QRect(0, rect.top(), rect.height(), rect.height())
@@ -38,7 +39,7 @@ class TaskItemWidget():
             self.enable.state = QStyle.State_Enabled | QStyle.State_On
         elif state == WidgetState.DISABLED:
             self.enable.state = QStyle.State_Off
-        style.drawControl(QStyle.CE_CheckBox, self.enable, painter)
+        style.drawControl(style.CE_CheckBox, self.enable, painter)
 
         # Layout and  paint remove button
         remove_rect = QRect(rect.right() - self.button_size.grownBy(self.content_margins).width(), rect.top(),
@@ -50,7 +51,7 @@ class TaskItemWidget():
             self.remove.state = QStyle.State_Sunken
         else:
             self.remove.state = QStyle.State_Enabled
-        style.drawControl(QStyle.CE_PushButton, self.remove, painter)
+        style.drawControl(style.CE_PushButton, self.remove, painter)
 
         # Layout and  paint render button
         render_rect = remove_rect.translated(

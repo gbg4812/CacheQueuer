@@ -35,45 +35,49 @@ def enableHouModule(hou_version : str):
         if hasattr(sys, "setdlopenflags"):
             sys.setdlopenflags(old_dlopen_flags)
 
-enableHouModule("19.5.435")
-import hou
+enableHouModule("19.5.534")
 from .abstract_renderer import RendererInfo, AbstractRenderer
 
 #renders a single task given a id
 class HouRenderer(AbstractRenderer):   
     frame = 0
-    frame_range = (0, 0)
-
-    def render_event_handler(rop_node, event_type, time):
-        if event_type == hou.ropRenderEventType.PreFrame:
-            HouRenderer.frame += 1	
-            f_range = HouRenderer.frame_range
-            frame = HouRenderer.frame
-            
-            progress = frame - f_range[0]
-            progress /= (f_range[1] - f_range[0]) * f_range[2]
-
-            HouRenderer.progress_updated.emit(progress)
-            print("updating progress from the renderer")
+    frame_range = (0, 0, 0)
+    rendering = False
 
 
     def renderTask(task: dict):
-        info = HouRenderer.getInfo(task)
+        import hou
+
+        def render_event_handler(rop_node, event_type, time):
+            if event_type == hou.ropRenderEventType.PreFrame:
+                HouRenderer.frame += 1	
+                f_range = HouRenderer.frame_range
+                frame = HouRenderer.frame
+                
+                progress = frame - f_range[0]
+                progress /= (f_range[1] - f_range[0]) * f_range[2]
+                
+                HouRenderer.progress_handler(progress)
+
+                
         hou.hipFile.load(task.get("hip_file"))
-        node : hou.RopNode = hou.node(task.get("rop_path"))
+        HouRenderer.rendering = True
+
+        node = hou.node(task.get("rop_path"))
+
         HouRenderer.frame = 0
-        HouRenderer.frame_range = info.frame_range
+        HouRenderer.frame_range = (node.evalParm("f1"), node.evalParm("f2"), 1)
 
         if type(node) == hou.RopNode:
             try:
-                node.addRenderEventCallback(HouRenderer.render_event_handler)
+                node.addRenderEventCallback(render_event_handler)
                 node.render()
             except hou.OperationFailed:
                 return False
         elif type(node) == hou.SopNode:
             try:
                 rop_node = node.node('render')
-                rop_node.addRenderEventCallback(HouRenderer.render_event_handler)
+                rop_node.addRenderEventCallback(render_event_handler)
                 rop_node.render()
             except hou.OperationFailed:
                 return False
@@ -83,6 +87,7 @@ class HouRenderer(AbstractRenderer):
         return True
 
     def getInfo(task: dict) -> RendererInfo:
+        import hou
         try:
             hou.hipFile.load(task.get("hip_file"))
             node = hou.node(task.get("rop_path"))
@@ -99,6 +104,7 @@ class HouRenderer(AbstractRenderer):
             info = RendererInfo(label1=rop_path, label2=out_path, frame_range=frame_range)
 
             return info
+
         except FileNotFoundError:
             return RendererInfo()
         

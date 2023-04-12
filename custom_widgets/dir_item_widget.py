@@ -1,7 +1,7 @@
 
 from __future__ import annotations
 import copy
-from PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplication, QStyle, QLineEdit, QWidget
+from PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplication, QStyle, QLineEdit, QWidget, QPushButton
 from PySide2.QtCore import Qt, QModelIndex, QRect, QAbstractItemModel, QSize, QMargins
 from PySide2.QtGui import QPainter, QMouseEvent 
 
@@ -15,7 +15,7 @@ class DirItemWidget():
         self.button_size = QSize(100, 20)
         self.content_margins = QMargins(5, 5, 5, 5)
         self.separation = 5
-
+        
         self.remove = QStyleOptionButton()
         self.render = QStyleOptionButton()
         self.enable = QStyleOptionButton()
@@ -28,13 +28,15 @@ class DirItemWidget():
         style = QApplication.style()
         painter.save()
         painter.translate(option.rect.topLeft())
-
+        
         # Layout and  paint _enabled checkbox
         enable_rect = QRect(0, rect.top(), rect.height(), rect.height())
         sub_rect = style.subElementRect(
             QStyle.SE_CheckBoxClickRect, self.enable)
+
         self.enable.rect = QStyle.alignedRect(
             Qt.LayoutDirection.LeftToRight, Qt.AlignCenter, sub_rect.size(), enable_rect)
+
         state = index.data(CustomRoles.EnableState)
         if state == WidgetState.ENABLED:
             self.enable.state = QStyle.State_Enabled | QStyle.State_On
