@@ -1,7 +1,7 @@
 from PySide2.QtWidgets import (QStyledItemDelegate, QLabel, QPushButton, QStyleOptionViewItem,
                                QHBoxLayout, QWidget, QStyleOptionButton, QStyle, QApplication, QStyleOptionComboBox, QComboBox, QCheckBox, QStyleOptionFocusRect, QLineEdit)
 from PySide2.QtCore import QModelIndex, QPoint, Qt, QJsonValue, QSize, QRect, QAbstractItemModel, QEvent, Signal
-from PySide2.QtGui import QPainter, QRegion, QMouseEvent, QPixmap
+from PySide2.QtGui import QPainter, QRegion, QMouseEvent, QPixmap, QPainterPath, QPen 
 
 
 from .task_item_widget import TaskItemWidget
@@ -18,12 +18,6 @@ class TaskDelegate(QStyledItemDelegate):
         self.TaskWidget = TaskItemWidget()
 
     def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex) -> None:
-        
-        #Paint focus (selection) rect
-        focus_rect = QStyleOptionViewItem()
-        focus_rect.rect = option.rect
-        focus_rect.state = option.state
-        QApplication.style().drawControl(QStyle.CE_ItemViewItem, option, painter)
 
         if index.data(CustomRoles.ItemType) == ItemTypes.TaskItem:
             self.TaskWidget.paint(painter, option, index)
@@ -47,6 +41,7 @@ class TaskDelegate(QStyledItemDelegate):
                 return model.removeRow(index.row(), index.parent())
             
             elif task_event == TaskEvent.RENDER:
+                super().editorEvent(event, model, option, index)
                 self.render_task.emit(index) 
         elif index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
             task_event = self.DirWidget.eventHandler(event, model, option, index)
@@ -55,6 +50,7 @@ class TaskDelegate(QStyledItemDelegate):
             
             elif task_event == TaskEvent.RENDER:
                 self.render_dir.emit(index)
+                super().editorEvent(event, model, option, index)
                 return True
         return super().editorEvent(event, model, option, index)
 

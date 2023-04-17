@@ -1,118 +1,107 @@
 
 from __future__ import annotations
 import copy
-from PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplication, QStyle, QLineEdit, QWidget, QPushButton
-from PySide2.QtCore import Qt, QModelIndex, QRect, QAbstractItemModel, QSize, QMargins
-from PySide2.QtGui import QPainter, QMouseEvent 
+from PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplication, QStyle, QLineEdit, QWidget, QPushButton, QStyleOption
+from PySide2.QtCore import Qt, QModelIndex, QRect, QAbstractItemModel, QSize, QMargins, QPoint
+from PySide2.QtGui import QPainter, QMouseEvent, QIcon, QPainter, QPixmap, QPainterPath, QPen, QColor, QFontMetrics, QFont
 
 from global_enums import *
+from .icon_button import IconButton
+from .text_item import TextItem
+from .rail_layout import RailLayout
 
-#TaskItemWidget is a class that paints and handles events of a dir item
+# TaskItemWidget is a class that paints and handles events of a dir item
+
+
 class DirItemWidget():
     def __init__(self):
         super(DirItemWidget, self).__init__()
 
-        self.button_size = QSize(100, 20)
+        self.button_size = QSize(30, 30)
         self.content_margins = QMargins(5, 5, 5, 5)
-        self.separation = 5
+
+        self.remove = IconButton(
+            QPixmap("res/icons/remove.png"))
+        self.remove.addStateIcon(WidgetState.CLICKED, QPixmap(
+            "res/icons/remove_shunken.png"))
+        self.render = IconButton(QPixmap("res/icons/render.png"))
+        self.render.addStateIcon(WidgetState.CLICKED, QPixmap(
+            "res/icons/render_shunken.png"))
+        self.enable = IconButton(QPixmap("res/icons/enable_on.png"))
+        self.enable.addStateIcon(WidgetState.DISABLED, QPixmap("res/icons/enable_off.png"))
+        self.dependent = IconButton(QPixmap("res/icons/dependent_on.png"))
+        self.dependent.addStateIcon(WidgetState.DISABLED, QPixmap("res/icons/dependent_off.png"))
+        self.name = TextItem(text_size=12)
         
-        self.remove = QStyleOptionButton()
-        self.render = QStyleOptionButton()
-        self.enable = QStyleOptionButton()
-        self.dependent = QStyleOptionButton()
-        self.text_rect = QRect()
+        self.layout = RailLayout() 
+        self.layout.addItemLeft(self.enable)
+        self.layout.addItemLeft(self.dependent)
+        self.layout.addItemLeft(self.name)
+
 
     def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex):
-        rect: QRect = copy.copy(option.rect)
-        rect.moveTo(0, 0)
-        style = QApplication.style()
+        option.rect.adjust(5, 5, -5, -5)
+
+        # Paint focus (selection) rect
+        fillColor = QColor('#4b5469')
+        borderColor = QColor('#65708c')
+        if (option.state & QStyle.State_Selected):
+            fillColor = fillColor.lighter(120)
+            borderColor = borderColor.lighter(120)
+
+        painter.save()
+        path = QPainterPath()
+        path.addRoundRect(option.rect, 20)
+        pen = QPen(borderColor, 3)
+        painter.setPen(pen)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.fillPath(path, fillColor)
+        painter.drawPath(path)
+        painter.restore()
+
+        # Prepare paint region
         painter.save()
         painter.translate(option.rect.topLeft())
-        
-        # Layout and  paint _enabled checkbox
-        enable_rect = QRect(0, rect.top(), rect.height(), rect.height())
-        sub_rect = style.subElementRect(
-            QStyle.SE_CheckBoxClickRect, self.enable)
 
-        self.enable.rect = QStyle.alignedRect(
-            Qt.LayoutDirection.LeftToRight, Qt.AlignCenter, sub_rect.size(), enable_rect)
+        self.name.setText(index.data(CustomRoles.TaskName))
+        self.layout.updateFromContents()
+        self.layout.adaptToWidth(option.rect.width())
 
-        state = index.data(CustomRoles.EnableState)
-        if state == WidgetState.ENABLED:
-            self.enable.state = QStyle.State_Enabled | QStyle.State_On
-        elif state == WidgetState.DISABLED:
-            self.enable.state = QStyle.State_Off
-        style.drawControl(QStyle.CE_CheckBox, self.enable, painter)
+        # Layout and  paint enabled checkbox
+        self.enable.draw(index.data(CustomRoles.EnableState), painter)
 
         # Layout and  paint dependent checkbox
-        dependent_rect = QRect(enable_rect.topRight(), enable_rect.size())
-        sub_rect = style.subElementRect(
-            QStyle.SE_CheckBoxClickRect, self.dependent)
-        self.dependent.rect = QStyle.alignedRect(
-            Qt.LayoutDirection.LeftToRight, Qt.AlignCenter, sub_rect.size(), dependent_rect)
-        state = index.data(CustomRoles.DependentState)
-        if state == WidgetState.ENABLED:
-            self.dependent.state = QStyle.State_Enabled | QStyle.State_On
-        elif state == WidgetState.DISABLED:
-            self.dependent.state = QStyle.State_Off
-        style.drawControl(QStyle.CE_CheckBox, self.dependent, painter)
+        self.dependent.draw(index.data(CustomRoles.DependentState), painter)
 
         # Layout and  paint remove button
-        remove_rect = QRect(rect.right() - self.button_size.grownBy(self.content_margins).width(), rect.top(),
-                            self.button_size.grownBy(self.content_margins).width(), self.button_size.grownBy(self.content_margins).height())
-        self.remove.rect = QStyle.alignedRect(
-            Qt.LayoutDirection.LeftToRight,  Qt.AlignCenter, self.button_size, remove_rect)
-        self.remove.text = "Remove"
-        if index.data(CustomRoles.RemoveState) == WidgetState.CLICKED:
-            self.remove.state = QStyle.State_Sunken
-        else:
-            self.remove.state = QStyle.State_Enabled
-        style.drawControl(QStyle.CE_PushButton, self.remove, painter)
+        self.remove.draw(index.data(CustomRoles.RemoveState), painter)
 
         # Layout and  paint render button
-        render_rect = remove_rect.translated(
-            - self.button_size.grownBy(self.content_margins).width(), 0)
-        self.render.rect = QStyle.alignedRect(
-            Qt.LayoutDirection.LeftToRight,  Qt.AlignCenter, self.button_size, render_rect)
-        self.render.text = "Render"
-        if index.data(CustomRoles.RenderState) == WidgetState.CLICKED:
-            self.render.state = QStyle.State_Sunken
-        else:
-            self.render.state = QStyle.State_Enabled
-        style.drawControl(QStyle.CE_PushButton, self.render, painter)
+        self.render.draw(index.data(CustomRoles.RenderState), painter)
 
         # Layout and paint name
-        name = index.data(Qt.DisplayRole)
-        self.text_rect = QRect(dependent_rect.topRight(), QSize(
-            rect.width() - enable_rect.width(), rect.height()))
-        self.text_rect = style.itemTextRect(
-            option.fontMetrics, self.text_rect, Qt.AlignLeft | Qt.AlignVCenter, QStyle.State_Enabled, name)
-        style.drawItemText(painter, self.text_rect, Qt.AlignVCenter |
-                           Qt.AlignLeft, option.palette, QStyle.State_Enabled, name)
+        self.name.draw(painter)
         painter.restore()
 
     def eventHandler(self, event: QMouseEvent, model: QAbstractItemModel, option: QStyleOptionViewItem, index: QModelIndex) -> TaskEvent:
-        style = QApplication.style()
+        option.rect.adjust(5, 5, -5, -5)
 
         pos = event.pos()
         pos -= option.rect.topLeft()
         enable_state = index.data(CustomRoles.EnableState)
         dependent_state = index.data(CustomRoles.DependentState)
+
         # Handle mouse button press
         if event.type() == QMouseEvent.Type.MouseButtonPress:
 
             # Handle remove button
-
-            if self.remove.rect.contains(pos):
+            if self.remove.contains(pos):
                 model.setData(index, WidgetState.CLICKED,
                               CustomRoles.RemoveState)
-                return TaskEvent.DELETE
-            elif self.render.rect.contains(pos):
+            elif self.render.contains(pos):
                 model.setData(index, WidgetState.CLICKED,
                               CustomRoles.RenderState)
-                return TaskEvent.RENDER
-            else:
-                return TaskEvent.NONE
+            return TaskEvent.NONE
 
         # Handle mouse button release
         elif event.type() == QMouseEvent.Type.MouseButtonRelease:
@@ -121,13 +110,14 @@ class DirItemWidget():
             model.setData(index, WidgetState.ENABLED, CustomRoles.RemoveState)
             model.setData(index, WidgetState.ENABLED, CustomRoles.RenderState)
 
-            # Handle checkbox
-            enable_rect = style.subElementRect(
-                QStyle.SE_CheckBoxClickRect, self.enable)
-            dependent_rect = style.subElementRect(
-                QStyle.SE_CheckBoxClickRect, self.dependent)
+            if self.remove.contains(pos):
+                return TaskEvent.DELETE
+            elif self.render.contains(pos):
+                return TaskEvent.RENDER
 
-            if enable_rect.contains(pos):
+            # Handle checkboxes
+
+            if self.enable.contains(pos):
                 if enable_state & WidgetState.ENABLED:
                     model.setData(index, WidgetState.DISABLED,
                                   CustomRoles.EnableState)
@@ -135,9 +125,7 @@ class DirItemWidget():
                     model.setData(index, WidgetState.ENABLED,
                                   CustomRoles.EnableState)
 
-
-
-            if dependent_rect.contains(pos):
+            if self.dependent.contains(pos):
                 if dependent_state & WidgetState.ENABLED:
                     model.setData(index, WidgetState.DISABLED,
                                   CustomRoles.DependentState)
@@ -145,13 +133,15 @@ class DirItemWidget():
                     model.setData(index, WidgetState.ENABLED,
                                   CustomRoles.DependentState)
 
+            return TaskEvent.NONE
 
         elif event.type() == QMouseEvent.Type.MouseButtonDblClick:
 
-            if self.text_rect.contains(pos):
+            if self.name.contains(pos):
                 model.setData(index, True, CustomRoles.EditName)
             else:
                 model.setData(index, False, CustomRoles.EditName)
+
         return TaskEvent.NONE
 
     def divideHRect(self, rect: QRect, chunks: int, spawns: list = None) -> list:
@@ -164,8 +154,7 @@ class DirItemWidget():
         return result
 
     def sizeHint(self) -> QSize:
-        return QSize(350, self.button_size.grownBy(self.content_margins).height())
-
+        return self.layout.sizeHint()
     def createEditor(self, parent: QWidget, option: QStyleOptionViewItem, index: QModelIndex) -> QWidget:
         if index.data(CustomRoles.EditName):
             editor = QLineEdit(parent)

@@ -12,3 +12,14 @@ QPushButton:hover {
 QPushButton:pressed {
     background-color: #ffbfd7e2;
 }
+
+QMainWindow {
+    background-color: #ff505259;
+}
+
+QTreeWidget {
+    background-color: #ff5c5c5c;
+    border-color: #ff43444b;
+    border: 5px;
+    border-radius: 5px;
+}

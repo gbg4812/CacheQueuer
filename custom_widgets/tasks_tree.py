@@ -16,6 +16,7 @@ class TasksTree(QTreeWidget):
         super(TasksTree, self).__init__()
 
         self.setColumnCount(1)
+        self.setIndentation(0)
 
         
         #Create Header
@@ -32,6 +33,7 @@ class TasksTree(QTreeWidget):
         
         header_l.addWidget(header_lab)
         header_l.addWidget(ndir_bttn)
+
         #Configure item
         header_item.setSizeHint(0, header_w.sizeHint())
         header_item.setFlags(Qt.NoItemFlags)

@@ -1,0 +1,5 @@
+layout = HRailLayout()
+
+layout.addItem(self.enable, HRailLayout.PailRight)
+layout.draw(painter)
+
