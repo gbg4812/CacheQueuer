@@ -23,15 +23,12 @@ class IconButton(DelegateSubItem):
         except KeyError:
             icon = self.icon[WidgetState.ENABLED]
 
-        rect = QRect(self)
-        rect.moveTo(rect.center())
-        rect.setSize(icon.size())
-        rect.translate(-rect.width() / 2, -rect.height() / 2)
+        rect = self
+        #rect.moveTo(rect.center())
+        #rect.setSize(icon.size())
+        #rect.translate(-rect.width() / 2, -rect.height() / 2)
+        print("Size: {} Pos: {}".format(rect.size(), rect.topLeft()))
         painter.drawPixmap(rect, icon)
 
     def getIconSize(self, state: WidgetState) -> QSize:
         return self.icon.get(state).size()
-
-    def moveBottom(self, pos: int) -> None:
-        print("Button Bottom Moved!!!")
-        return super().moveBottom(pos)

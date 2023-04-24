@@ -37,6 +37,9 @@ class DirItemWidget():
         self.layout.addItemLeft(self.enable)
         self.layout.addItemLeft(self.dependent)
         self.layout.addItemLeft(self.name)
+        
+        self.layout.addItemRight(self.remove)
+        self.layout.addItemRight(self.render)
 
 
     def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex):
@@ -64,7 +67,7 @@ class DirItemWidget():
         painter.translate(option.rect.topLeft())
 
         self.name.setText(index.data(CustomRoles.TaskName))
-        self.layout.updateFromContents()
+        #self.layout.updateFromContents()
         self.layout.adaptToWidth(option.rect.width())
 
         # Layout and  paint enabled checkbox
@@ -155,6 +158,7 @@ class DirItemWidget():
 
     def sizeHint(self) -> QSize:
         return self.layout.sizeHint()
+
     def createEditor(self, parent: QWidget, option: QStyleOptionViewItem, index: QModelIndex) -> QWidget:
         if index.data(CustomRoles.EditName):
             editor = QLineEdit(parent)
