@@ -11,8 +11,6 @@ from .text_item import TextItem
 from .rail_layout import RailLayout
 
 # TaskItemWidget is a class that paints and handles events of a dir item
-
-
 class DirItemWidget():
     def __init__(self):
         super(DirItemWidget, self).__init__()
@@ -71,19 +69,19 @@ class DirItemWidget():
         self.layout.adaptToWidth(option.rect.width())
 
         # Layout and  paint enabled checkbox
-        self.enable.draw(index.data(CustomRoles.EnableState), painter)
+        self.enable.setCurrentState(index.data(CustomRoles.EnableState))
 
         # Layout and  paint dependent checkbox
-        self.dependent.draw(index.data(CustomRoles.DependentState), painter)
+        self.dependent.setCurrentState(index.data(CustomRoles.DependentState))
 
         # Layout and  paint remove button
-        self.remove.draw(index.data(CustomRoles.RemoveState), painter)
+        self.remove.setCurrentState(index.data(CustomRoles.RemoveState))
 
         # Layout and  paint render button
-        self.render.draw(index.data(CustomRoles.RenderState), painter)
+        self.render.setCurrentState(index.data(CustomRoles.RenderState))
 
         # Layout and paint name
-        self.name.draw(painter)
+        self.layout.drawItems(painter)
         painter.restore()
 
     def eventHandler(self, event: QMouseEvent, model: QAbstractItemModel, option: QStyleOptionViewItem, index: QModelIndex) -> TaskEvent:
