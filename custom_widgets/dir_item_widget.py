@@ -1,6 +1,5 @@
 
 from __future__ import annotations
-import copy
 from PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplication, QStyle, QLineEdit, QWidget, QPushButton, QStyleOption
 from PySide2.QtCore import Qt, QModelIndex, QRect, QAbstractItemModel, QSize, QMargins, QPoint
 from PySide2.QtGui import QPainter, QMouseEvent, QIcon, QPainter, QPixmap, QPainterPath, QPen, QColor, QFontMetrics, QFont
@@ -41,7 +40,8 @@ class DirItemWidget():
 
 
     def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex):
-        option.rect.adjust(5, 5, -5, -5)
+        rect : QRect = option.rect.marginsRemoved(self.content_margins)
+
 
         # Paint focus (selection) rect
         fillColor = QColor('#4b5469')
@@ -52,7 +52,7 @@ class DirItemWidget():
 
         painter.save()
         path = QPainterPath()
-        path.addRoundRect(option.rect, 20)
+        path.addRoundRect(rect, 20)
         pen = QPen(borderColor, 3)
         painter.setPen(pen)
         painter.setRenderHint(QPainter.Antialiasing)
@@ -62,11 +62,11 @@ class DirItemWidget():
 
         # Prepare paint region
         painter.save()
-        painter.translate(option.rect.topLeft())
+        painter.translate(rect.topLeft())
 
         self.name.setText(index.data(CustomRoles.TaskName))
-        #self.layout.updateFromContents()
-        self.layout.adaptToWidth(option.rect.width())
+        self.layout.updateFromContents()
+        self.layout.adaptToWidth(rect.width())
 
         # Layout and  paint enabled checkbox
         self.enable.setCurrentState(index.data(CustomRoles.EnableState))
@@ -85,10 +85,10 @@ class DirItemWidget():
         painter.restore()
 
     def eventHandler(self, event: QMouseEvent, model: QAbstractItemModel, option: QStyleOptionViewItem, index: QModelIndex) -> TaskEvent:
-        option.rect.adjust(5, 5, -5, -5)
+        rect : QRect = option.rect.marginsRemoved(self.content_margins)
 
         pos = event.pos()
-        pos -= option.rect.topLeft()
+        pos -= rect.topLeft()
         enable_state = index.data(CustomRoles.EnableState)
         dependent_state = index.data(CustomRoles.DependentState)
 
@@ -155,7 +155,7 @@ class DirItemWidget():
         return result
 
     def sizeHint(self) -> QSize:
-        return self.layout.sizeHint()
+        return self.layout.sizeHint().grownBy(self.content_margins)
 
     def createEditor(self, parent: QWidget, option: QStyleOptionViewItem, index: QModelIndex) -> QWidget:
         if index.data(CustomRoles.EditName):

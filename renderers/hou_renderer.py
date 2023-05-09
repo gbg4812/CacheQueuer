@@ -35,7 +35,6 @@ def enableHouModule(hou_version : str):
         if hasattr(sys, "setdlopenflags"):
             sys.setdlopenflags(old_dlopen_flags)
 
-enableHouModule("19.5.569")
 from .abstract_renderer import RendererInfo, AbstractRenderer
 
 #renders a single task given a id
@@ -46,6 +45,7 @@ class HouRenderer(AbstractRenderer):
 
 
     def renderTask(task: dict):
+        enableHouModule('19.5.435')
         import hou
 
         def render_event_handler(rop_node, event_type, time):

@@ -1,22 +1,21 @@
+#Std library Imports
 import sys
-import psutil
 import json
 import os
-import time
 
+#Local Imports
 from custom_widgets import TasksTree, ParmsWidget, SysInfoWidget
 from global_enums import *
-from utils import TestTimer, ThreadingUtils
 from renderers import *
 
-
+#PySide2 Imports
 from PySide2.QtWidgets import (
     QMainWindow, QApplication,
-    QLabel, QGridLayout, QPushButton, 
+    QPushButton, 
     QHBoxLayout, QVBoxLayout, QWidget,
-    QTreeWidgetItem, QSplitter, QSizePolicy
+    QTreeWidgetItem, QSplitter
 )
-from PySide2.QtCore import Qt, QThread
+from PySide2.QtCore import Qt
 
 #Class that represents the main application window
 class MainWindow(QMainWindow):

@@ -9,7 +9,6 @@ from PySide2.QtGui import QPainter, QPixmap
 from global_enums import *
 from .delegate_sub_item import DelegateSubItem
 
-logging.basicConfig(level=logging.DEBUG)
 class IconButton(DelegateSubItem):
     def __init__(self, icon: QPixmap, pos: QPoint = QPoint(0, 0)):
 
@@ -32,6 +31,10 @@ class IconButton(DelegateSubItem):
         try:
             size = self.icons[state].size()
             self.setSize(size)
+            self._state = state
 
         except KeyError:
             logging.warning("There is no icon for this state")
+            logging.info("The available items states are: {}".format(self.icons.keys()))
+
+        
