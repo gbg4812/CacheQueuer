@@ -13,7 +13,7 @@ class IconButton(DelegateSubItem):
     def __init__(self, icon: QPixmap, pos: QPoint = QPoint(0, 0)):
 
         super(IconButton, self).__init__(pos, icon.size())
-        self.icons = {WidgetState.ENABLED: icon, }
+        self.icons = {WidgetState.ENABLED: icon}
         self._state = WidgetState.ENABLED
 
     def addStateIcon(self, state: WidgetState, icon: QPixmap) -> None:
@@ -35,6 +35,5 @@ class IconButton(DelegateSubItem):
 
         except KeyError:
             logging.warning("There is no icon for this state")
-            logging.info("The available items states are: {}".format(self.icons.keys()))
 
         

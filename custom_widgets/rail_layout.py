@@ -1,95 +1,95 @@
 # std imports:
 import logging
 from typing import List
-logging.disable(level=logging.WARNING)
+logging.basicConfig(level=logging.DEBUG)
 
 # PySide2 imports:
-from PySide2.QtCore import QSize,QMargins
+from PySide2.QtCore import QSize, QPoint
 
 # local imports:
 from .delegate_sub_item import DelegateSubItem
+from custom_types import Vec2
 
 # RailLayout is a tool class usefull to stack QRects in the left and rigth of a bounding QRect:
 class RailLayout():
-    def __init__(self):
+    def __init__(self, margin, spacing):
         # Tracker Variables
         self.right_pile : List[DelegateSubItem] = []
         self.left_pile : List[DelegateSubItem] = []
-        self.rWidth_ptr = 0
-        self.lWidth_ptr = 0
-        self.height = 0
-        self.width = 0
-        
+        self.size = Vec2(0, 0)
+        self.pos = Vec2(0, 0)
+
         # margins between items and with the bounding rect
-        self.margins = QMargins(5, 5, 5, 5)
+        self.margin = margin
+        self.spacing = spacing
 
     # add and item to the left pile and increment the with and maybe the height 
-    def addItemLeft(self, item: DelegateSubItem):
+    def addLItem(self, item: DelegateSubItem):
         # increment the height
-        if(self.height < item.height()):
-            self.height = item.height()
+        if(self.size.y < item.height()):
+            self.size.y = item.height()
 
         # add item to the pile
         self.left_pile.append(item)
 
-    def addItemRight(self, item: DelegateSubItem):
-        if(self.height < item.height()):
-            self.height = item.height()
+    def addRItem(self, item: DelegateSubItem):
+        if(self.size.y < item.height()):
+            self.size.y = item.height()
         self.right_pile.append(item)
     
     def sizeHint(self) -> QSize:
-        return QSize(self.width, self.height)
+        return QSize(self.size.x , self.size.y)
 
-
-    def adaptToWidth(self, width: int):
+    def setWidth(self, width: int):
         for ritem in self.right_pile:
-            ritem : DelegateSubItem
-            logging.debug("The Button Old PositionRight is: {} and the Item Old width: {}".format(ritem.topRight(), self.width))
-            dx = width - self.width
+            dx = width - self.size.x
             ritem.moveRight(ritem.right() + dx)
-            logging.debug("The Button New PositionRight is: {} and the Item New width: {}".format(ritem.topRight(), width))
-        self.width = width
+        self.size.x = width
 
-    def updateFromContents(self) -> None:
-        self.width = 0
-        self.height = 0
-        self.lWidth_ptr = 0
-        self.rWidth_ptr = 0
-        
+    def computeLayout(self, pos : QPoint = QPoint(0, 0)) -> None:
+        l_ptr = self.margin
+        r_ptr = 0
+        self.size.x = 0
+        self.size.y = 0
+        self.pos.x = pos.x()
+        self.pos.y = pos.y()
+
         #Compute max height and total width
-        for item in self.left_pile:
-            self.height = max(self.height, item.height())
-            self.width += item.width() + self.margins.left()
+        self.size.x += self.margin
 
-        for item in self.right_pile:
-            self.height = max(self.height, item.height())
-            self.width += item.width() + self.margins.left()
-            
-        self.height += self.margins.top() * 2
-        self.width += self.margins.left()
-        self.lWidth_ptr += self.margins.left()
-        self.rWidth_ptr += self.margins.left()
+        for item in self.left_pile:
+            self.size.y = max(self.size.y, item.height())
+            self.size.x += item.width() + self.spacing
+
+        self.size.x += self.margin
+
+        for i, item in enumerate(self.right_pile):
+            self.size.y = max(self.size.y, item.height())
+            self.size.x += item.width()
+            if i != len(self.right_pile) - 1:
+                self.size.x += self.spacing
+        
+                
+        self.size.y += 2*self.margin
+
+        r_ptr = self.size.x - self.margin
 
         # Move items into position
         for litem in self.left_pile:
-            litem.moveLeft(self.lWidth_ptr)
-            self.lWidth_ptr += litem.width() + self.margins.left()
-            
-            litem.moveBottom(self.height - ((self.height - litem.height()) / 2))
+            litem.moveLeft(l_ptr)
+            l_ptr += litem.width() + self.spacing
+            litem.moveBottom(self.size.y - ((self.size.y - litem.height()) / 2))
+            litem.translate(pos)
 
         for ritem in self.right_pile:
-            ritem.moveRight(self.width - self.rWidth_ptr)
-            self.rWidth_ptr += ritem.width() + self.margins.left()
-            
-            ritem.moveBottom(self.height - ((self.height - ritem.height()) / 2))
+            ritem.moveRight(r_ptr)
+            r_ptr -= ritem.width() + self.spacing
+            ritem.moveBottom(self.size.y - ((self.size.y - ritem.height()) / 2))
+            ritem.translate(pos)
 
-        print("adapted from contents")
-
-    def drawItems(self, painter):
+    def draw(self, painter):
         for item in self.right_pile:
-            item : DelegateSubItem
             item.draw(painter)
 
         for item in self.left_pile:
-            item : DelegateSubItem
             item.draw(painter)

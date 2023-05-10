@@ -1,0 +1,159 @@
+{
+  "main": {
+    "id": "d8b2500012780d53",
+    "type": "split",
+    "children": [
+      {
+        "id": "51c5e3e6c8cd72a0",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4fba6380f790d1f5",
+            "type": "leaf",
+            "state": {
+              "type": "canvas",
+              "state": {
+                "file": "Rail Layout/Rail Layout.canvas",
+                "viewState": {
+                  "x": 17.621041923314152,
+                  "y": 128.1391527140122,
+                  "zoom": -0.3333333333333334
+                }
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "f0b191c68a0ab4c1",
+    "type": "split",
+    "children": [
+      {
+        "id": "869e73d97e697abf",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9068f1dd442b2d4e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "367dc56044795836",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "a54f57fe2d5e2679",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200,
+    "collapsed": true
+  },
+  "right": {
+    "id": "1a46ffdae852caa9",
+    "type": "split",
+    "children": [
+      {
+        "id": "4a6f7570ecad89a3",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b87a43d4688666a5",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Rail Layout/Rail Layout.canvas",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "ab015b8da335c50f",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Rail Layout/Rail Layout.canvas",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "7220797ac6d2d146",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "f8782595c16893c6",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Rail Layout/Rail Layout.canvas"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "4fba6380f790d1f5",
+  "lastOpenFiles": [
+    "Rail Layout/Rail Layout.md",
+    "Rail Layout/Rail Layout.canvas",
+    "Rail Layout"
+  ]
+}

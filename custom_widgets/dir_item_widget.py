@@ -1,5 +1,7 @@
 
 from __future__ import annotations
+import logging
+
 from PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplication, QStyle, QLineEdit, QWidget, QPushButton, QStyleOption
 from PySide2.QtCore import Qt, QModelIndex, QRect, QAbstractItemModel, QSize, QMargins, QPoint
 from PySide2.QtGui import QPainter, QMouseEvent, QIcon, QPainter, QPixmap, QPainterPath, QPen, QColor, QFontMetrics, QFont
@@ -30,18 +32,18 @@ class DirItemWidget():
         self.dependent.addStateIcon(WidgetState.DISABLED, QPixmap("res/icons/dependent_off.png"))
         self.name = TextItem(text_size=12)
         
-        self.layout = RailLayout() 
-        self.layout.addItemLeft(self.enable)
-        self.layout.addItemLeft(self.dependent)
-        self.layout.addItemLeft(self.name)
+        self.layout = RailLayout(5, 5) 
+        self.layout.addLItem(self.enable)
+        self.layout.addLItem(self.dependent)
+        self.layout.addLItem(self.name)
         
-        self.layout.addItemRight(self.remove)
-        self.layout.addItemRight(self.render)
+        self.layout.addRItem(self.remove)
+        self.layout.addRItem(self.render)
+        self.layout.computeLayout()
 
 
     def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex):
         rect : QRect = option.rect.marginsRemoved(self.content_margins)
-
 
         # Paint focus (selection) rect
         fillColor = QColor('#4b5469')
@@ -62,11 +64,7 @@ class DirItemWidget():
 
         # Prepare paint region
         painter.save()
-        painter.translate(rect.topLeft())
-
         self.name.setText(index.data(CustomRoles.TaskName))
-        self.layout.updateFromContents()
-        self.layout.adaptToWidth(rect.width())
 
         # Layout and  paint enabled checkbox
         self.enable.setCurrentState(index.data(CustomRoles.EnableState))
@@ -80,17 +78,26 @@ class DirItemWidget():
         # Layout and  paint render button
         self.render.setCurrentState(index.data(CustomRoles.RenderState))
 
+        # Compute items positions
+        self.layout.computeLayout(rect.topLeft())
+        self.layout.setWidth(rect.width())
+
         # Layout and paint name
-        self.layout.drawItems(painter)
+        self.layout.draw(painter)
         painter.restore()
 
     def eventHandler(self, event: QMouseEvent, model: QAbstractItemModel, option: QStyleOptionViewItem, index: QModelIndex) -> TaskEvent:
         rect : QRect = option.rect.marginsRemoved(self.content_margins)
 
         pos = event.pos()
-        pos -= rect.topLeft()
+        self.layout.computeLayout(rect.topLeft())
+        self.layout.setWidth(rect.width())
         enable_state = index.data(CustomRoles.EnableState)
         dependent_state = index.data(CustomRoles.DependentState)
+
+        # Default button state
+        model.setData(index, WidgetState.ENABLED, CustomRoles.RemoveState)
+        model.setData(index, WidgetState.ENABLED, CustomRoles.RenderState)
 
         # Handle mouse button press
         if event.type() == QMouseEvent.Type.MouseButtonPress:
@@ -107,9 +114,6 @@ class DirItemWidget():
         # Handle mouse button release
         elif event.type() == QMouseEvent.Type.MouseButtonRelease:
 
-            # Handle buttons
-            model.setData(index, WidgetState.ENABLED, CustomRoles.RemoveState)
-            model.setData(index, WidgetState.ENABLED, CustomRoles.RenderState)
 
             if self.remove.contains(pos):
                 return TaskEvent.DELETE
@@ -142,7 +146,7 @@ class DirItemWidget():
                 model.setData(index, True, CustomRoles.EditName)
             else:
                 model.setData(index, False, CustomRoles.EditName)
-
+        
         return TaskEvent.NONE
 
     def divideHRect(self, rect: QRect, chunks: int, spawns: list = None) -> list:

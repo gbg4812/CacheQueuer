@@ -85,14 +85,13 @@ class TasksTree(QTreeWidget):
         data = [index.data(CustomRoles.TaskData), ]
         self.render_tasks.emit(data)
         
-        
-        
-
     def add_dir(self):
         item = QTreeWidgetItem()
         item.setData(0, CustomRoles.TaskName, "New Directory")
         item.setData(0, CustomRoles.EnableState, WidgetState.ENABLED)
         item.setData(0, CustomRoles.DependentState, WidgetState.DISABLED)
+        item.setData(0, CustomRoles.RemoveState, WidgetState.ENABLED)
+        item.setData(0, CustomRoles.RenderState, WidgetState.ENABLED)
         item.setData(0, CustomRoles.ItemType, ItemTypes.DirItem)
         item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEditable)
         self.addTopLevelItem(item)

@@ -43,6 +43,7 @@ class TaskDelegate(QStyledItemDelegate):
             elif task_event == TaskEvent.RENDER:
                 super().editorEvent(event, model, option, index)
                 self.render_task.emit(index) 
+        
         elif index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
             task_event = self.DirWidget.eventHandler(event, model, option, index)
             if task_event == TaskEvent.DELETE:
