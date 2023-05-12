@@ -1,3 +1,4 @@
+# PySide2 imports
 from PySide2.QtCore import QRect, QSize, QPoint
 
 class DelegateSubItem(QRect):

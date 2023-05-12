@@ -1,7 +1,9 @@
 # std imports:
 import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
 from typing import List
-logging.basicConfig(level=logging.DEBUG)
 
 # PySide2 imports:
 from PySide2.QtCore import QSize, QPoint
@@ -41,18 +43,22 @@ class RailLayout():
         return QSize(self.size.x , self.size.y)
 
     def setWidth(self, width: int):
-        for ritem in self.right_pile:
-            dx = width - self.size.x
-            ritem.moveRight(ritem.right() + dx)
-        self.size.x = width
+        if width > self.size.x:
+            for ritem in self.right_pile:
+                dx = width - self.size.x
+                ritem.moveRight(ritem.right() + dx)
+            self.size.x = width
+            self.left_pile[len(self.left_pile) - 1].adjust(0, 0, dx, 0)
 
     def computeLayout(self, pos : QPoint = QPoint(0, 0)) -> None:
         l_ptr = self.margin
         r_ptr = 0
         self.size.x = 0
         self.size.y = 0
-        self.pos.x = pos.x()
-        self.pos.y = pos.y()
+        if pos.x or pos.y:
+            self.pos.x = pos.x()
+            self.pos.y = pos.y()
+
 
         #Compute max height and total width
         self.size.x += self.margin

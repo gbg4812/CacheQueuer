@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from global_enums import CustomRoles, ItemTypes, WidgetState, ThreadNames
         
-from PySide2.QtWidgets import QTreeWidget, QWidget, QPushButton, QLabel, QHBoxLayout, QTreeWidgetItem
+from PySide2.QtWidgets import QTreeWidget, QWidget, QPushButton, QLabel, QHBoxLayout, QTreeWidgetItem, QScrollBar
 from PySide2.QtCore import Qt, Signal, QModelIndex 
 from PySide2.QtGui import QDropEvent
 
@@ -17,6 +17,11 @@ class TasksTree(QTreeWidget):
 
         self.setColumnCount(1)
         self.setIndentation(0)
+        
+        self.setHorizontalScrollMode(QTreeWidget.ScrollPerPixel)
+        self.setVerticalScrollMode(QTreeWidget.ScrollPerPixel)
+        
+        self.setSelectionMode(QTreeWidget.SelectionMode.ExtendedSelection)
 
         
         #Create Header
@@ -117,5 +122,4 @@ class TasksTree(QTreeWidget):
             result.append({"dependent": False})
 
         return result
-
 

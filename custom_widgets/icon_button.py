@@ -1,5 +1,7 @@
 # std imports:
 import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 # PySide2 imports:
 from PySide2.QtCore import QSize, QPoint, QRect
@@ -27,7 +29,6 @@ class IconButton(DelegateSubItem):
         painter.drawPixmap(self, self.icons[self._state])
     
     def setCurrentState(self, state: WidgetState) -> None:
-
         try:
             size = self.icons[state].size()
             self.setSize(size)
@@ -35,5 +36,3 @@ class IconButton(DelegateSubItem):
 
         except KeyError:
             logging.warning("There is no icon for this state")
-
-        

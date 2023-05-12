@@ -1,8 +1,7 @@
 
 from __future__ import annotations
-import logging
 
-from PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplication, QStyle, QLineEdit, QWidget, QPushButton, QStyleOption
+from PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplication, QStyle, QLineEdit, QWidget, QPushButton, QStyleOption, QTreeWidget
 from PySide2.QtCore import Qt, QModelIndex, QRect, QAbstractItemModel, QSize, QMargins, QPoint
 from PySide2.QtGui import QPainter, QMouseEvent, QIcon, QPainter, QPixmap, QPainterPath, QPen, QColor, QFontMetrics, QFont
 
@@ -17,7 +16,7 @@ class DirItemWidget():
         super(DirItemWidget, self).__init__()
 
         self.button_size = QSize(30, 30)
-        self.content_margins = QMargins(5, 5, 5, 5)
+        self.content_margins = QMargins(5, 5, 20, 5)
 
         self.remove = IconButton(
             QPixmap("res/icons/remove.png"))
@@ -40,6 +39,7 @@ class DirItemWidget():
         self.layout.addRItem(self.remove)
         self.layout.addRItem(self.render)
         self.layout.computeLayout()
+
 
 
     def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex):
@@ -90,17 +90,20 @@ class DirItemWidget():
         rect : QRect = option.rect.marginsRemoved(self.content_margins)
 
         pos = event.pos()
+        self.name.setText(index.data(CustomRoles.TaskName))
+
         self.layout.computeLayout(rect.topLeft())
         self.layout.setWidth(rect.width())
         enable_state = index.data(CustomRoles.EnableState)
         dependent_state = index.data(CustomRoles.DependentState)
+        render_state = index.data(CustomRoles.RenderState)
+        remove_state = index.data(CustomRoles.RemoveState)
 
-        # Default button state
-        model.setData(index, WidgetState.ENABLED, CustomRoles.RemoveState)
-        model.setData(index, WidgetState.ENABLED, CustomRoles.RenderState)
 
         # Handle mouse button press
         if event.type() == QMouseEvent.Type.MouseButtonPress:
+            print("mouse pressed")
+            print("Remove Rect: {}\nPos: {}".format(self.remove, pos))
 
             # Handle remove button
             if self.remove.contains(pos):
@@ -113,13 +116,16 @@ class DirItemWidget():
 
         # Handle mouse button release
         elif event.type() == QMouseEvent.Type.MouseButtonRelease:
+            print("mouse released")
 
-
-            if self.remove.contains(pos):
+            if remove_state == WidgetState.CLICKED:
+                print("delete task")
+                model.setData(index, WidgetState.ENABLED, CustomRoles.RemoveState)
                 return TaskEvent.DELETE
-            elif self.render.contains(pos):
+            elif render_state == WidgetState.CLICKED:
+                print("render task")
+                model.setData(index, WidgetState.ENABLED, CustomRoles.RenderState)
                 return TaskEvent.RENDER
-
             # Handle checkboxes
 
             if self.enable.contains(pos):
@@ -141,30 +147,36 @@ class DirItemWidget():
             return TaskEvent.NONE
 
         elif event.type() == QMouseEvent.Type.MouseButtonDblClick:
+            print("mouse double clicked")
+
+            # Default button state
+            model.setData(index, WidgetState.ENABLED, CustomRoles.RemoveState)
+            model.setData(index, WidgetState.ENABLED, CustomRoles.RenderState)
 
             if self.name.contains(pos):
                 model.setData(index, True, CustomRoles.EditName)
             else:
                 model.setData(index, False, CustomRoles.EditName)
         
+        # Default button state
+        model.setData(index, WidgetState.ENABLED, CustomRoles.RemoveState)
+        model.setData(index, WidgetState.ENABLED, CustomRoles.RenderState)
         return TaskEvent.NONE
 
-    def divideHRect(self, rect: QRect, chunks: int, spawns: list = None) -> list:
-        result = []
-        size = QSize(rect.width()/chunks, rect.height())
-        for i in range(chunks):
-            pos = rect.topLeft()
-            pos.setX(pos.x() + size.width() * i)
-            result.append(QRect(pos, size))
-        return result
 
-    def sizeHint(self) -> QSize:
+    def sizeHint(self, option: QStyleOption, index: QModelIndex) -> QSize:
+        self.name.setText(index.data(CustomRoles.TaskName))
+        self.layout.computeLayout()
         return self.layout.sizeHint().grownBy(self.content_margins)
 
     def createEditor(self, parent: QWidget, option: QStyleOptionViewItem, index: QModelIndex) -> QWidget:
         if index.data(CustomRoles.EditName):
             editor = QLineEdit(parent)
-            editor.setGeometry(self.text_rect)
             return editor
         else:
             return None
+    
+    
+    def updateEditorGeometry(self, editor: QWidget, option: QStyleOptionViewItem, index: QModelIndex) -> None:
+        rect : QRect = option.rect.marginsRemoved(self.content_margins)
+        editor.setGeometry(rect)

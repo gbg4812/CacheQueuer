@@ -1,16 +1,23 @@
+QPushButton, QLineEdit, QLabel {
+    font: bold 10pt 'Arial';
+    color: #ff2d2d2d;
+}
 QPushButton {
-    background-color: #ff97acb6;
+    background: #ff97acb6;
+    border-color: #ff97acb6;
     border-style: solid;
-    border-width: 10px;
-    border-radius: 10px;
+    border-width: 5px;
+    border-radius: 5px;
 }
 
 QPushButton:hover {
     background-color: #ffabc3ce;
+    border-color: #ffabc3ce;
 }
 
 QPushButton:pressed {
     background-color: #ffbfd7e2;
+    border-color: #ffbfd7e2;
 }
 
 QMainWindow {
@@ -22,4 +29,35 @@ QTreeWidget {
     border-color: #ff43444b;
     border: 5px;
     border-radius: 5px;
+}
+
+QLineEdit {
+    background: #ff4b5469;
+    font-size: 10pt;
+    border-color: #ff65708c;
+    border-style: solid;
+    border-width: 4px;
+    border-radius: 5px;
+}
+
+QScrollBar {
+    background: #ff43444b;
+}
+
+QScrollBar::add-page, QScrollBar::sub-page {
+    border-color: #ff43444b;
+}
+
+QScrollBar::handle {
+    margin: 2px;
+    background: #ffb5b5b5;
+    border-radius: 5px;
+}
+
+QScrollBar::add-line, QScrollBar::sub-line  {
+    height: 0px;
+}
+
+QSplitter::handle {
+    background: #ff97acb6;
 }

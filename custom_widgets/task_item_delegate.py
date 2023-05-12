@@ -28,7 +28,7 @@ class TaskDelegate(QStyledItemDelegate):
         if index.data(CustomRoles.ItemType) == ItemTypes.TaskItem:
             return self.TaskWidget.sizeHint()
         elif index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
-            return self.DirWidget.sizeHint()
+            return self.DirWidget.sizeHint(option, index)
         elif index.data(CustomRoles.ItemType) == ItemTypes.HeaderItem:
             return super().sizeHint(option, index)
 
@@ -43,6 +43,7 @@ class TaskDelegate(QStyledItemDelegate):
             elif task_event == TaskEvent.RENDER:
                 super().editorEvent(event, model, option, index)
                 self.render_task.emit(index) 
+                return True
         
         elif index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
             task_event = self.DirWidget.eventHandler(event, model, option, index)
@@ -51,9 +52,17 @@ class TaskDelegate(QStyledItemDelegate):
             
             elif task_event == TaskEvent.RENDER:
                 self.render_dir.emit(index)
-                super().editorEvent(event, model, option, index)
                 return True
         return super().editorEvent(event, model, option, index)
 
     def createEditor(self, parent: QWidget, option: QStyleOptionViewItem, index: QModelIndex) -> QWidget:
-        return self.DirWidget.createEditor(parent, option, index)
+        if index.data(CustomRoles.ItemType) == ItemTypes.DirItem: 
+            return self.DirWidget.createEditor(parent, option, index)
+        else:
+            return super().createEditor(parent, option, index)
+    
+    def updateEditorGeometry(self, editor: QWidget, option: QStyleOptionViewItem, index: QModelIndex) -> None:
+        if index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
+            return self.DirWidget.updateEditorGeometry(editor, option, index)
+        return super().updateEditorGeometry(editor, option, index)
+    
