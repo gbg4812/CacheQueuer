@@ -1,6 +1,6 @@
-from PySide2.QtWidgets import QWidget, QVBoxLayout, QLabel, QTreeWidgetItem, QProgressBar, QLineEdit 
+from vendor.PySide2.QtWidgets import QWidget, QVBoxLayout, QLabel, QTreeWidgetItem, QProgressBar, QLineEdit 
 
-from PySide2.QtCore import Signal, QModelIndex, QItemSelection, Qt
+from vendor.PySide2.QtCore import Signal, QModelIndex, QItemSelection, Qt
 from global_enums import CustomRoles, ItemTypes
 from renderers import HouRenderer, RendererInfo 
 class ParmsWidget(QWidget):

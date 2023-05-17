@@ -1,12 +1,12 @@
 {
 	"nodes":[
-		{"type":"group","id":"722d97541c699ce3","x":320,"y":880,"width":520,"height":720,"label":"computeLayout"},
-		{"type":"text","text":"QRect\n- Pos\n- Size","id":"33f53aade3401dfd","x":-154,"y":-440,"width":250,"height":118},
-		{"type":"text","text":"Delegate Sub Item\n- draw()","id":"bce9d7545df4c824","x":-154,"y":-240,"width":250,"height":100},
-		{"id":"80405d6a31a7cead","x":-219,"y":-45,"width":379,"height":158,"type":"text","text":"I dont think so, because there are lots of QRect functions to be reimplemented. Probably better idea to add directly to de layout a pos and size attributes"},
-		{"type":"text","text":"Rail Layout:\n- Items_l\n- Items_R\n- margins (With the outer world)\n- spacing (Between items)\n- computeLayout()\n- setWidth()\n- sizeHint()\n- addLItem()\n- addRItem()\n>[!NOTE] \n>Gets position from user and size form the items\n>","id":"b8494fd4f772c169","x":-217,"y":200,"width":376,"height":460},
-		{"type":"text","text":"Compute max height and acumulated width with the spacing and the margins","id":"f3da200df47394de","x":445,"y":920,"width":250,"height":106},
-		{"type":"text","text":"for each item\n- moveTop to:\n\t$$\\frac{h - item.h}{2}$$\n- moveX to:\n\t- case Left:\n\t\t- left_ptr\n\t\t- left_ptr += item.w + spacing (margins for the first item)\n\t- case Right:\n\t\t- right_ptr\n\t\t- right_ptr -= itme.w + spacing (margins for the first item) \n \n","id":"d6f539c90760aeeb","x":360,"y":1120,"width":420,"height":420}
+		{"type":"group","id":"722d97541c699ce3","x":-300,"y":880,"width":520,"height":720,"label":"computeLayout"},
+		{"type":"text","text":"QRect\n- Pos\n- Size","id":"33f53aade3401dfd","x":-165,"y":-440,"width":250,"height":118},
+		{"type":"text","text":"Delegate Sub Item\n- draw()","id":"bce9d7545df4c824","x":-165,"y":-240,"width":250,"height":100},
+		{"type":"text","text":"I dont think so, because there are lots of QRect functions to be reimplemented. Probably better idea to add directly to de layout a pos and size attributes","id":"80405d6a31a7cead","x":-229,"y":-45,"width":379,"height":158},
+		{"type":"text","text":"Rail Layout:\n- Items_l\n- Items_R\n- margins (With the outer world)\n- spacing (Between items)\n- computeLayout()\n- setWidth()\n- sizeHint()\n- addLItem()\n- addRItem()\n>[!NOTE] \n>Gets position from user and size form the items\n>","id":"b8494fd4f772c169","x":-228,"y":200,"width":376,"height":460},
+		{"type":"text","text":"Compute max height and acumulated width with the spacing and the margins","id":"f3da200df47394de","x":-165,"y":920,"width":250,"height":106},
+		{"type":"text","text":"for each item\n- moveTop to:\n\t$$\\frac{h - item.h}{2}$$\n- moveX to:\n\t- case Left:\n\t\t- left_ptr\n\t\t- left_ptr += item.w + spacing (margins for the first item)\n\t- case Right:\n\t\t- right_ptr\n\t\t- right_ptr -= itme.w + spacing (margins for the first item) \n \n","id":"d6f539c90760aeeb","x":-250,"y":1120,"width":420,"height":420}
 	],
 	"edges":[
 		{"id":"c0558564a15b2d0c","fromNode":"33f53aade3401dfd","fromSide":"bottom","toNode":"bce9d7545df4c824","toSide":"top"},

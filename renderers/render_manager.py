@@ -1,6 +1,6 @@
 from .hou_renderer import HouRenderer
 from global_enums import *
-from PySide2.QtCore import Signal, QObject, QThread
+from vendor.PySide2.QtCore import Signal, QObject, QThread
 
 class RenderManager(QObject):
     progress_update = Signal(float)

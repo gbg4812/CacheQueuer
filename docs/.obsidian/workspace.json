@@ -4,21 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "51c5e3e6c8cd72a0",
+        "id": "aafb174d40bb84fc",
         "type": "tabs",
         "children": [
           {
-            "id": "4fba6380f790d1f5",
+            "id": "ff60bf9a4fc786e1",
             "type": "leaf",
             "state": {
-              "type": "canvas",
+              "type": "kanban",
               "state": {
-                "file": "Rail Layout/Rail Layout.canvas",
-                "viewState": {
-                  "x": 17.621041923314152,
-                  "y": 128.1391527140122,
-                  "zoom": -0.3333333333333334
-                }
+                "file": "Plan.md"
               }
             }
           }
@@ -72,8 +67,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 675.5
   },
   "right": {
     "id": "1a46ffdae852caa9",
@@ -89,7 +83,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Rail Layout/Rail Layout.canvas",
+                "file": "Plan.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -106,7 +100,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Rail Layout/Rail Layout.canvas",
+                "file": "Plan.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -129,8 +123,16 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Rail Layout/Rail Layout.canvas"
+                "file": "Plan.md"
               }
+            }
+          },
+          {
+            "id": "501a7576dcb5744c",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {}
             }
           }
         ]
@@ -147,13 +149,22 @@
       "canvas:Create new canvas": false,
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
-      "command-palette:Open command palette": false
+      "command-palette:Open command palette": false,
+      "obsidian-excalidraw-plugin:Create new drawing": false
     }
   },
-  "active": "4fba6380f790d1f5",
+  "active": "ff60bf9a4fc786e1",
   "lastOpenFiles": [
+    "Wiki.md",
+    "Plan.md",
     "Rail Layout/Rail Layout.md",
     "Rail Layout/Rail Layout.canvas",
+    "Excalidraw/Drawing 2023-05-13 19.43.45.excalidraw.md",
+    "Excalidraw",
+    "snippeds",
+    "PLAN.md",
+    "Task Widget.md",
+    "Untitled.md",
     "Rail Layout"
   ]
 }

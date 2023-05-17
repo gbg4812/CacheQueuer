@@ -45,7 +45,7 @@ class HouRenderer(AbstractRenderer):
 
 
     def renderTask(task: dict):
-        enableHouModule('19.5.435')
+        enableHouModule('19.5.569')
         import hou
 
         def render_event_handler(rop_node, event_type, time):
@@ -87,6 +87,7 @@ class HouRenderer(AbstractRenderer):
         return True
 
     def getInfo(task: dict) -> RendererInfo:
+        enableHouModule('19.5.569')
         import hou
         try:
             hou.hipFile.load(task.get("hip_file"))

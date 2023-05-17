@@ -7,9 +7,9 @@ logger.setLevel(logging.DEBUG)
 # Local Imports
 from .delegate_sub_item import DelegateSubItem
 
-# PySide2 imports
-from PySide2.QtGui import QPainter, QFont, QColor, QPen, QFontMetrics
-from PySide2.QtCore import Qt, QPoint, QSize, QRect
+# vendor.PySide2 imports
+from vendor.PySide2.QtGui import QPainter, QFont, QColor, QPen, QFontMetrics
+from vendor.PySide2.QtCore import Qt, QPoint, QSize
 
 class TextItem(DelegateSubItem):
     def __init__(self, pos: QPoint = QPoint(0, 0), text_size: int = 10, text_color: QColor = Qt.black, min_letters : int = 5):

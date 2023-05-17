@@ -1,5 +1,5 @@
 import enum
-from PySide2.QtCore import Qt
+from vendor.PySide2.QtCore import Qt
 class TaskState(enum.IntEnum):
     WAITING = 0
     RENDERING = 1
@@ -7,19 +7,11 @@ class TaskState(enum.IntEnum):
     FAILED = 3
     DISABLED = 4
 
-
-class WidgetState(enum.IntEnum):
-    ENABLED = 1,
-    DISABLED = 2,
-    CLICKED = 3,
-    FOCUSED = 4,
-    EDITING = 5
-
-
 class TaskEvent(enum.IntEnum):
     RENDER = 0,
     DELETE = 1,
     NONE = 2,
+    DATACHANGED = 3,
 
 class CustomRoles(enum.IntEnum):
     TaskName = Qt.DisplayRole,

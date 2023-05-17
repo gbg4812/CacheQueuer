@@ -3,12 +3,12 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-# PySide2 imports:
-from PySide2.QtCore import QSize, QPoint, QRect
-from PySide2.QtGui import QPainter, QPixmap 
+# vendor.PySide2 imports:
+from vendor.PySide2.QtCore import QPoint 
+from vendor.PySide2.QtGui import QPainter, QPixmap 
 
 # local imports:
-from global_enums import *
+from .enums import WidgetState
 from .delegate_sub_item import DelegateSubItem
 
 class IconButton(DelegateSubItem):

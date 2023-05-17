@@ -1,5 +1,4 @@
 from typing import Callable
-from PySide2.QtCore import Signal, QObject
 
 #This is a standard type to output task render information
 class RendererInfo():

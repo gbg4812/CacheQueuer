@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from global_enums import CustomRoles, ItemTypes, WidgetState, ThreadNames
+from global_enums import CustomRoles, ItemTypes
         
-from PySide2.QtWidgets import QTreeWidget, QWidget, QPushButton, QLabel, QHBoxLayout, QTreeWidgetItem, QScrollBar
-from PySide2.QtCore import Qt, Signal, QModelIndex 
-from PySide2.QtGui import QDropEvent
+from vendor.PySide2.QtWidgets import QTreeWidget, QWidget, QPushButton, QLabel, QHBoxLayout, QTreeWidgetItem
+from vendor.PySide2.QtCore import Qt, Signal, QModelIndex, QItemSelectionModel, QItemSelection, QItemSelectionRange
+from vendor.PySide2.QtGui import QDropEvent
 
-from .task_item_delegate import TaskDelegate
-from renderers import RenderManager
+from .item_delegate import TaskDelegate
+from delegate_subitems import WidgetState
 #Subclass Of The TreeWidget 
 class TasksTree(QTreeWidget):
     render_tasks = Signal(list)
@@ -22,6 +22,7 @@ class TasksTree(QTreeWidget):
         self.setVerticalScrollMode(QTreeWidget.ScrollPerPixel)
         
         self.setSelectionMode(QTreeWidget.SelectionMode.ExtendedSelection)
+        self.model().rowsInserted.connect(self.consistent_selection)
 
         
         #Create Header
@@ -57,6 +58,7 @@ class TasksTree(QTreeWidget):
         self.delegate = TaskDelegate()
         self.delegate.render_task.connect(self.render_task)
         self.delegate.render_dir.connect(self.render_dir)
+        self.delegate.data_changed.connect(self.data_changed)
         self.setItemDelegate(self.delegate)
 
         
@@ -66,6 +68,10 @@ class TasksTree(QTreeWidget):
         current_item  = self.currentItem()
         tg_item  = self.itemAt(event.pos())
         drop_pos = self.dropIndicatorPosition()
+        
+        if not tg_item:
+            event.ignore()
+            return
 
         
         DIP = QTreeWidget.DropIndicatorPosition            
@@ -89,6 +95,10 @@ class TasksTree(QTreeWidget):
     def render_task(self, index: QModelIndex) -> None:
         data = [index.data(CustomRoles.TaskData), ]
         self.render_tasks.emit(data)
+    
+    def data_changed(self):
+        self.itemSelectionChanged.emit()
+    
         
     def add_dir(self):
         item = QTreeWidgetItem()
@@ -121,5 +131,10 @@ class TasksTree(QTreeWidget):
 
             result.append({"dependent": False})
 
+
         return result
 
+    def consistent_selection(self, parent: QModelIndex, first, last):
+        sm = self.selectionModel()
+        idx = self.model().index(first, 0, parent)
+        sm.select(idx, QItemSelectionModel.Select)
