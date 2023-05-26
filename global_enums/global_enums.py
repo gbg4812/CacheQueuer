@@ -1,5 +1,5 @@
 import enum
-from vendor.PySide2.QtCore import Qt
+from PySide2.QtCore import Qt
 class TaskState(enum.IntEnum):
     WAITING = 0
     RENDERING = 1

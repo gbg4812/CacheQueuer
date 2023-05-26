@@ -1,13 +1,14 @@
 
 from __future__ import annotations
 from os import path
+from typing import NoReturn
 
-from vendor.PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplication, QStyle, QLineEdit, QWidget, QPushButton, QStyleOption, QTreeWidget
-from vendor.PySide2.QtCore import Qt, QModelIndex, QRect, QAbstractItemModel, QSize, QMargins, QPoint
-from vendor.PySide2.QtGui import QPainter, QMouseEvent, QIcon, QPainter, QPixmap, QPainterPath, QPen, QColor, QFontMetrics, QFont
+from PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplication, QStyle, QLineEdit, QWidget, QPushButton, QStyleOption, QTreeWidget 
+from PySide2.QtCore import Qt, QModelIndex, QRect, QAbstractItemModel, QSize, QMargins, QPoint
+from PySide2.QtGui import QPainter, QMouseEvent, QIcon, QPainter, QPixmap, QPainterPath, QPen, QColor, QFontMetrics, QFont
 
 from global_enums import *
-from delegate_subitems import IconButton, TextItem, RailLayout, WidgetState
+from delegate_subitems import IconButton, TextItem, RailLayout, WidgetState, Spacer
 
 wrkdir, _ = path.split(__file__)
 wrkdir += "/"
@@ -20,19 +21,29 @@ class DirItemWidget():
         self.button_size = QSize(30, 30)
         self.content_margins = QMargins(5, 5, 20, 5)
 
+        #Remove and Render buttons
         self.remove = IconButton(
-            QPixmap(wrkdir + "res/icons/remove.png"))
+            QPixmap(wrkdir + "res/icons/remove.png"), WidgetState.ENABLED)
         self.remove.addStateIcon(WidgetState.CLICKED, QPixmap(
             wrkdir +"res/icons/remove_shunken.png"))
-        self.render = IconButton(QPixmap(wrkdir +"res/icons/render.png"))
+        self.render = IconButton(QPixmap(wrkdir +"res/icons/render.png"), WidgetState.ENABLED)
         self.render.addStateIcon(WidgetState.CLICKED, QPixmap(
             wrkdir +"res/icons/render_shunken.png"))
-        self.enable = IconButton(QPixmap(wrkdir +"res/icons/enable_on.png"))
+        
+        #Enable and Dependent checkboxes
+        self.enable = IconButton(QPixmap(wrkdir +"res/icons/enable_on.png"), WidgetState.ENABLED)
         self.enable.addStateIcon(WidgetState.DISABLED, QPixmap(wrkdir +"res/icons/enable_off.png"))
-        self.dependent = IconButton(QPixmap(wrkdir +"res/icons/dependent_on.png"))
+        self.dependent = IconButton(QPixmap(wrkdir +"res/icons/dependent_on.png"), WidgetState.ENABLED)
         self.dependent.addStateIcon(WidgetState.DISABLED, QPixmap(wrkdir +"res/icons/dependent_off.png"))
         self.name = TextItem(text_size=12)
         
+        #State icon
+        self.state = IconButton(QPixmap(wrkdir+"res/icons/StateIcon_waiting.png"), TaskState.WAITING)
+        self.state.addStateIcon(TaskState.RENDERING,QPixmap(wrkdir+"res/icons/StateIcon_rendering.png"))
+        self.state.addStateIcon(TaskState.FAILED,QPixmap(wrkdir+"res/icons/StateIcon_failed.png"))
+        self.state.addStateIcon(TaskState.SUCCESFUL, QPixmap(wrkdir+"res/icons/StateIcon_successful.png"))
+
+        #Layout items
         self.layout = RailLayout(5, 5) 
         self.layout.addLItem(self.enable)
         self.layout.addLItem(self.dependent)
@@ -40,6 +51,8 @@ class DirItemWidget():
         
         self.layout.addRItem(self.remove)
         self.layout.addRItem(self.render)
+        self.layout.addRItem(Spacer(10))
+        self.layout.addRItem(self.state)
         self.layout.computeLayout()
 
 
@@ -79,6 +92,9 @@ class DirItemWidget():
 
         # Layout and  paint render button
         self.render.setCurrentState(index.data(CustomRoles.RenderState))
+        
+        # Set state icon state
+        self.state.setCurrentState(index.data(CustomRoles.TaskState))
 
         # Compute items positions
         self.layout.computeLayout(rect.topLeft())
@@ -100,6 +116,7 @@ class DirItemWidget():
         dependent_state = index.data(CustomRoles.DependentState)
         render_state = index.data(CustomRoles.RenderState)
         remove_state = index.data(CustomRoles.RemoveState)
+        state_state = index.data(CustomRoles.TaskState)
 
 
         # Handle mouse button press
@@ -134,13 +151,20 @@ class DirItemWidget():
                     model.setData(index, WidgetState.ENABLED,
                                   CustomRoles.EnableState)
 
-            if self.dependent.contains(pos):
+            elif self.dependent.contains(pos):
                 if dependent_state & WidgetState.ENABLED:
                     model.setData(index, WidgetState.DISABLED,
                                   CustomRoles.DependentState)
                 elif dependent_state & WidgetState.DISABLED:
                     model.setData(index, WidgetState.ENABLED,
                                   CustomRoles.DependentState)
+        
+            elif self.state.contains(pos):
+                if event.button() == Qt.MouseButton.LeftButton:
+                    model.setData(index, TaskState.WAITING, CustomRoles.TaskState)
+                elif event.button() == Qt.MouseButton.RightButton:
+                    model.setData(index, TaskState.FAILED, CustomRoles.TaskState)
+
 
         elif event.type() == QMouseEvent.Type.MouseButtonDblClick:
 
@@ -170,7 +194,7 @@ class DirItemWidget():
             editor = QLineEdit(parent)
             return editor
         else:
-            return None
+            return NoReturn
     
     
     def updateEditorGeometry(self, editor: QWidget, option: QStyleOptionViewItem, index: QModelIndex) -> None:

@@ -1,8 +1,14 @@
-import subprocess
-def enableHouModule(hou_version : str):
+import hou
+import json
+import sys
+
+
+def enableHouModule(hou_version: str):
     '''Set up the environment so that "import hou" works.'''
-    import sys, os
-    hou_home = "C:\Program Files\Side Effects Software\Houdini {}".format(hou_version)
+    import sys
+    import os
+    hou_home = "C:\Program Files\Side Effects Software\Houdini {}".format(
+        hou_version)
     # Importing hou will load Houdini's libraries and initialize Houdini.
     # This will cause Houdini to load any HDK extensions written in C++.
     # These extensions need to link against Houdini's libraries,
@@ -15,7 +21,7 @@ def enableHouModule(hou_version : str):
 
     # For Windows only.
     # Add %HFS%/bin to the DLL search path so that Python can locate
-    # the hou module's Houdini library dependencies.  Note that 
+    # the hou module's Houdini library dependencies.  Note that
     # os.add_dll_directory() does not exist in older Python versions.
     # Python 3.7 users are expected to add %HFS%/bin to the PATH environment
     # variable instead prior to launching Python.
@@ -25,7 +31,7 @@ def enableHouModule(hou_version : str):
     try:
         import hou
     except ImportError:
-        # If the hou module could not be imported, then add 
+        # If the hou module could not be imported, then add
         # $HFS/houdini/pythonX.Ylibs to sys.path so Python can locate the
         # hou module.
         sys.path.append("{}/houdini/python3.9libs".format(hou_home))
@@ -35,25 +41,33 @@ def enableHouModule(hou_version : str):
         if hasattr(sys, "setdlopenflags"):
             sys.setdlopenflags(old_dlopen_flags)
 
+
 enableHouModule("19.5.435")
-import hou 
-import  json 
 
-userdir = hou.getenv("HOUDINI_USER_PREF_DIR")
 
-subp = subprocess.Popen(["python", f"{userdir}/Scripts/CacheQueuer/hou_render.py", 
-                         "D:/3D Objects/projectes_3d/Pipeline/QueuerTests/QueuerTests.hiplc", 
-                         "/obj/Destruction/cache_shell"],
-                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+def render(data: dict):
+    print()
+    hou.hipFile.load(data.get("hip_file"))
+    node: hou.Node = hou.node(data.get("node_path"))
 
-data = {"hip_file":"D:/3D Objects/projectes_3d/Pipeline/QueuerTests/QueuerTests.hiplc", "node_path": "/obj/Destruction/cache_shell"}
+    def r_callback(node, event, time):
+        if event == hou.ropRenderEventType.PostFrame:
+            sys.stdout.write("time: {}\n".format(time))
+            sys.stdout.flush()
 
-data = json.dumps(data)+"\n"
-subp.stdin.write(data.encode())	
+    for i in range(0, 2):
+        if isinstance(node, hou.RopNode):
+            node.addRenderEventCallback(r_callback)
+            node.render()
+            break
+        node = node.node("./render")
 
-while True:
-    data = subp.stdout.readline()
-    if data:
-        print(data.decode("utf-8"))
-    if subp.poll() is not None:
-        break
+    while True:
+        data: dict = json.loads(sys.stdin.readline().partition("\n")[0])
+        if data:
+            render(data)
+
+
+print("rendering")
+data: dict = json.loads(sys.stdin.readline())
+render(data)

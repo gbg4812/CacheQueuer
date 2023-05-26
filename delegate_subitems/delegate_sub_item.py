@@ -1,5 +1,5 @@
-# vendor.PySide2 imports
-from vendor.PySide2.QtCore import QRect, QSize, QPoint
+# PySide2 imports
+from PySide2.QtCore import QRect, QSize, QPoint
 
 class DelegateSubItem(QRect):
     def __init__(self, pos: QPoint, size: QSize):

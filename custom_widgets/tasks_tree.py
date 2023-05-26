@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from global_enums import CustomRoles, ItemTypes
+from global_enums import CustomRoles, ItemTypes, TaskState
         
-from vendor.PySide2.QtWidgets import QTreeWidget, QWidget, QPushButton, QLabel, QHBoxLayout, QTreeWidgetItem
-from vendor.PySide2.QtCore import Qt, Signal, QModelIndex, QItemSelectionModel, QItemSelection, QItemSelectionRange
-from vendor.PySide2.QtGui import QDropEvent
+from PySide2.QtWidgets import QTreeWidget, QWidget, QPushButton, QLabel, QHBoxLayout, QTreeWidgetItem
+from PySide2.QtCore import Qt, Signal, QModelIndex, QItemSelectionModel
+from PySide2.QtGui import QDropEvent
 
 from .item_delegate import TaskDelegate
 from delegate_subitems import WidgetState
@@ -23,7 +23,6 @@ class TasksTree(QTreeWidget):
         
         self.setSelectionMode(QTreeWidget.SelectionMode.ExtendedSelection)
         self.model().rowsInserted.connect(self.consistent_selection)
-
         
         #Create Header
         header_item = QTreeWidgetItem()
@@ -89,11 +88,13 @@ class TasksTree(QTreeWidget):
     def render_dir(self, parent_index: QModelIndex) -> None:
         data = self.flatten_tree(parent=parent_index)
         print("Rendering {}".format(data))
+        self.model().setData(parent_index, TaskState.RENDERING, CustomRoles.TaskState)
         self.render_tasks.emit(data)
         
         
     def render_task(self, index: QModelIndex) -> None:
         data = [index.data(CustomRoles.TaskData), ]
+        self.model().setData(index, TaskState.RENDERING, CustomRoles.TaskState)
         self.render_tasks.emit(data)
     
     def data_changed(self):
@@ -108,6 +109,7 @@ class TasksTree(QTreeWidget):
         item.setData(0, CustomRoles.RemoveState, WidgetState.ENABLED)
         item.setData(0, CustomRoles.RenderState, WidgetState.ENABLED)
         item.setData(0, CustomRoles.ItemType, ItemTypes.DirItem)
+        item.setData(0, CustomRoles.TaskState, TaskState.WAITING)
         item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEditable)
         self.addTopLevelItem(item)
         self.resizeColumnToContents(0)

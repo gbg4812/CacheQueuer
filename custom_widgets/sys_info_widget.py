@@ -1,7 +1,7 @@
-from vendor.PySide2.QtWidgets import QWidget, QLabel, QHBoxLayout
+from PySide2.QtWidgets import QWidget, QLabel, QHBoxLayout
 import psutil
 import time
-from vendor.PySide2.QtCore import QThread, Signal
+from PySide2.QtCore import QThread, Signal
 
 class SysInfoThread(QThread):
     update_info = Signal(str)

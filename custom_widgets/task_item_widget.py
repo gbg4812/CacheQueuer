@@ -1,9 +1,9 @@
 from __future__ import annotations
 from os import path
 
-from vendor.PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplication, QStyle, QLineEdit, QWidget, QPushButton, QStyleOption
-from vendor.PySide2.QtCore import Qt, QModelIndex, QRect, QAbstractItemModel, QSize, QMargins
-from vendor.PySide2.QtGui import QPainter, QMouseEvent , QPixmap, QColor, QPainterPath, QPen
+from PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplication, QStyle, QLineEdit, QWidget, QPushButton, QStyleOption
+from PySide2.QtCore import Qt, QModelIndex, QRect, QAbstractItemModel, QSize, QMargins
+from PySide2.QtGui import QPainter, QMouseEvent , QPixmap, QColor, QPainterPath, QPen
 
 from global_enums import *
 from delegate_subitems import WidgetState, IconButton, RailLayout, TextItem
@@ -20,13 +20,13 @@ class TaskItemWidget():
         self.content_margins = QMargins(5, 5, 20, 5)
 
         self.remove = IconButton(
-            QPixmap(wrkdir + "res/icons/remove.png"))
+            QPixmap(wrkdir + "res/icons/remove.png"), WidgetState.ENABLED)
         self.remove.addStateIcon(WidgetState.CLICKED, QPixmap(
             wrkdir +"res/icons/remove_shunken.png"))
-        self.render = IconButton(QPixmap(wrkdir +"res/icons/render.png"))
+        self.render = IconButton(QPixmap(wrkdir +"res/icons/render.png"), WidgetState.ENABLED)
         self.render.addStateIcon(WidgetState.CLICKED, QPixmap(
             wrkdir +"res/icons/render_shunken.png"))
-        self.enable = IconButton(QPixmap(wrkdir +"res/icons/enable_on.png"))
+        self.enable = IconButton(QPixmap(wrkdir +"res/icons/enable_on.png"), WidgetState.ENABLED)
         self.enable.addStateIcon(WidgetState.DISABLED, QPixmap(wrkdir +"res/icons/enable_off.png"))
 
         self.name = TextItem(text_size=12)

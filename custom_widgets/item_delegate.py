@@ -1,7 +1,7 @@
-from vendor.PySide2.QtWidgets import (QStyledItemDelegate, QLabel, QPushButton, QStyleOptionViewItem,
-                               QHBoxLayout, QWidget, QStyleOptionButton, QStyle, QApplication, QStyleOptionComboBox, QComboBox, QCheckBox, QStyleOptionFocusRect, QLineEdit)
-from vendor.PySide2.QtCore import QModelIndex, QPoint, Qt, QJsonValue, QSize, QRect, QAbstractItemModel, QEvent, Signal
-from vendor.PySide2.QtGui import QPainter, QRegion, QMouseEvent, QPixmap, QPainterPath, QPen 
+from PySide2.QtWidgets import QStyledItemDelegate, QStyleOptionViewItem, QWidget
+                             
+from PySide2.QtCore import QModelIndex, QSize, QAbstractItemModel, QEvent, Signal
+from PySide2.QtGui import QPainter 
 
 
 from .task_item_widget import TaskItemWidget
@@ -32,8 +32,7 @@ class TaskDelegate(QStyledItemDelegate):
         elif index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
             return self.DirWidget.sizeHint(option, index)
 
-        elif index.data(CustomRoles.ItemType) == ItemTypes.HeaderItem:
-            return super().sizeHint(option, index)
+        return super().sizeHint(option, index)
 
     def editorEvent(self, event: QEvent, model: QAbstractItemModel, option: QStyleOptionViewItem, index: QModelIndex) -> bool:
 

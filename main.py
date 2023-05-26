@@ -4,27 +4,33 @@ import json
 import os
 import logging
 
+# Configure environment
+wrkdir, _ = os.path.split(__file__)
+vendor_path = os.path.abspath(wrkdir+"/vendor")
+sys.path.append(vendor_path)
+
+# Configure logger
+logging.basicConfig(filename=wrkdir+"/debugging.log", filemode="w")
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
 
 #Local Imports
 from custom_widgets import TasksTree, ParmsWidget, SysInfoWidget
 from delegate_subitems import WidgetState
 from global_enums import *
-from renderers import *
+from renderers import RenderManager
 
 #PySide2 Imports
-from vendor.PySide2.QtWidgets import (
+from PySide2.QtWidgets import (
     QMainWindow, QApplication,
     QPushButton, 
     QHBoxLayout, QVBoxLayout, QWidget,
     QTreeWidgetItem, QSplitter 
 )
 
-from vendor.PySide2.QtCore import Qt
+from PySide2.QtCore import Qt
 
-wrkdir, _ = os.path.split(__file__)
-logging.basicConfig(filename=wrkdir+"/debugging.log", filemode="w")
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 #Class that represents the main application window
 class MainWindow(QMainWindow):
@@ -61,8 +67,10 @@ class MainWindow(QMainWindow):
         
         sysinfo = SysInfoWidget() 
         utilsl.addWidget(sysinfo, alignment=Qt.AlignRight | Qt.AlignVCenter)
+
         #Parameters
         self.parms = ParmsWidget()
+
         self.renderManager.progress_update.connect(self.parms.update_handler)
         splitter.addWidget(self.parms)
         self.task_tree.itemSelectionChanged.connect(self.itemSelectionChanged)

@@ -11,9 +11,14 @@
             "id": "ff60bf9a4fc786e1",
             "type": "leaf",
             "state": {
-              "type": "kanban",
+              "type": "canvas",
               "state": {
-                "file": "Plan.md"
+                "file": "Render Management/Render signals.canvas",
+                "viewState": {
+                  "x": 60.67123940823325,
+                  "y": -6.140647206985278,
+                  "zoom": -0.6666666666666667
+                }
               }
             }
           }
@@ -67,7 +72,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 675.5
+    "width": 239.5
   },
   "right": {
     "id": "1a46ffdae852caa9",
@@ -83,7 +88,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Plan.md",
+                "file": "Render Management/Render signals.canvas",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -100,7 +105,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Plan.md",
+                "file": "Render Management/Render signals.canvas",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -123,7 +128,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Plan.md"
+                "file": "Render Management/Render signals.canvas"
               }
             }
           },
@@ -155,6 +160,9 @@
   },
   "active": "ff60bf9a4fc786e1",
   "lastOpenFiles": [
+    "Render Management/Untitled.md",
+    "Render Management/Render signals.canvas",
+    "Render Management",
     "Wiki.md",
     "Plan.md",
     "Rail Layout/Rail Layout.md",
@@ -164,7 +172,6 @@
     "snippeds",
     "PLAN.md",
     "Task Widget.md",
-    "Untitled.md",
     "Rail Layout"
   ]
 }

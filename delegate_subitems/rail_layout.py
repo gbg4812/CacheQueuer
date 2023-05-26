@@ -5,8 +5,8 @@ logger.setLevel(logging.DEBUG)
 
 from typing import List
 
-# vendor.PySide2 imports:
-from vendor.PySide2.QtCore import QSize, QPoint
+# PySide2 imports:
+from PySide2.QtCore import QSize, QPoint
 
 # local imports:
 from .delegate_sub_item import DelegateSubItem

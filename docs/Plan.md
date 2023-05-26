@@ -26,13 +26,13 @@ kanban-plugin: basic
 ## This Week
 
 - [ ] Test Progress Bar
-- [ ] Beautify Parms Tab
 - [ ] Obscure everything when disabled (or maybe just the render button)
 
 
 ## Today
 
 - [ ] Task State
+- [ ] Beautify Parms Tab
 
 
 
