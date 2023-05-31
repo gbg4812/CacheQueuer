@@ -1,19 +1,19 @@
 {
 	"nodes":[
-		{"id":"f6681acaab3dc2ed","x":-1180,"y":-580,"width":620,"height":720,"type":"group","label":"Main Script"},
-		{"id":"bc4dfce4e19517c2","x":280,"y":-440,"width":400,"height":680,"type":"group","label":"Render Script"},
-		{"id":"4551dee07a9e3c30","x":-820,"y":-260,"width":250,"height":82,"type":"text","text":"sends the node path, the file path"},
-		{"id":"461f79ae017337fa","x":-980,"y":-80,"width":250,"height":60,"type":"text","text":"Task Tree "},
-		{"id":"6ce56dc8fee0cd9f","x":355,"y":-420,"width":250,"height":60,"type":"text","text":"renderEventCallback after frame send progress"},
-		{"id":"e895ef7fbc817b47","x":355,"y":-50,"width":250,"height":60,"type":"text","text":"set global bar and wait til next frame"},
-		{"id":"84005f7d102c98e3","x":355,"y":91,"width":250,"height":60,"type":"text","text":"render Event Callback exits() process"},
-		{"id":"aabe61a15e3a4a25","x":-820,"y":-420,"width":250,"height":60,"type":"text","text":"for each task"}
+		{"type":"group","id":"f6681acaab3dc2ed","x":-1180,"y":-580,"width":620,"height":720,"label":"Main Script"},
+		{"type":"group","id":"bc4dfce4e19517c2","x":280,"y":-440,"width":400,"height":680,"label":"Render Script"},
+		{"type":"text","text":"Task Tree ","id":"461f79ae017337fa","x":-980,"y":-80,"width":250,"height":60},
+		{"type":"text","text":"renderEventCallback after frame send progress","id":"6ce56dc8fee0cd9f","x":355,"y":-420,"width":250,"height":60},
+		{"type":"text","text":"set global bar and wait til next frame","id":"e895ef7fbc817b47","x":355,"y":-50,"width":250,"height":60},
+		{"type":"text","text":"render Event Callback exits() process","id":"84005f7d102c98e3","x":355,"y":91,"width":250,"height":60},
+		{"type":"text","text":"sends the node path, the file path","id":"4551dee07a9e3c30","x":-855,"y":-260,"width":250,"height":82},
+		{"type":"text","text":"for each task","id":"aabe61a15e3a4a25","x":-855,"y":-420,"width":250,"height":60}
 	],
 	"edges":[
 		{"id":"2035396dd12e5779","fromNode":"f6681acaab3dc2ed","fromSide":"right","toNode":"bc4dfce4e19517c2","toSide":"left","label":"subprocess.Popen"},
 		{"id":"341798ba863184e2","fromNode":"aabe61a15e3a4a25","fromSide":"bottom","toNode":"4551dee07a9e3c30","toSide":"top"},
 		{"id":"791a92946378a4e0","fromNode":"bc4dfce4e19517c2","fromSide":"top","toNode":"f6681acaab3dc2ed","toSide":"right","label":"Pipe to update progress"},
-		{"id":"e83466b63e991b8a","fromNode":"461f79ae017337fa","fromSide":"right","toNode":"e895ef7fbc817b47","toSide":"left","label":"Signal to kill"},
+		{"id":"e83466b63e991b8a","fromNode":"461f79ae017337fa","fromSide":"right","toNode":"e895ef7fbc817b47","toSide":"left","label":"Kill Process\n\n"},
 		{"id":"553c64bd2f5d0b30","fromNode":"e895ef7fbc817b47","fromSide":"bottom","toNode":"84005f7d102c98e3","toSide":"top"}
 	]
 }

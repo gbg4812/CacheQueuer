@@ -1,6 +1,8 @@
 from typing import List, Dict
+from subprocess import Popen, PIPE
+import json
+
 from PySide2.QtCore import Signal, QObject, QThread, QModelIndex
-from .hou_renderer import HouRenderer
 from global_enums import *
 
 class RenderManager(QObject):
@@ -44,7 +46,7 @@ class RenderManager(QObject):
         
 
 class RenderThread(QThread):
-    progress_updated = Signal(float)
+    progress_updated = Signal(dict)
     task_ended = Signal(int, bool)
 
     def __init__(self, task_list: list = None, parent=None):
@@ -63,10 +65,29 @@ class RenderThread(QThread):
                 if dependent and not success: 
                     continue
                 else:
-                    HouRenderer.progress_handler = self.progressUpdated
-                    success = HouRenderer.renderTask(task)
+                    success = self.renderTask(task)
                     self.task_ended.emit(i, success)
                     
+    def renderTask(self, task: dict):
+        script : str = task.get("shell_script")
+        prog, arg = script.split(" ")
+        task_str = json.dumps(task)
+        print(script, task_str)
+        subp = Popen([prog, arg, task_str], stdout=PIPE, stderr=PIPE)
+
+        while True:
+            data : bytes = subp.stdout.readline()
+            data = data.rstrip(b'\r\n')
+
+            if data:
+                try:
+                    objdata: dict = json.loads(data)
+                    self.progress_updated.emit(objdata)
+                except json.JSONDecodeError:
+                    print(data.decode("utf-8"))
+
+                if subp.poll() is not None:
+                    return json.loads(data).get("State") == "SUCCESFUL"
 
     def setTaskList(self, task_list : list):
         self.task_list = task_list

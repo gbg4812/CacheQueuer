@@ -7,6 +7,7 @@ kanban-plugin: basic
 ## Done
 
 - [x] launch from houdini
+- [x] Task State
 - [x] Reimplement Task Widget
 
 
@@ -31,7 +32,6 @@ kanban-plugin: basic
 
 ## Today
 
-- [ ] Task State
 - [ ] Beautify Parms Tab
 
 
