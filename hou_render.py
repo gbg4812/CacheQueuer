@@ -1,4 +1,3 @@
-import hou
 import json
 import sys
 
@@ -42,18 +41,20 @@ def enableHouModule(hou_version: str):
             sys.setdlopenflags(old_dlopen_flags)
 
 
-enableHouModule("19.5.435")
-
+enableHouModule("19.5.569")
+import hou
 
 def render(data: dict):
-    print()
-    hou.hipFile.load(data.get("hip_file"))
+    hou.hipFile.load(data.get("hip_file"), ignore_load_warnings=True)
     node: hou.Node = hou.node(data.get("node_path"))
 
     def r_callback(node, event, time):
         if event == hou.ropRenderEventType.PostFrame:
-            sys.stdout.write("time: {}\n".format(time))
-            sys.stdout.flush()
+            f_range = [node.parm("f1").evalAsFloat(), node.parm("f2").evalAsFloat(), node.parm("f3").evalAsFloat()]
+            prog = round(time*hou.fps(),ndigits=4) 
+            info = {"Progress" : prog, "Range":(f_range[0], f_range[1]), "State":"RENDERING"}
+            info = json.dumps(info)
+            print(info, flush=True, end="\n")
 
     for i in range(0, 2):
         if isinstance(node, hou.RopNode):
@@ -62,12 +63,6 @@ def render(data: dict):
             break
         node = node.node("./render")
 
-    while True:
-        data: dict = json.loads(sys.stdin.readline().partition("\n")[0])
-        if data:
-            render(data)
 
-
-print("rendering")
-data: dict = json.loads(sys.stdin.readline())
+data: dict = json.loads(sys.argv[1])
 render(data)
