@@ -51,8 +51,6 @@ class DirItemWidget():
         
         self.layout.addRItem(self.remove)
         self.layout.addRItem(self.render)
-        self.layout.addRItem(Spacer(10))
-        self.layout.addRItem(self.state)
         self.layout.computeLayout()
 
 

@@ -42,6 +42,7 @@ class MainWindow(QMainWindow):
         
         self.data_file = f"{wrkdir}/data/task_data.json"
         self.renderManager = RenderManager()
+
         #Init UI
         central_w = QWidget()
         layout = QVBoxLayout(central_w)
@@ -62,7 +63,7 @@ class MainWindow(QMainWindow):
         utilsl.addWidget(reload_bttn)
         
         render_bttn = QPushButton("Render")
-        render_bttn.clicked.connect(self.render)
+        render_bttn.clicked.connect(self.renderTree)
         utilsl.addWidget(render_bttn)
         
         sysinfo = SysInfoWidget() 
@@ -98,7 +99,7 @@ class MainWindow(QMainWindow):
                     self.task_tree.addTopLevelItem(item)
                     self.task_tree.resizeColumnToContents(0)
 
-            os.remove(self.data_file)
+            # os.remove(self.data_file)
 
         except FileNotFoundError:
             print("We couldn't find any tasks")      
@@ -106,11 +107,16 @@ class MainWindow(QMainWindow):
     def itemSelectionChanged(self) -> None:
         if self.task_tree.topLevelItemCount() > 0:
             self.parms.itemSelected(self.task_tree.currentItem())
-    
+
+    def renderTree(self): 
+        self.task_tree.render_dir(self.task_tree.rootIndex())
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     with open(f"{wrkdir}/style/style.qss", 'r') as f:
         app.setStyleSheet(f.read())
     w = MainWindow()
+    w.setWindowTitle("CacheQueuer")
+    w.setGeometry(0, 0, 1000, 500)
     w.show()
     sys.exit(app.exec_())     

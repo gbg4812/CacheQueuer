@@ -1,8 +1,8 @@
 from __future__ import annotations
 from os import path
 
-from PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplication, QStyle, QLineEdit, QWidget, QPushButton, QStyleOption
-from PySide2.QtCore import Qt, QModelIndex, QRect, QAbstractItemModel, QSize, QMargins
+from PySide2.QtWidgets import QStyleOptionViewItem, QStyleOptionButton, QApplication, QStyle, QLineEdit, QWidget, QPushButton, QStyleOption 
+from PySide2.QtCore import Qt, QModelIndex, QRect, QAbstractItemModel, QSize, QMargins, QLine
 from PySide2.QtGui import QPainter, QMouseEvent , QPixmap, QColor, QPainterPath, QPen
 
 from global_enums import *
@@ -39,25 +39,21 @@ class TaskItemWidget():
         self.layout.addRItem(self.render)
         self.layout.computeLayout()
 
+
     def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex):
         rect : QRect = option.rect.marginsRemoved(self.content_margins)
 
-        # Paint focus (selection) rect
-        fillColor = QColor('#4b5469')
-        borderColor = QColor('#65708c')
-        if (option.state & QStyle.State_Selected):
-            fillColor = fillColor.lighter(120)
-            borderColor = borderColor.lighter(120)
+        primary3 = QColor('#7ec0d1')
+        border1 = QColor('#6b98a5')
 
-        painter.save()
-        path = QPainterPath()
-        path.addRoundRect(rect, 20)
-        pen = QPen(borderColor, 3)
-        painter.setPen(pen)
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.fillPath(path, fillColor)
-        painter.drawPath(path)
-        painter.restore()
+        
+        if (option.state & QStyle.State_Selected):
+            TaskItemWidget.paintBackground(painter, rect, border1, primary3)
+        else:
+            TaskItemWidget.paintBackground(painter, rect, border1, primary3)
+            
+            
+
 
         # Prepare paint region
         painter.save()
@@ -79,6 +75,8 @@ class TaskItemWidget():
         # Layout and paint name
         self.layout.draw(painter)
         painter.restore()
+        
+            
 
     def eventHandler(self, event: QMouseEvent, model: QAbstractItemModel, option: QStyleOptionViewItem, index: QModelIndex) -> TaskEvent:
         rect : QRect = option.rect.marginsRemoved(self.content_margins)
@@ -157,3 +155,25 @@ class TaskItemWidget():
     def updateEditorGeometry(self, editor: QWidget, option: QStyleOptionViewItem, index: QModelIndex) -> None:
         rect : QRect = option.rect.marginsRemoved(self.content_margins)
         editor.setGeometry(rect)
+    
+    def paintBackground(painter: QPainter, rect: QRect, border_col: QColor, fill_col: QColor):
+        painter.save()
+
+        #Paint Background
+        painter.setPen(Qt.NoPen)
+        painter.fillRect(rect, fill_col)
+
+        #Paint Borders
+        topLine = QLine(rect.topLeft(), rect.topRight())
+        bottLine = QLine(rect.bottomLeft(), rect.bottomRight())
+
+        borderPen = QPen(border_col, 3)
+        borderPen.setCapStyle(Qt.PenCapStyle.FlatCap)
+        painter.setPen(borderPen)
+
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.drawLine(topLine)
+        painter.drawLine(bottLine)
+
+        painter.restore()
+

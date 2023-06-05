@@ -41,28 +41,40 @@ def enableHouModule(hou_version: str):
             sys.setdlopenflags(old_dlopen_flags)
 
 
-enableHouModule("19.5.569")
+data: dict = json.loads(sys.argv[1])
+print(data, file=sys.stderr, flush=True)
+
+enableHouModule(data.get("houdini_v"))
 import hou
 
 def render(data: dict):
     hou.hipFile.load(data.get("hip_file"), ignore_load_warnings=True)
-    node: hou.Node = hou.node(data.get("node_path"))
+    node: hou.Node = hou.node(data.get("rop_path"))
+    if node:
+        def r_callback(node, event, time):
+            if event == hou.ropRenderEventType.PostFrame:
+                f_range = [node.parm("f1").evalAsFloat(), node.parm("f2").evalAsFloat(), node.parm("f3").evalAsFloat()]
+                prog = round(time*hou.fps(),ndigits=4) 
+                info = {"Progress" : prog, "Range":(f_range[0], f_range[1]), "State":"RENDERING"}
+                info = json.dumps(info)
+                print(info, flush=True, end="\n")
 
-    def r_callback(node, event, time):
-        if event == hou.ropRenderEventType.PostFrame:
-            f_range = [node.parm("f1").evalAsFloat(), node.parm("f2").evalAsFloat(), node.parm("f3").evalAsFloat()]
-            prog = round(time*hou.fps(),ndigits=4) 
-            info = {"Progress" : prog, "Range":(f_range[0], f_range[1]), "State":"RENDERING"}
-            info = json.dumps(info)
-            print(info, flush=True, end="\n")
+        for i in range(0, 2):
+            if isinstance(node, hou.RopNode):
+                node.addRenderEventCallback(r_callback)
+                success = "SUCCESFUL"
+                try:
+                    node.render()
+                except hou.OperationFailed:
+                    success = "FAILED"
+                    
+                info = {"State" : success}
+                info = json.dumps(info)
+                print(info, flush=True, end="\n")
+                break
+            node = node.node("./render")
+    else:
+        print("Node path is not valid")
 
-    for i in range(0, 2):
-        if isinstance(node, hou.RopNode):
-            node.addRenderEventCallback(r_callback)
-            node.render()
-            break
-        node = node.node("./render")
 
-
-data: dict = json.loads(sys.argv[1])
 render(data)

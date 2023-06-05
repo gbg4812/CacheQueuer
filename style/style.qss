@@ -1,56 +1,78 @@
-QPushButton, QLineEdit, QLabel {
+QPushButton, QLineEdit, QLabel, QProgressBar {
     font: bold 10pt 'Arial';
-    color: #ff2d2d2d;
+    color: #2d2d2d;
+}
+QLineEdit#Info {
+    padding: 2px;
+    background-color: #5f616a;
+    border: 2px solid #2d2d2d;
+    border-radius: 2px;
+
+}
+QLabel#Label {
+    color: #151515;
+}
+QLabel#Title {
+    font: bold 15pt 'Arial';
+}
+
+QProgressBar {
+   border: 2px solid #2d2d2d; 
+   border-radius: 2px;
+   background-color: #97acb6;
+}
+QProgressBar::chunk {
+    background-color: #20db52;
 }
 QPushButton {
-    background: #ff97acb6;
-    border-color: #ff97acb6;
+    background: #97acb6;
+    border-color: #97acb6;
     border-style: solid;
     border-width: 5px;
     border-radius: 5px;
 }
 
 QPushButton:hover {
-    background-color: #ffabc3ce;
-    border-color: #ffabc3ce;
+    background-color: #abc3ce;
+    border-color: #abc3ce;
 }
 
 QPushButton:pressed {
-    background-color: #ffbfd7e2;
-    border-color: #ffbfd7e2;
+    background-color: #bfd7e2;
+    border-color: #bfd7e2;
 }
 
 QMainWindow {
-    background-color: #ff505259;
+    background-color: #505259;
 }
 
 QTreeWidget {
-    background-color: #ff5c5c5c;
-    border-color: #ff43444b;
+    background-color: #5c5c5c;
+    border-color: #43444b;
     border: 5px;
     border-radius: 5px;
 }
 
 QLineEdit {
-    background: #ff4b5469;
+    background-color: #4b5469;
     font-size: 10pt;
-    border-color: #ff65708c;
+    border-color: #65708c;
     border-style: solid;
     border-width: 4px;
     border-radius: 5px;
 }
 
 QScrollBar {
-    background: #ff43444b;
+    background: #43444b;
 }
 
 QScrollBar::add-page, QScrollBar::sub-page {
-    border-color: #ff43444b;
+    border-color: #43444b;
 }
 
 QScrollBar::handle {
     margin: 2px;
-    background: #ffb5b5b5;
+    background: #b5b5b5;
     border-radius: 5px;
 }
 
@@ -59,5 +81,5 @@ QScrollBar::add-line, QScrollBar::sub-line  {
 }
 
 QSplitter::handle {
-    background: #ff97acb6;
+    background: #97acb6;
 }

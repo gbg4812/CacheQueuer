@@ -21,13 +21,19 @@ python C:/Users/Documents/Scripts/hou_render.py #Here the TaskData will be inser
 The render thread will capture the output of the process that must have the next format:
 ```json
 
-	{"Progress":5.0, "Range":[1.0, 30.0], "State":"RENDERING" | "STOPPED" | "FAILED" | "SUCCESFUL"}
+	{"Progress":5.0, "Range":[1.0, 30.0]}
 ```
 
 Any other format won't be used and will be printed into the console.
-Every time a `dict` is readed from the render process output, the `QThread` will fire a signal to update the progress bar or the state of the task.
+Every time a `dict` is readed from the render process output, the `QThread` will fire a signal to update the progress bar.
 
 
 ## Parms Tab 
 The parms for each key in the Task Data dict will create a Label to print its value.
-Also a progress bar will be prepared to show the progress.
+Also a progress bar will be prepared to show the progress, of the current render independently of the task selected.
+
+
+**Task:** 1 call to a render script, it has its own data and script command.
+**Task Dir:** It is a group of task that share the same dependent property.
+
+

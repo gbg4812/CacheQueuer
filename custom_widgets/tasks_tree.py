@@ -87,14 +87,11 @@ class TasksTree(QTreeWidget):
     
     def render_dir(self, parent_index: QModelIndex) -> None:
         data = self.flatten_tree(parent=parent_index)
-        print("Rendering {}".format(data))
-        self.model().setData(parent_index, TaskState.RENDERING, CustomRoles.TaskState)
         self.render_tasks.emit(data)
         
         
     def render_task(self, index: QModelIndex) -> None:
-        data = [index.data(CustomRoles.TaskData), ]
-        self.model().setData(index, TaskState.RENDERING, CustomRoles.TaskState)
+        data = [{"dependent":False, "indexes":[index,]},]
         self.render_tasks.emit(data)
     
     def data_changed(self):
@@ -117,23 +114,29 @@ class TasksTree(QTreeWidget):
 
     def flatten_tree(self, parent: QModelIndex) -> list:
         result = []
+        bundle = {"dependent": False, "indexes":[]}
         model = self.model()
         if parent.data(CustomRoles.DependentState) == WidgetState.ENABLED:
-            result.append({"dependent" : True})
-        if model.hasChildren(parent):
+            bundle['dependent'] = True
 
+        if model.hasChildren(parent):
             for row in range(model.rowCount(parent)):
                 child_index = model.index(row, 0, parent)
                 if child_index.data(CustomRoles.EnableState) == WidgetState.ENABLED:
 
                     if child_index.data(CustomRoles.ItemType) == ItemTypes.TaskItem:
-                            result.append(child_index.data(CustomRoles.TaskData))
+                        bundle['indexes'].append(child_index)
+
                     elif child_index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
-                            result.extend(self.flatten_tree(child_index))
+                        bundlecpy = dict(bundle)
+                        result.append(bundlecpy)
+                        result.extend(self.flatten_tree(child_index))
+                        bundle["indexes"] = []
+                        bundle["dependent"] = False
 
-            result.append({"dependent": False})
+            result.append(bundle)
 
-
+        
         return result
 
     def consistent_selection(self, parent: QModelIndex, first, last):

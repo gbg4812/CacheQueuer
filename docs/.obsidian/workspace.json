@@ -4,19 +4,15 @@
     "type": "split",
     "children": [
       {
-        "id": "aafb174d40bb84fc",
+        "id": "6d53bb5c08139624",
         "type": "tabs",
         "children": [
           {
-            "id": "ff60bf9a4fc786e1",
+            "id": "4e4c749cdfccdd6f",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Wiki.md",
-                "mode": "source",
-                "source": false
-              }
+              "type": "empty",
+              "state": {}
             }
           }
         ]
@@ -85,7 +81,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Wiki.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +97,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Wiki.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -124,9 +118,7 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "Wiki.md"
-              }
+              "state": {}
             }
           },
           {
@@ -155,10 +147,10 @@
       "obsidian-excalidraw-plugin:Create new drawing": false
     }
   },
-  "active": "ff60bf9a4fc786e1",
+  "active": "4e4c749cdfccdd6f",
   "lastOpenFiles": [
-    "Plan.md",
     "Wiki.md",
+    "Plan.md",
     "Render Management/Render signals.canvas",
     "Render Management/Untitled.md",
     "Render Management",

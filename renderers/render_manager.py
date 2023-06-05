@@ -6,7 +6,7 @@ from PySide2.QtCore import Signal, QObject, QThread, QModelIndex
 from global_enums import *
 
 class RenderManager(QObject):
-    progress_update = Signal(float)
+    progress_update = Signal(dict)
     render_finished = Signal()
 
     def __init__(self, parent=None) -> None:
@@ -23,7 +23,6 @@ class RenderManager(QObject):
             self.renderThread.setTaskList(self.task_list)
             self.renderThread.progress_updated.connect(self.progressUpdate)
             self.renderThread.finished.connect(self.renderFinished)
-            self.renderThread.task_ended.connect(self.taskEnded)
             self.renderThread.start()
         else:
             pass
@@ -34,49 +33,43 @@ class RenderManager(QObject):
     def renderFinished(self):
         self.is_rendering = False
         
-    def taskEnded(self, index: int, success: bool):
-        itemIndex = self.task_indexes[index]
-        model = itemIndex.model()
-        
-        if success:
-            model.setData(index, TaskState.SUCCESFUL, CustomRoles.TaskState)
-        else:
-            model.setData(index, TaskState.FAILED, CustomRoles.TaskState)
-        
-        
 
 class RenderThread(QThread):
     progress_updated = Signal(dict)
-    task_ended = Signal(int, bool)
 
     def __init__(self, task_list: list = None, parent=None):
         super(RenderThread, self).__init__(parent)
-        self.task_list = task_list
+        self.task_list: List[dict] = task_list
     
     def run(self) -> None:
-        dependent = False
-        success = True
-        for i, task in enumerate(self.task_list):
-            task : dict
-            if task.get("dependent") != None:
-                dependent = task.get("dependent")
-                success = True
-            else:
+        for bundle in self.task_list:
+            dependent = bundle.get("dependent")
+            indexes : List[QModelIndex] = bundle.get("indexes")
+            success = True
+            for index in indexes:
                 if dependent and not success: 
                     continue
                 else:
+
+                    index.model().setData(index, TaskState.RENDERING, CustomRoles.TaskState)
+
+                    task : dict = index.data(CustomRoles.TaskData)
                     success = self.renderTask(task)
-                    self.task_ended.emit(i, success)
+
+                    if success:
+                        index.model().setData(index, TaskState.SUCCESFUL, CustomRoles.TaskState)
+                    else:
+                        index.model().setData(index, TaskState.FAILED, CustomRoles.TaskState)
                     
     def renderTask(self, task: dict):
         script : str = task.get("shell_script")
         prog, arg = script.split(" ")
         task_str = json.dumps(task)
-        print(script, task_str)
-        subp = Popen([prog, arg, task_str], stdout=PIPE, stderr=PIPE)
+        subp = Popen([prog, arg, task_str], stdout=PIPE)
 
+        objdata = dict()
         while True:
-            data : bytes = subp.stdout.readline()
+            data = subp.stdout.readline()
             data = data.rstrip(b'\r\n')
 
             if data:
@@ -86,8 +79,10 @@ class RenderThread(QThread):
                 except json.JSONDecodeError:
                     print(data.decode("utf-8"))
 
-                if subp.poll() is not None:
-                    return json.loads(data).get("State") == "SUCCESFUL"
+            if subp.poll() is not None:
+                break
+
+        return objdata.get("State")== "SUCCESFUL"
 
     def setTaskList(self, task_list : list):
         self.task_list = task_list
