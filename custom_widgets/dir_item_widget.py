@@ -41,7 +41,7 @@ class DirItemWidget():
         self.state = IconButton(QPixmap(wrkdir+"res/icons/StateIcon_waiting.png"), TaskState.WAITING)
         self.state.addStateIcon(TaskState.RENDERING,QPixmap(wrkdir+"res/icons/StateIcon_rendering.png"))
         self.state.addStateIcon(TaskState.FAILED,QPixmap(wrkdir+"res/icons/StateIcon_failed.png"))
-        self.state.addStateIcon(TaskState.SUCCESFUL, QPixmap(wrkdir+"res/icons/StateIcon_successful.png"))
+        self.state.addStateIcon(TaskState.SUCCESSFUL, QPixmap(wrkdir+"res/icons/StateIcon_successful.png"))
 
         #Layout items
         self.layout = RailLayout(5, 5) 

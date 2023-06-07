@@ -4,5 +4,7 @@
     "ca",
     "en"
   ],
-  "spellcheck": true
+  "spellcheck": true,
+  "showLineNumber": true,
+  "livePreview": true
 }

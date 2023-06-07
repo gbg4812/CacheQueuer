@@ -7,6 +7,10 @@ kanban-plugin: basic
 ## Done
 
 - [x] launch from houdini
+- [x] Beautify Parms Tab
+- [x] Obscure everything when disabled (or maybe just the render button)
+- [x] Test Progress Bar
+- [x] Test With Render
 - [x] Task State
 - [x] Reimplement Task Widget
 
@@ -18,7 +22,6 @@ kanban-plugin: basic
 
 ## This Month
 
-- [ ] Test With Render
 - [ ] Learn to package
 - [ ] Add cool Icons to Dir and Task @@{11:45}
 - [ ] Add Settings Menu to configure Houdini
@@ -26,13 +29,11 @@ kanban-plugin: basic
 
 ## This Week
 
-- [ ] Test Progress Bar
-- [ ] Obscure everything when disabled (or maybe just the render button)
+- [ ] Separate View State From Data State
 
 
 ## Today
 
-- [ ] Beautify Parms Tab
 
 
 

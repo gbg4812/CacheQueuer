@@ -47,6 +47,9 @@ class RenderThread(QThread):
             indexes : List[QModelIndex] = bundle.get("indexes")
             success = True
             for index in indexes:
+                index.model().setData(index, TaskState.WAITING, CustomRoles.TaskState)
+
+            for index in indexes:
                 if dependent and not success: 
                     continue
                 else:
@@ -57,7 +60,7 @@ class RenderThread(QThread):
                     success = self.renderTask(task)
 
                     if success:
-                        index.model().setData(index, TaskState.SUCCESFUL, CustomRoles.TaskState)
+                        index.model().setData(index, TaskState.SUCCESSFUL, CustomRoles.TaskState)
                     else:
                         index.model().setData(index, TaskState.FAILED, CustomRoles.TaskState)
                     
@@ -82,7 +85,7 @@ class RenderThread(QThread):
             if subp.poll() is not None:
                 break
 
-        return objdata.get("State")== "SUCCESFUL"
+        return 1 - subp.returncode
 
     def setTaskList(self, task_list : list):
         self.task_list = task_list

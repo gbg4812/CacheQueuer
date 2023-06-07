@@ -48,33 +48,34 @@ enableHouModule(data.get("houdini_v"))
 import hou
 
 def render(data: dict):
-    hou.hipFile.load(data.get("hip_file"), ignore_load_warnings=True)
+    try:
+        hou.hipFile.load(data.get("hip_file"), ignore_load_warnings=True)
+    except hou.OperationFailed:
+        sys.exit(1)
     node: hou.Node = hou.node(data.get("rop_path"))
     if node:
         def r_callback(node, event, time):
             if event == hou.ropRenderEventType.PostFrame:
                 f_range = [node.parm("f1").evalAsFloat(), node.parm("f2").evalAsFloat(), node.parm("f3").evalAsFloat()]
                 prog = round(time*hou.fps(),ndigits=4) 
-                info = {"Progress" : prog, "Range":(f_range[0], f_range[1]), "State":"RENDERING"}
+                info = {"Progress" : prog, "Range":(f_range[0], f_range[1])}
                 info = json.dumps(info)
                 print(info, flush=True, end="\n")
 
         for i in range(0, 2):
             if isinstance(node, hou.RopNode):
                 node.addRenderEventCallback(r_callback)
-                success = "SUCCESFUL"
                 try:
                     node.render()
-                except hou.OperationFailed:
-                    success = "FAILED"
-                    
-                info = {"State" : success}
-                info = json.dumps(info)
-                print(info, flush=True, end="\n")
+                except:
+                    sys.exit(1)
                 break
+            
             node = node.node("./render")
+            if not node:
+                sys.exit(1)
     else:
-        print("Node path is not valid")
+        sys.exit(1)
 
 
 render(data)

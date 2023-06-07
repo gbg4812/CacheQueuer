@@ -22,11 +22,15 @@ The render thread will capture the output of the process that must have the next
 ```json
 
 	{"Progress":5.0, "Range":[1.0, 30.0]}
+	
 ```
 
 Any other format won't be used and will be printed into the console.
 Every time a `dict` is readed from the render process output, the `QThread` will fire a signal to update the progress bar.
 
+When the Process ends, it sends a returncode:
+- 0 ⇒ Successful
+- 1 ⇒ Failed 
 
 ## Parms Tab 
 The parms for each key in the Task Data dict will create a Label to print its value.

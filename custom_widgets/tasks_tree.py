@@ -35,9 +35,10 @@ class TasksTree(QTreeWidget):
         ndir_bttn = QPushButton("New Dependency Directory")
         ndir_bttn.clicked.connect(self.add_dir)
         header_lab = QLabel("Tasks")
+        header_lab.setAlignment(Qt.AlignCenter)
         
-        header_l.addWidget(header_lab)
-        header_l.addWidget(ndir_bttn)
+        header_l.addWidget(header_lab, alignment=Qt.AlignCenter)
+        header_l.addWidget(ndir_bttn, alignment=Qt.AlignCenter)
 
         #Configure item
         header_item.setSizeHint(0, header_w.sizeHint())

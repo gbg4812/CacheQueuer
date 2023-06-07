@@ -1,11 +1,13 @@
 import enum
 from PySide2.QtCore import Qt
+
 class TaskState(enum.IntEnum):
-    WAITING = 0
-    RENDERING = 1
-    SUCCESFUL = 2
-    FAILED = 3
-    DISABLED = 4
+    READY = 0
+    WAITING = 1
+    RENDERING = 2
+    STOPPED = 3
+    SUCCESSFUL = 4
+    FAILED = 5
 
 class TaskEvent(enum.IntEnum):
     RENDER = 0,
@@ -28,8 +30,4 @@ class ItemTypes(enum.IntEnum):
     HeaderItem = 0,
     TaskItem = 1,
     DirItem = 2
-
-class ThreadNames():
-    RENDER_THREAD = "RenderThread"
-    
     

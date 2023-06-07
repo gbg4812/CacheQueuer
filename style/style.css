@@ -1,0 +1,108 @@
+.defs {
+    --Accent1_clicked : #b2d1b8;
+    --Accent1_hovered : #86b493;
+    --TextColor1_disabled : #698181;
+    --Primary3_disabled : #8cb2be;
+    --Primary3_selected : #c9e7ed;
+    --Primary3_hover : #a4d5df;
+    --TextColor1 : #1a2122;
+    --Border2 : #354558;
+    --Border1 : #6b98a5;
+    --Accent1 : #57a773;
+    --Primary3 : #7ec0d1;
+    --Primary2 : #476d86;
+    --Primary1 : #3d4e63;
+    
+    --border-width : 3px;
+}
+
+QPushButton, QLineEdit, QLabel, QProgressBar {
+    font: bold 10pt 'Arial';
+    color: var(--TextColor1);
+}
+
+
+QLabel#Label {
+    color: #151515;
+}
+QLabel#Title {
+    font: bold 15pt 'Arial';
+    margin: 10px;
+}
+
+QProgressBar {
+   border: 2px solid var(--Border2); 
+   border-radius: 2px;
+   background-color: var(--Primary2);
+}
+QProgressBar::chunk {
+    background-color: var(--Accent1);
+}
+QPushButton {
+    background: var(--Accent1);
+    width: 200px;
+    height: 50px;
+    border: none;
+    margin: 10px;
+}
+
+QPushButton:hover {
+    background-color: var(--Accent1_hovered);
+}
+
+QPushButton:pressed {
+    background-color: var(--Accent1_clicked);
+}
+
+QMainWindow {
+    background-color: var(--Primary1);
+}
+
+QTreeWidget, QFrame#Parms {
+    margin: 10px;
+    background-color: var(--Primary2);
+    border: 5px solid;
+    border-color: var(--Border2);
+}
+
+
+
+QLineEdit {
+    background-color: var(--Primary3_selected);
+    border: solid var(--Border1);
+    border-bottom: var(--border-width);
+    border-top: var(--border-width);
+    border-right: 0px;
+    border-left: 0px;
+}
+
+QLineEdit#Info {
+    padding: 2px;
+    background-color: var(--Primary2);
+    border: 2px solid var(--Border2);
+    border-radius: 2px;
+}
+
+QScrollBar {
+    background: #43444b;
+}
+
+QScrollBar::add-page, QScrollBar::sub-page {
+    border-color: #43444b;
+}
+
+QScrollBar::handle {
+    margin: 2px;
+    background: #b5b5b5;
+    border-radius: 5px;
+}
+
+QScrollBar::add-line, QScrollBar::sub-line  {
+    height: 0px;
+}
+
+QSplitter::handle {
+    background: var(--Border2);
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

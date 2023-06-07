@@ -26,7 +26,7 @@ from PySide2.QtWidgets import (
     QMainWindow, QApplication,
     QPushButton, 
     QHBoxLayout, QVBoxLayout, QWidget,
-    QTreeWidgetItem, QSplitter 
+    QTreeWidgetItem, QSplitter, QSizePolicy
 )
 
 from PySide2.QtCore import Qt
@@ -61,10 +61,12 @@ class MainWindow(QMainWindow):
         reload_bttn = QPushButton("Reload")
         reload_bttn.clicked.connect(self.reload)
         utilsl.addWidget(reload_bttn)
+
         
         render_bttn = QPushButton("Render")
         render_bttn.clicked.connect(self.renderTree)
         utilsl.addWidget(render_bttn)
+        utilsl.addStretch(1)
         
         sysinfo = SysInfoWidget() 
         utilsl.addWidget(sysinfo, alignment=Qt.AlignRight | Qt.AlignVCenter)
@@ -94,7 +96,8 @@ class MainWindow(QMainWindow):
                     item.setData(0, CustomRoles.RemoveState, WidgetState.ENABLED)
                     item.setData(0, CustomRoles.RenderState, WidgetState.ENABLED)
                     item.setData(0, CustomRoles.ItemType, ItemTypes.TaskItem)   
-                    item.setData(0, Qt.UserRole, task)
+                    item.setData(0, CustomRoles.TaskState, TaskState.READY)
+                    item.setData(0, CustomRoles.TaskData, task)
                     item.setFlags( (item.flags() | Qt.ItemIsEditable) ^ Qt.ItemIsDropEnabled)
                     self.task_tree.addTopLevelItem(item)
                     self.task_tree.resizeColumnToContents(0)

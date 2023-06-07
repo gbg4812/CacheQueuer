@@ -1,65 +1,86 @@
+.defs {
+    /* Accent1_clicked : #b2d1b8; */
+    /* Accent1_hovered : #86b493; */
+    /* TextColor1_disabled : #698181; */
+    /* Primary3_disabled : #8cb2be; */
+    /* Primary3_selected : #c9e7ed; */
+    /* Primary3_hover : #a4d5df; */
+    /* TextColor1 : #1a2122; */
+    /* Border2 : #354558; */
+    /* Border1 : #6b98a5; */
+    /* Accent1 : #57a773; */
+    /* Primary3 : #7ec0d1; */
+    /* Primary2 : #476d86; */
+    /* Primary1 : #3d4e63; */
+    
+    /* border-width : 3px; */
+}
+
 QPushButton, QLineEdit, QLabel, QProgressBar {
     font: bold 10pt 'Arial';
-    color: #2d2d2d;
+    color: #1a2122;
 }
-QLineEdit#Info {
-    padding: 2px;
-    background-color: #5f616a;
-    border: 2px solid #2d2d2d;
-    border-radius: 2px;
 
-}
+
 QLabel#Label {
     color: #151515;
 }
 QLabel#Title {
     font: bold 15pt 'Arial';
+    margin: 10px;
 }
 
 QProgressBar {
-   border: 2px solid #2d2d2d; 
+   border: 2px solid #354558; 
    border-radius: 2px;
-   background-color: #97acb6;
+   background-color: #476d86;
 }
 QProgressBar::chunk {
-    background-color: #20db52;
+    background-color: #57a773;
 }
 QPushButton {
-    background: #97acb6;
-    border-color: #97acb6;
-    border-style: solid;
-    border-width: 5px;
-    border-radius: 5px;
+    background: #57a773;
+    width: 200px;
+    height: 50px;
+    border: none;
+    margin: 10px;
 }
 
 QPushButton:hover {
-    background-color: #abc3ce;
-    border-color: #abc3ce;
+    background-color: #86b493;
 }
 
 QPushButton:pressed {
-    background-color: #bfd7e2;
-    border-color: #bfd7e2;
+    background-color: #b2d1b8;
 }
 
 QMainWindow {
-    background-color: #505259;
+    background-color: #3d4e63;
 }
 
-QTreeWidget {
-    background-color: #5c5c5c;
-    border-color: #43444b;
-    border: 5px;
-    border-radius: 5px;
+QTreeWidget, QFrame#Parms {
+    margin: 10px;
+    background-color: #476d86;
+    border: 5px solid;
+    border-color: #354558;
 }
+
+
 
 QLineEdit {
-    background-color: #4b5469;
-    font-size: 10pt;
-    border-color: #65708c;
-    border-style: solid;
-    border-width: 4px;
-    border-radius: 5px;
+    background-color: #c9e7ed;
+    border: solid #6b98a5;
+    border-bottom: 3px;
+    border-top: 3px;
+    border-right: 0px;
+    border-left: 0px;
+}
+
+QLineEdit#Info {
+    padding: 2px;
+    background-color: #476d86;
+    border: 2px solid #354558;
+    border-radius: 2px;
 }
 
 QScrollBar {
@@ -81,5 +102,7 @@ QScrollBar::add-line, QScrollBar::sub-line  {
 }
 
 QSplitter::handle {
-    background: #97acb6;
+    background: #354558;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }

@@ -1,0 +1,19 @@
+{
+  "snippets_file": "code : ```$end$$nl$```\nmath : $$$end$ $$\n-> : →\n<- : ←\n=> : ⇒\n<= : ⇐\n\n",
+  "snippets": [
+    "code : ```$end$$nl$```",
+    "math : $$$end$ $$",
+    "-> : →",
+    "<- : ←",
+    "=> : ⇒",
+    "<= : ⇐"
+  ],
+  "endSymbol": "$end$",
+  "newlineSymbol": "$nl$",
+  "stopSymbol": "$tb$",
+  "pasteSymbol": "$pst$",
+  "useTab": true,
+  "useSpace": true,
+  "wordDelimiters": "$()[]{},.!?;:'\"\\/",
+  "isWYSIWYG": true
+}

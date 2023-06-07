@@ -35,3 +35,6 @@ class TextItem(DelegateSubItem):
         f_metrics = QFontMetrics(self.font)
         self.setWidth(f_metrics.averageCharWidth()*self.min_letters)
         self.setHeight(f_metrics.height())
+
+    def setTextColor(self, color: QColor):
+        self.pen.setColor(color)

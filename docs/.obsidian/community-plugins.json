@@ -1,5 +1,7 @@
 [
   "calendar",
   "obsidian-kanban",
-  "obsidian-excalidraw-plugin"
+  "obsidian-excalidraw-plugin",
+  "text-snippets-obsidian",
+  "obsidian-relative-line-numbers"
 ]

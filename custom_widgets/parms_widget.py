@@ -3,9 +3,10 @@ from PySide2.QtWidgets import QWidget, QVBoxLayout, QLabel, QTreeWidgetItem, QPr
 
 from PySide2.QtCore import Signal, QModelIndex, QItemSelection, Qt
 from global_enums import CustomRoles, ItemTypes
-class ParmsWidget(QWidget):
+class ParmsWidget(QFrame):
     def __init__(self):
         super(ParmsWidget, self).__init__()
+        self.setObjectName("Parms")
         
         layout = QVBoxLayout()
         self.setLayout(layout)
@@ -16,6 +17,7 @@ class ParmsWidget(QWidget):
 
         self.lab_frame = QFrame()
         self.lab_layout = QFormLayout()
+        self.lab_layout.setLabelAlignment(Qt.AlignRight)
         self.lab_frame.setLayout(self.lab_layout)
 
         self.labels : List[QLabel] = []
@@ -23,10 +25,8 @@ class ParmsWidget(QWidget):
         self.progress = QProgressBar()
         self.progress.setAlignment(Qt.AlignCenter)
         
-        layout.addWidget(self.name)
-        layout.addWidget(self.lab_frame)
-        layout.addStretch(1)
-        layout.addWidget(self.progress)        
+        layout.addWidget(self.lab_frame, stretch=1)
+        layout.addWidget(self.progress, alignment=Qt.AlignBottom)        
 
 
     def itemSelected(self, item: QTreeWidgetItem):
@@ -41,6 +41,7 @@ class ParmsWidget(QWidget):
             if item.data(0, CustomRoles.ItemType) == ItemTypes.TaskItem:
                 data : dict = item.data(0, CustomRoles.TaskData)
                 self.name.setText(item.data(0, CustomRoles.TaskName))
+                self.lab_layout.addRow(self.name)
 
                 for key, val in data.items():
                     #Label Side
@@ -70,7 +71,6 @@ class ParmsWidget(QWidget):
             self.name.clear()
     
     def update_handler(self, progress: dict):
-        if progress.get("State") == "RENDERING":
-            percent = progress.get("Progress")/(progress.get("Range")[1] - progress.get("Range")[0])
-            percent *= 100
-            self.progress.setValue(percent)
+        percent = progress.get("Progress")/(progress.get("Range")[1] - progress.get("Range")[0])
+        percent *= 100
+        self.progress.setValue(percent)
