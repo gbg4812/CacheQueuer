@@ -11,9 +11,11 @@
             "id": "4e4c749cdfccdd6f",
             "type": "leaf",
             "state": {
-              "type": "kanban",
+              "type": "markdown",
               "state": {
-                "file": "Plan.md"
+                "file": "Wiki.md",
+                "mode": "source",
+                "source": false
               }
             }
           }
@@ -67,7 +69,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 239.5
+    "width": 200,
+    "collapsed": true
   },
   "right": {
     "id": "1a46ffdae852caa9",
@@ -83,7 +86,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Plan.md",
+                "file": "Wiki.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -100,7 +103,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Plan.md",
+                "file": "Wiki.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -123,7 +126,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Plan.md"
+                "file": "Wiki.md"
               }
             }
           },
@@ -155,8 +158,8 @@
   },
   "active": "4e4c749cdfccdd6f",
   "lastOpenFiles": [
-    "Wiki.md",
     "Plan.md",
+    "Wiki.md",
     "Render Management/Render signals.canvas",
     "Render Management/Untitled.md",
     "Render Management",

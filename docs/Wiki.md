@@ -33,11 +33,25 @@ When the Process ends, it sends a returncode:
 - 1 ⇒ Failed 
 
 ## Parms Tab 
-The parms for each key in the Task Data dict will create a Label to print its value.
+The parms for each key in the Task Data `dict` will create a Label to print its value.
 Also a progress bar will be prepared to show the progress, of the current render independently of the task selected.
 
 
 **Task:** 1 call to a render script, it has its own data and script command.
 **Task Dir:** It is a group of task that share the same dependent property.
+
+
+## Delegate Sub Items
+Delegate sub items are widgets to build complex `QStyleItemDelegate` subclasses. They act like tools not like objects, their state must be stored in the model because a single `DelegateSubItem` is responsible to paint multiple items.
+
+They have `init()` and `end()` methods that should be called in the beginning and end of each use. They set and return the state respectively.  
+
+### Button subitem
+The Button delegate sub item is the base for any button, it can render a icon or/and a background plain color. Each icon/bg_color is associated with a view state. View states are used to paint de button in diferent ways depending on the user interaction. Every time a color or an icon is added to the subitem, it is associated with a state represented as a `enum.IntEnum`. 
+
+
+
+
+
 
 
