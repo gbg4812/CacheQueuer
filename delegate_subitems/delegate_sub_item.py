@@ -20,3 +20,6 @@ class DelegateSubItem(QRect):
         state = dict(self.state)
         self.state = {}
         return state
+
+    def handleEvent(event: QEvent):
+        pass

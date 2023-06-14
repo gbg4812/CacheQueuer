@@ -1,6 +1,7 @@
 import enum
 from PySide2.QtCore import Qt
 
+
 class TaskState(enum.IntEnum):
     READY = 0
     WAITING = 1
@@ -9,11 +10,13 @@ class TaskState(enum.IntEnum):
     SUCCESSFUL = 4
     FAILED = 5
 
+
 class TaskEvent(enum.IntEnum):
     RENDER = 0,
     DELETE = 1,
     NONE = 2,
     DATACHANGED = 3,
+
 
 class CustomRoles(enum.IntEnum):
     TaskName = Qt.DisplayRole,
@@ -26,8 +29,8 @@ class CustomRoles(enum.IntEnum):
     DependentState = Qt.UserRole + 6,
     TaskState = Qt.UserRole + 7
 
+
 class ItemTypes(enum.IntEnum):
     HeaderItem = 0,
     TaskItem = 1,
     DirItem = 2
-    
