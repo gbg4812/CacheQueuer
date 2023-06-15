@@ -1,5 +1,5 @@
 # PySide2 imports
-from PySide2.QtCore import QRect, QSize, QPoint
+from PySide2.QtCore import QRect, QSize, QPoint, QEvent
 
 
 class DelegateSubItem(QRect):
@@ -14,12 +14,10 @@ class DelegateSubItem(QRect):
         self.setRect(rect.x(), rect.y(), rect.width(), rect.height())
 
     def init(self, state: dict) -> None:
-        self.state = state
+        pass
 
     def end(self) -> dict:
-        state = dict(self.state)
-        self.state = {}
-        return state
+        return dict()
 
-    def handleEvent(event: QEvent):
+    def handleEvent(self, event: QEvent):
         pass

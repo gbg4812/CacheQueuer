@@ -24,7 +24,6 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-
 # Class that represents the main application window
 class MainWindow(QMainWindow):
 

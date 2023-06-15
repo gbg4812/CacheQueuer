@@ -1,10 +1,11 @@
 # std imports:
 from __future__ import annotations
+from typing import Dict, Optional 
 import logging
 
 # PySide2 imports:
 from PySide2.QtCore import QSize, QEvent
-from PySide2.QtGui import QPainter, QPixmap, QColor, QPainterPath, QBrush
+from PySide2.QtGui import QPainter, QPixmap, QColor, QPainterPath, QBrush, QMouseEvent
 
 # local imports:
 from enum import IntEnum
@@ -27,10 +28,13 @@ class IconButton(DelegateSubItem):
                  paint_rect: bool = False,
                  radius: int = 5):
 
-        self.icons = {}
-        self.bg_colors = {IntEnum(0): QColor(0, 0, 0, 0)}
+        self.icons : Dict[str, QPixmap] = {}
+        self.setSize(size)
+        self.bg_colors : Dict[IconButton.ButtonStates, QColor] = {}
         self.paint_rect = paint_rect
-        self.current_icon = QPixmap()
+        self.rect_radius = radius
+        self.current_icon = ""
+        self.view_state = IconButton.ButtonStates.NORMAL
 
     def addIcon(self, name: str, icon: QPixmap) -> None:
         self.icons[name] = icon
@@ -40,33 +44,55 @@ class IconButton(DelegateSubItem):
 
         self.bg_colors[state] = color
 
-    def addIcons(self, icons: {str: QPixmap}) -> None:
+    def addStateColors(self, colors: Dict[IconButton.ButtonStates, str]):
+
+        for key, value in colors.items():
+            self.bg_colors[key] = QColor(value)
+
+    def addIcons(self, icons: Dict[str, str]) -> None:
         for key in icons.keys():
-            self.icons[key] = icons[key]
+            pixmap = QPixmap(icons[key])
+            self.icons[key] = pixmap
 
     def draw(self, painter: QPainter):
 
         if self.paint_rect:
-            painter.setRenderHint(QPainter.Antialiasing)
-            path = QPainterPath()
-            path.addRoundedRect(self, 5, 5)
-
             try:
-                color = self.bg_colors[self.state.get('view_state')]
+                color = self.bg_colors[self.view_state]
                 brush = QBrush(color)
-                painter.fillPath(path, brush)
-            except KeyError:
-                print("ERROR::KEY::{} Colors are: {}".format(
-                    self.state.get('view_state'), self.bg_colors))
 
-        try:
-            painter.drawPixmap(self, self.icons[self.state.get('view_state')])
-        except KeyError:
-            print("ERROR::KEY::{} Icons are: {}"
-                  .format(self.state.get('view_state'), self.icons))
+                path = QPainterPath()
+                path.addRoundedRect(self, self.rect_radius, self.rect_radius) # type: ignore
+
+                painter.setRenderHint(QPainter.Antialiasing)
+                painter.fillPath(path, brush)
+
+            except KeyError:
+                pass
+
+
+        if self.current_icon:
+            painter.drawPixmap(self, self.icons[self.current_icon])
+
 
     def setIcon(self, name: str) -> None:
-        self.current_icon = self.icons[name]
+        try:
+            self.icons.get(name)
+            self.current_icon = name
 
-    def handleEvent(event: QEvent):
-        pos = event.pos()
+        except KeyError:
+            print("no icon for this name")
+
+    def handleEvent(self, event: QMouseEvent):
+        if isinstance(event, QMouseEvent):
+            pos = event.pos()
+
+            if self.contains(pos):
+
+                if event.type == QMouseEvent.Type.MouseButtonPress:
+                    self.view_state = self.ButtonStates.CLICKED
+                    return
+
+        self.view_state = self.ButtonStates.NORMAL
+
+
