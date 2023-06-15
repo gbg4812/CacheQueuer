@@ -6,7 +6,7 @@ from PySide2.QtGui import QPainter
 
 from .task_item_widget import TaskItemWidget
 from .dir_item_widget import DirItemWidget
-from global_enums import *
+from global_enums import CustomRoles, ItemTypes,TaskState, TaskEvent
 
 class TaskDelegate(QStyledItemDelegate):
     render_dir = Signal(QModelIndex)
