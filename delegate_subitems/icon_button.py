@@ -1,6 +1,6 @@
 # std imports:
 from __future__ import annotations
-from typing import Dict, Optional 
+from typing import Dict, Optional
 import logging
 
 # PySide2 imports:
@@ -17,35 +17,44 @@ logger.setLevel(logging.DEBUG)
 
 
 class IconButton(DelegateSubItem):
-
     class ButtonStates(IntEnum):
         NORMAL = 0
         HOVERED = 1
         CLICKED = 2
 
-    def __init__(self,
-                 size: QSize = QSize(30, 30),
-                 paint_rect: bool = False,
-                 radius: int = 5):
-
-        self.icons : Dict[str, QPixmap] = {}
+    def __init__(
+        self, size: QSize = QSize(30, 30), paint_rect: bool = False, radius: int = 5
+    ):
+        self.icons: Dict[str, QPixmap] = {}
         self.setSize(size)
-        self.bg_colors : Dict[IconButton.ButtonStates, QColor] = {}
+        self.bg_colors: Dict[IconButton.ButtonStates, QColor] = {}
         self.paint_rect = paint_rect
         self.rect_radius = radius
         self.current_icon = ""
         self.view_state = IconButton.ButtonStates.NORMAL
+        self.release_return = None
+
+    def init(self, state: Dict[str, str | IconButton.ButtonStates]) -> None:
+        try:
+            self.view_state = state["view_state"]
+            self.current_icon = state["current_icon"]
+
+        except KeyError:
+            print(
+                "The status dict is not compatible with the\
+                  IconButton DelegateSubItem"
+            )
+    def end(self) -> dict:
+        state = {"view_state":self.view_state, "current_icon": self.current_icon}
+        return state
 
     def addIcon(self, name: str, icon: QPixmap) -> None:
         self.icons[name] = icon
 
-    def addStateColor(self, state: IconButton.ButtonStates,
-                      color: QColor) -> None:
-
+    def addStateColor(self, state: IconButton.ButtonStates, color: QColor) -> None:
         self.bg_colors[state] = color
 
     def addStateColors(self, colors: Dict[IconButton.ButtonStates, str]):
-
         for key, value in colors.items():
             self.bg_colors[key] = QColor(value)
 
@@ -55,14 +64,13 @@ class IconButton(DelegateSubItem):
             self.icons[key] = pixmap
 
     def draw(self, painter: QPainter):
-
         if self.paint_rect:
             try:
                 color = self.bg_colors[self.view_state]
                 brush = QBrush(color)
 
                 path = QPainterPath()
-                path.addRoundedRect(self, self.rect_radius, self.rect_radius) # type: ignore
+                path.addRoundedRect(self, self.rect_radius, self.rect_radius)
 
                 painter.setRenderHint(QPainter.Antialiasing)
                 painter.fillPath(path, brush)
@@ -70,10 +78,8 @@ class IconButton(DelegateSubItem):
             except KeyError:
                 pass
 
-
         if self.current_icon:
             painter.drawPixmap(self, self.icons[self.current_icon])
-
 
     def setIcon(self, name: str) -> None:
         try:
@@ -88,11 +94,16 @@ class IconButton(DelegateSubItem):
             pos = event.pos()
 
             if self.contains(pos):
-
                 if event.type == QMouseEvent.Type.MouseButtonPress:
                     self.view_state = self.ButtonStates.CLICKED
-                    return
+                    return None
 
-        self.view_state = self.ButtonStates.NORMAL
+                elif event.type == QMouseEvent.Type.MouseButtonRelease:
+
+                    if self.view_state == self.ButtonStates.CLICKED:
+                        return self.release_return
+
+    def onReleaseReturn(self, value) -> None:
+        self.release_return = value
 
 

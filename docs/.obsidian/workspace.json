@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Wiki.md",
+                "file": "Rail Layout/Rail Layout.md",
                 "mode": "source",
                 "source": false
               }
@@ -69,8 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "right": {
     "id": "1a46ffdae852caa9",
@@ -86,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Wiki.md",
+                "file": "Rail Layout/Rail Layout.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Wiki.md",
+                "file": "Rail Layout/Rail Layout.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -126,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Wiki.md"
+                "file": "Rail Layout/Rail Layout.md"
               }
             }
           },
@@ -158,13 +157,13 @@
   },
   "active": "4e4c749cdfccdd6f",
   "lastOpenFiles": [
+    "Rail Layout/Rail Layout.canvas",
     "Plan.md",
     "Wiki.md",
     "Render Management/Render signals.canvas",
     "Render Management/Untitled.md",
     "Render Management",
     "Rail Layout/Rail Layout.md",
-    "Rail Layout/Rail Layout.canvas",
     "Excalidraw/Drawing 2023-05-13 19.43.45.excalidraw.md",
     "Excalidraw",
     "snippeds",

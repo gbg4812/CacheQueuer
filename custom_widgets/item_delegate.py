@@ -1,7 +1,9 @@
+from os import path
 from PySide2.QtWidgets import QStyledItemDelegate, QStyleOptionViewItem, QWidget
                              
 from PySide2.QtCore import QModelIndex, QSize, QAbstractItemModel, QEvent, Signal
-from PySide2.QtGui import QPainter 
+from PySide2.QtGui import QPainter, QPixmap
+from delegate_subitems import IconButton, RailLayout 
 
 
 from global_enums import CustomRoles, ItemTypes,TaskState, TaskEvent
@@ -13,16 +15,30 @@ class TaskDelegate(QStyledItemDelegate):
 
     def __init__(self, parent=None):
         super(TaskDelegate, self).__init__(parent)
+        self.dir_layout = self.dirLayout()
+        self.task_layout = self.taskLayout()
+
+
 
     def paint(self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex) -> None:
 
+
         if index.data(CustomRoles.ItemType) == ItemTypes.TaskItem:
+            layout = self.taskLayout(index)
+
         elif index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
+            layout = self.dirLayout(index)
+
+        layout.draw(painter)
 
     def sizeHint(self, option: QStyleOptionViewItem, index: QModelIndex) -> QSize:
         if index.data(CustomRoles.ItemType) == ItemTypes.TaskItem:
+            layout = self.taskLayout(index)
+            return layout.sizeHint()
 
         elif index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
+            layout = self.dirLayout(index) 
+            return layout.sizeHint()
 
         return super().sizeHint(option, index)
 
@@ -30,6 +46,7 @@ class TaskDelegate(QStyledItemDelegate):
 
         task_event = None
         if index.data(CustomRoles.ItemType) == ItemTypes.TaskItem:
+            task_event = self.taskLayout(index).handleEvent(event)
             if task_event == TaskEvent.DELETE:
                 return model.removeRow(index.row(), index.parent())
             
@@ -42,6 +59,7 @@ class TaskDelegate(QStyledItemDelegate):
                 self.data_changed.emit()
         
         elif index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
+            task_event = self.dirLayout(index).handleEvent(event) 
             if task_event == TaskEvent.DELETE:
                 return model.removeRow(index.row(), index.parent())
             
@@ -56,23 +74,18 @@ class TaskDelegate(QStyledItemDelegate):
         return super().editorEvent(event, model, option, index)
 
     def createEditor(self, parent: QWidget, option: QStyleOptionViewItem, index: QModelIndex) -> QWidget:
-        if index.data(CustomRoles.ItemType) == ItemTypes.DirItem: 
-
-        elif index.data(CustomRoles.ItemType) == ItemTypes.TaskItem: 
-
-        else:
-            return super().createEditor(parent, option, index)
+        return super().createEditor(parent, option, index)
     
-    def updateEditorGeometry(self, editor: QWidget, option: QStyleOptionViewItem, index: QModelIndex) -> None:
-        if index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
+    def updateEditorGeometry(self, editor: QWidget,
+                             option: QStyleOptionViewItem, index: QModelIndex) -> None:
 
-        elif index.data(CustomRoles.ItemType) == ItemTypes.TaskItem:
-
+        editor.setGeometry(option.rect) #type: ignore
         return super().updateEditorGeometry(editor, option, index)
 
     def setEditorData(self, editor: QWidget, index: QModelIndex) -> None:
         self.data_changed.emit()
         return super().setEditorData(editor, index)
     
-    def taskLayout(index: QModelIndex):
+
+
 

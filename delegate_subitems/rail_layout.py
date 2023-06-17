@@ -1,23 +1,26 @@
 # std imports:
 import logging
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-from typing import List
+from typing import List, Optional
 
 # PySide2 imports:
-from PySide2.QtCore import QSize, QPoint
+from PySide2.QtCore import QModelIndex, QSize, QPoint, QEvent, Qt
+
+from global_enums import TaskState
 
 # local imports:
 from .delegate_sub_item import DelegateSubItem
 from custom_types import Vec2
 
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
 # RailLayout is a tool class usefull to stack QRects in the left and rigth of a bounding QRect:
-class RailLayout():
+class RailLayout:
     def __init__(self, margin, spacing):
         # Tracker Variables
-        self.right_pile : List[DelegateSubItem] = []
-        self.left_pile : List[DelegateSubItem] = []
+        self.right_pile: List[DelegateSubItem] = []
+        self.left_pile: List[DelegateSubItem] = []
         self.size = Vec2(0, 0)
         self.pos = Vec2(0, 0)
 
@@ -25,32 +28,38 @@ class RailLayout():
         self.margin = margin
         self.spacing = spacing
 
-    # add and item to the left pile and increment the with and maybe the height 
+    # add and item to the left pile and increment the with and maybe the height
     def addLItem(self, item: DelegateSubItem):
         # increment the height
-        if(self.size.y < item.height()):
+        if self.size.y < item.height():
             self.size.y = item.height()
 
         # add item to the pile
+        item.data_index = len(self.right_pile) + len(self.left_pile)
         self.left_pile.append(item)
 
     def addRItem(self, item: DelegateSubItem):
-        if(self.size.y < item.height()):
+        # increment the height
+        if self.size.y < item.height():
             self.size.y = item.height()
+        
+        # add item to the pile
+        item.data_index = len(self.right_pile) + len(self.left_pile)
         self.right_pile.append(item)
-    
+
     def sizeHint(self) -> QSize:
-        return QSize(self.size.x , self.size.y)
+        return QSize(self.size.x, self.size.y)
 
     def setWidth(self, width: int):
         if width > self.size.x:
+            dx = 0
             for ritem in self.right_pile:
                 dx = width - self.size.x
                 ritem.moveRight(ritem.right() + dx)
             self.size.x = width
             self.left_pile[len(self.left_pile) - 1].adjust(0, 0, dx, 0)
 
-    def computeLayout(self, pos : QPoint = QPoint(0, 0)) -> None:
+    def computeLayout(self, pos: QPoint = QPoint(0, 0)) -> None:
         l_ptr = self.margin
         r_ptr = 0
         self.size.x = 0
@@ -59,8 +68,7 @@ class RailLayout():
             self.pos.x = pos.x()
             self.pos.y = pos.y()
 
-
-        #Compute max height and total width
+        # Compute max height and total width
         self.size.x += self.margin
 
         for item in self.left_pile:
@@ -74,9 +82,8 @@ class RailLayout():
             self.size.x += item.width()
             if i != len(self.right_pile) - 1:
                 self.size.x += self.spacing
-        
-                
-        self.size.y += 2*self.margin
+
+        self.size.y += 2 * self.margin
 
         r_ptr = self.size.x - self.margin
 
@@ -99,3 +106,23 @@ class RailLayout():
 
         for item in self.left_pile:
             item.draw(painter)
+
+    def handleEvent(self, event: QEvent) -> Optional[TaskState]: 
+        result_ev = None
+        for item in self.right_pile:
+            result_ev = item.handleEvent(event)
+            if result_ev:
+                return result_ev
+        for item in self.left_pile:
+            result_ev = item.handleEvent(event)
+            if result_ev:
+                return result_ev
+
+         
+    def initItems(self, index: QModelIndex):
+        for item in self.right_pile:
+            item.init(index.data(Qt.UserRole + item.data_index))
+
+        for item in self.left_pile:
+            item.init(index.data(Qt.UserRole + item.data_index))
+
