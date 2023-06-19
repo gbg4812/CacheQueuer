@@ -35,7 +35,6 @@ class RailLayout:
             self.size.y = item.height()
 
         # add item to the pile
-        item.data_index = len(self.right_pile) + len(self.left_pile)
         self.left_pile.append(item)
 
     def addRItem(self, item: DelegateSubItem):
@@ -44,7 +43,6 @@ class RailLayout:
             self.size.y = item.height()
         
         # add item to the pile
-        item.data_index = len(self.right_pile) + len(self.left_pile)
         self.right_pile.append(item)
 
     def sizeHint(self) -> QSize:
@@ -117,12 +115,4 @@ class RailLayout:
             result_ev = item.handleEvent(event)
             if result_ev:
                 return result_ev
-
          
-    def initItems(self, index: QModelIndex):
-        for item in self.right_pile:
-            item.init(index.data(Qt.UserRole + item.data_index))
-
-        for item in self.left_pile:
-            item.init(index.data(Qt.UserRole + item.data_index))
-

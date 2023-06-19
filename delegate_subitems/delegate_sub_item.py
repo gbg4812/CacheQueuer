@@ -5,10 +5,9 @@ from PySide2.QtCore import QRect, QSize, QPoint, QEvent
 class DelegateSubItem(QRect):
 
 
-    def __init__(self, pos: QPoint, size: QSize):
-        super().__init__(pos, size)
+    def __init__(self, size: QSize):
+        super().__init__(QPoint(0, 0), size)
         self.state = {}
-        self.data_index = None
 
     def draw(self, painter) -> None:
         pass

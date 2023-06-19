@@ -23,29 +23,33 @@ class IconButton(DelegateSubItem):
         CLICKED = 2
 
     def __init__(
-        self, size: QSize = QSize(30, 30), paint_rect: bool = False, radius: int = 5
+        self,
+        size: QSize = QSize(30, 30),
+        paint_rect: bool = False,
+        radius: int = 5,
     ):
+        super().__init__(size)
+
         self.icons: Dict[str, QPixmap] = {}
-        self.setSize(size)
+        self.current_icon = ""
+
         self.bg_colors: Dict[IconButton.ButtonStates, QColor] = {}
         self.paint_rect = paint_rect
         self.rect_radius = radius
-        self.current_icon = ""
+
         self.view_state = IconButton.ButtonStates.NORMAL
         self.release_return = None
 
-    def init(self, state: Dict[str, str | IconButton.ButtonStates]) -> None:
+    def init(self, state: Dict[str, str | IconButton.ButtonStates]) -> bool:
         try:
             self.view_state = state["view_state"]
             self.current_icon = state["current_icon"]
+        except:
+            return False
+        return True
 
-        except KeyError:
-            print(
-                "The status dict is not compatible with the\
-                  IconButton DelegateSubItem"
-            )
     def end(self) -> dict:
-        state = {"view_state":self.view_state, "current_icon": self.current_icon}
+        state = {"view_state": self.view_state, "current_icon": self.current_icon}
         return state
 
     def addIcon(self, name: str, icon: QPixmap) -> None:
@@ -99,11 +103,8 @@ class IconButton(DelegateSubItem):
                     return None
 
                 elif event.type == QMouseEvent.Type.MouseButtonRelease:
-
                     if self.view_state == self.ButtonStates.CLICKED:
                         return self.release_return
 
     def onReleaseReturn(self, value) -> None:
         self.release_return = value
-
-

@@ -11,9 +11,8 @@ from PySide2.QtWidgets import (
 )
 # Local Imports
 from renderers import RenderManager
-from global_enums import CustomRoles, ItemTypes, TaskState
-from delegate_subitems import WidgetState
-from custom_widgets import TasksTree, ParmsWidget, SysInfoWidget
+from global_enums import ItemTypes, TaskState, CustomRoles
+from custom_widgets import TasksTree, ParmsWidget, SysInfoWidget, TaskUi
 
 # Std library Imports
 import sys
@@ -79,15 +78,7 @@ class MainWindow(QMainWindow):
                 for task in tasks:
                     task: dict
                     item = QTreeWidgetItem()
-                    item.setData(0, CustomRoles.TaskName, task.pop("name"))
-                    item.setData(0, CustomRoles.EnableState,
-                                 WidgetState.ENABLED)
-                    item.setData(0, CustomRoles.RemoveState,
-                                 WidgetState.ENABLED)
-                    item.setData(0, CustomRoles.RenderState,
-                                 WidgetState.ENABLED)
                     item.setData(0, CustomRoles.ItemType, ItemTypes.TaskItem)
-                    item.setData(0, CustomRoles.TaskState, TaskState.READY)
                     item.setData(0, CustomRoles.TaskData, task)
                     item.setFlags((item.flags() | Qt.ItemIsEditable)
                                   ^ Qt.ItemIsDropEnabled)

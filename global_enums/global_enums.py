@@ -19,15 +19,8 @@ class TaskEvent(enum.IntEnum):
 
 
 class CustomRoles(enum.IntEnum):
-    TaskName = Qt.DisplayRole,
     TaskData = Qt.UserRole,
-    EnableState = Qt.UserRole + 1,
-    RemoveState = Qt.UserRole + 2,
-    RenderState = Qt.UserRole + 3,
-    EditName = Qt.UserRole + 4,
-    ItemType = Qt.UserRole + 5,
-    DependentState = Qt.UserRole + 6,
-    TaskState = Qt.UserRole + 7
+    ItemType = Qt.UserRole + 1,
 
 
 class ItemTypes(enum.IntEnum):
