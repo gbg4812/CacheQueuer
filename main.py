@@ -1,6 +1,11 @@
 # config
 import projenv
 
+# Std library Imports
+import sys
+import json
+import logging
+
 # PySide2 Imports
 from PySide2.QtCore import Qt
 from PySide2.QtWidgets import (
@@ -9,15 +14,12 @@ from PySide2.QtWidgets import (
     QHBoxLayout, QVBoxLayout, QWidget,
     QTreeWidgetItem, QSplitter
 )
+
 # Local Imports
 from renderers import RenderManager
-from global_enums import ItemTypes, TaskState, CustomRoles
-from custom_widgets import TasksTree, ParmsWidget, SysInfoWidget, TaskUi
+from global_enums import ItemTypes, CustomRoles
+from custom_widgets import TasksTree, ParmsWidget, SysInfoWidget 
 
-# Std library Imports
-import sys
-import json
-import logging
 
 # Configure logger
 logger = logging.getLogger(__name__)
