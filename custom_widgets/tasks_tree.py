@@ -1,13 +1,17 @@
+# std imports
 from __future__ import annotations
 
-from global_enums import CustomRoles, ItemTypes, TaskState
-        
+# PySide2 imports
 from PySide2.QtWidgets import QTreeWidget, QWidget, QPushButton, QLabel, QHBoxLayout, QTreeWidgetItem
 from PySide2.QtCore import Qt, Signal, QModelIndex, QItemSelectionModel
 from PySide2.QtGui import QDropEvent
 
-from .item_delegate import TaskDelegate
-from delegate_subitems import WidgetState
+# local imports
+from .item_delegate import ItemDelegate 
+from .task_ui import TaskUi
+from delegate_subitems import IconButton
+from global_enums import DataRoles
+
 #Subclass Of The TreeWidget 
 class TasksTree(QTreeWidget):
     render_tasks = Signal(list)
@@ -26,7 +30,7 @@ class TasksTree(QTreeWidget):
         
         #Create Header
         header_item = QTreeWidgetItem()
-        header_item.setData(0, CustomRoles.ItemType, ItemTypes.HeaderItem)
+        header_item.setData(0,DataRoles.TYPE, ItemDelegate.UiTypes.HEADER_ITEM)
     
         #Header Widget
         header_w = QWidget()
@@ -55,7 +59,7 @@ class TasksTree(QTreeWidget):
 
         #Enable Item Editing and se Correct Delegate
         self.setEditTriggers(QTreeWidget.EditTrigger.DoubleClicked)
-        self.delegate = TaskDelegate()
+        self.delegate = ItemDelegate()
         self.delegate.render_task.connect(self.render_task)
         self.delegate.render_dir.connect(self.render_dir)
         self.delegate.data_changed.connect(self.data_changed)
@@ -75,13 +79,13 @@ class TasksTree(QTreeWidget):
 
         
         DIP = QTreeWidget.DropIndicatorPosition            
-        if current_item.data(0, CustomRoles.ItemType) == ItemTypes.DirItem:
+        if current_item.data(0, DataRoles.TYPE) == ItemDelegate.UiTypes.DIR_ITEM:
             if tg_item.parent():
                 event.ignore()
                 return
 
         if drop_pos == DIP.OnItem:
-            if current_item.data(0, CustomRoles.ItemType) == ItemTypes.DirItem:
+            if current_item.data(0, DataRoles.TYPE) == ItemDelegate.UiTypes.DIR_ITEM:
                 event.ignore()
                 return
         return super().dropEvent(event) 
@@ -101,13 +105,6 @@ class TasksTree(QTreeWidget):
         
     def add_dir(self):
         item = QTreeWidgetItem()
-        item.setData(0, CustomRoles.TaskName, "New Directory")
-        item.setData(0, CustomRoles.EnableState, WidgetState.ENABLED)
-        item.setData(0, CustomRoles.DependentState, WidgetState.DISABLED)
-        item.setData(0, CustomRoles.RemoveState, WidgetState.ENABLED)
-        item.setData(0, CustomRoles.RenderState, WidgetState.ENABLED)
-        item.setData(0, CustomRoles.ItemType, ItemTypes.DirItem)
-        item.setData(0, CustomRoles.TaskState, TaskState.WAITING)
         item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEditable)
         self.addTopLevelItem(item)
         self.resizeColumnToContents(0)
@@ -117,18 +114,18 @@ class TasksTree(QTreeWidget):
         result = []
         bundle = {"dependent": False, "indexes":[]}
         model = self.model()
-        if parent.data(CustomRoles.DependentState) == WidgetState.ENABLED:
+        if parent.data(TaskUi.DataRoles.ENABLE) == IconButton.ButtonStates.CLICKED:
             bundle['dependent'] = True
 
         if model.hasChildren(parent):
             for row in range(model.rowCount(parent)):
                 child_index = model.index(row, 0, parent)
-                if child_index.data(CustomRoles.EnableState) == WidgetState.ENABLED:
+                if child_index.data(TaskUi.DataRoles.ENABLE) == IconButton.ButtonStates.CLICKED:
 
-                    if child_index.data(CustomRoles.ItemType) == ItemTypes.TaskItem:
+                    if child_index.data(DataRoles.TYPE) == ItemDelegate.UiTypes.TASK_ITEM:
                         bundle['indexes'].append(child_index)
 
-                    elif child_index.data(CustomRoles.ItemType) == ItemTypes.DirItem:
+                    elif child_index.data(DataRoles.TYPE) == ItemDelegate.UiTypes.DIR_ITEM:
                         bundlecpy = dict(bundle)
                         result.append(bundlecpy)
                         result.extend(self.flatten_tree(child_index))
@@ -144,3 +141,4 @@ class TasksTree(QTreeWidget):
         sm = self.selectionModel()
         idx = self.model().index(first, 0, parent)
         sm.select(idx, QItemSelectionModel.Select)
+

@@ -1,5 +1,4 @@
 [tool.pyright]
-include = ["vendor"]
 exclude = ["**/__pycache__"]
+venv = ".venv"
 
-extraPaths = "vendor"

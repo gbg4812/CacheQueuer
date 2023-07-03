@@ -1,8 +1,15 @@
+# std imports
 from typing import List
-from PySide2.QtWidgets import QWidget, QVBoxLayout, QLabel, QTreeWidgetItem, QProgressBar, QFormLayout, QFrame, QLineEdit
 
+# PySide2 imports
+from PySide2.QtWidgets import QWidget, QVBoxLayout, QLabel, QTreeWidgetItem, QProgressBar, QFormLayout, QFrame, QLineEdit
 from PySide2.QtCore import Signal, QModelIndex, QItemSelection, Qt
-from global_enums import CustomRoles, ItemTypes
+from custom_widgets.item_delegate import ItemDelegate
+from custom_widgets.task_ui import TaskUi
+
+# Local imports
+from global_enums import DataRoles, TaskStates
+
 class ParmsWidget(QFrame):
     def __init__(self):
         super(ParmsWidget, self).__init__()
@@ -38,9 +45,9 @@ class ParmsWidget(QFrame):
         self.labels.clear()
         
         if item:
-            if item.data(0, CustomRoles.ItemType) == ItemTypes.TaskItem:
-                data : dict = item.data(0, CustomRoles.TaskData)
-                self.name.setText(item.data(0, CustomRoles.TaskName))
+            if item.data(0, DataRoles.TYPE) == ItemDelegate.UiTypes.TASK_ITEM:
+                data : dict = item.data(0, DataRoles.DATA)
+                self.name.setText(item.data(0, DataRoles.NAME))
                 self.lab_layout.addRow(self.name)
 
                 for key, val in data.items():
@@ -61,9 +68,9 @@ class ParmsWidget(QFrame):
                     self.labels.append(lab)
                     self.labels.append(info)
 
-            elif item.data(0, CustomRoles.ItemType) == ItemTypes.DirItem:
-                self.name.setText(item.data(0, CustomRoles.TaskName))
-                newLab = QLabel("Dependent: {}".format(item.data(0,CustomRoles.DependentState)))
+            elif item.data(0, DataRoles.TYPE) == ItemDelegate.UiTypes.DIR_ITEM:
+                self.name.setText(item.data(0, DataRoles.NAME))
+                newLab = QLabel("Dependent: {}".format(item.data(0,TaskUi.DataRoles.DEPENDENT)))
                 self.layout().addWidget(newLab)
                 self.labels.append(newLab)
         
@@ -74,3 +81,4 @@ class ParmsWidget(QFrame):
         percent = progress.get("Progress")/(progress.get("Range")[1] - progress.get("Range")[0])
         percent *= 100
         self.progress.setValue(percent)
+

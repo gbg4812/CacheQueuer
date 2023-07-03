@@ -3,12 +3,12 @@ from PySide2.QtGui import QPainter
 from PySide2.QtCore import QEvent, QModelIndex
 from PySide2.QtWidgets import QStyleOption
 
-from delegate_subitems import RailLayout
+from .rail_layout import RailLayout
 
 
 class DelegateUi:
     def __init__(self) -> None:
-        self.layout = RailLayout(5, 10)
+        self.layout = RailLayout(50, 10)
 
     def draw(self, painter: QPainter, option: QStyleOption, index: QModelIndex):
         pass

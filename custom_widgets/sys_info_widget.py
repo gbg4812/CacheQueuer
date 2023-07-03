@@ -1,6 +1,9 @@
-from PySide2.QtWidgets import QWidget, QLabel, QHBoxLayout
+# std imports
 import psutil
 import time
+
+# PySide imports
+from PySide2.QtWidgets import QWidget, QLabel, QHBoxLayout
 from PySide2.QtCore import QThread, Signal
 
 class SysInfoThread(QThread):

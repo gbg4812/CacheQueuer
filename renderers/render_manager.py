@@ -3,7 +3,7 @@ from subprocess import Popen, PIPE
 import json
 
 from PySide2.QtCore import Signal, QObject, QThread, QModelIndex
-from global_enums import *
+from global_enums import TaskStates, DataRoles
 
 class RenderManager(QObject):
     progress_update = Signal(dict)
@@ -47,22 +47,22 @@ class RenderThread(QThread):
             indexes : List[QModelIndex] = bundle.get("indexes")
             success = True
             for index in indexes:
-                index.model().setData(index, TaskState.WAITING, CustomRoles.TaskState)
+                index.model().setData(index, TaskStates.WAITING, DataRoles.TASKSTATE)
 
             for index in indexes:
                 if dependent and not success: 
                     continue
                 else:
 
-                    index.model().setData(index, TaskState.RENDERING, CustomRoles.TaskState)
+                    index.model().setData(index, TaskStates.RENDERING, DataRoles.TASKSTATE)
 
                     task : dict = index.data(CustomRoles.TaskData)
                     success = self.renderTask(task)
 
                     if success:
-                        index.model().setData(index, TaskState.SUCCESSFUL, CustomRoles.TaskState)
+                        index.model().setData(index, TaskStates.SUCCESSFUL, DataRoles.TASKSTATE)
                     else:
-                        index.model().setData(index, TaskState.FAILED, CustomRoles.TaskState)
+                        index.model().setData(index, TaskStates.FAILED, DataRoles.TASKSTATE)
                     
     def renderTask(self, task: dict):
         script : str = task.get("shell_script")

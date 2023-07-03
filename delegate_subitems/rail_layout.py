@@ -1,11 +1,10 @@
 # std imports:
 import logging
+import enum
 from typing import List, Optional
 
 # PySide2 imports:
 from PySide2.QtCore import QModelIndex, QSize, QPoint, QEvent, Qt
-
-from global_enums import TaskState
 
 # local imports:
 from .delegate_sub_item import DelegateSubItem
@@ -46,6 +45,7 @@ class RailLayout:
         self.right_pile.append(item)
 
     def sizeHint(self) -> QSize:
+        print("Size Hint Called: {}x, {}y".format(self.size.x, self.size.y))
         return QSize(self.size.x, self.size.y)
 
     def setWidth(self, width: int):
@@ -105,7 +105,7 @@ class RailLayout:
         for item in self.left_pile:
             item.draw(painter)
 
-    def handleEvent(self, event: QEvent) -> Optional[TaskState]: 
+    def handleEvent(self, event: QEvent) -> Optional[enum.IntEnum]: 
         result_ev = None
         for item in self.right_pile:
             result_ev = item.handleEvent(event)

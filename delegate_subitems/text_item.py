@@ -1,8 +1,6 @@
 # Std Imports
 import logging
 from math import floor
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 # Local Imports
 from .delegate_sub_item import DelegateSubItem
@@ -11,9 +9,13 @@ from .delegate_sub_item import DelegateSubItem
 from PySide2.QtGui import QPainter, QFont, QColor, QPen, QFontMetrics
 from PySide2.QtCore import Qt, QPoint, QSize
 
+# Config logger
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
 class TextItem(DelegateSubItem):
     def __init__(self, pos: QPoint = QPoint(0, 0), text_size: int = 10, text_color: QColor = Qt.black, min_letters : int = 5):
-        super().__init__(pos, QSize(0, 0))
+        super().__init__(QSize(0, 0))
         self.font = QFont('Arial', text_size, QFont.Normal)
         self.pen = QPen(text_color)
         self.text = ""

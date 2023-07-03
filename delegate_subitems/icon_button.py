@@ -28,10 +28,12 @@ class IconButton(DelegateSubItem):
         paint_rect: bool = False,
         radius: int = 5,
     ):
+
         super().__init__(size)
 
         self.icons: Dict[str, QPixmap] = {}
         self.current_icon = ""
+        self.setSize(size)
 
         self.bg_colors: Dict[IconButton.ButtonStates, QColor] = {}
         self.paint_rect = paint_rect
@@ -99,12 +101,14 @@ class IconButton(DelegateSubItem):
 
             if self.contains(pos):
                 if event.type == QMouseEvent.Type.MouseButtonPress:
+                    print("Button Clicked")
                     self.view_state = self.ButtonStates.CLICKED
                     return None
 
                 elif event.type == QMouseEvent.Type.MouseButtonRelease:
                     if self.view_state == self.ButtonStates.CLICKED:
                         return self.release_return
+            self.view_state = self.ButtonStates.NORMAL
 
     def onReleaseReturn(self, value) -> None:
         self.release_return = value

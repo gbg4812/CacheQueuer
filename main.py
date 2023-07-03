@@ -1,8 +1,6 @@
-# config
-import projenv
-
 # Std library Imports
 import sys
+from os import path
 import json
 import logging
 
@@ -14,16 +12,21 @@ from PySide2.QtWidgets import (
     QHBoxLayout, QVBoxLayout, QWidget,
     QTreeWidgetItem, QSplitter
 )
+from custom_widgets import ItemDelegate
 
 # Local Imports
 from renderers import RenderManager
-from global_enums import ItemTypes, CustomRoles
+from global_enums import DataRoles
 from custom_widgets import TasksTree, ParmsWidget, SysInfoWidget 
 
 
 # Configure logger
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+
+# Configure env variables
+class env:
+    wrkdir, _ = path.split(__file__)
 
 # Class that represents the main application window
 class MainWindow(QMainWindow):
@@ -33,7 +36,7 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Cache Queuer")
 
-        self.data_file = f"{projenv.wrkdir}/data/task_data.json"
+        self.data_file = f"{env.wrkdir}/data/task_data.json"
         self.renderManager = RenderManager()
 
         # Init UI
@@ -80,8 +83,9 @@ class MainWindow(QMainWindow):
                 for task in tasks:
                     task: dict
                     item = QTreeWidgetItem()
-                    item.setData(0, CustomRoles.ItemType, ItemTypes.TaskItem)
-                    item.setData(0, CustomRoles.TaskData, task)
+                    item.setData(0, DataRoles.TYPE, ItemDelegate.UiTypes.TASK_ITEM)
+                    item.setData(0, DataRoles.NAME, task.get("name"))
+                    item.setData(0, DataRoles.DATA, task)
                     item.setFlags((item.flags() | Qt.ItemIsEditable)
                                   ^ Qt.ItemIsDropEnabled)
                     self.task_tree.addTopLevelItem(item)
@@ -102,10 +106,16 @@ class MainWindow(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    with open(f"{projenv.wrkdir}/style/style.qss", 'r') as f:
+    with open(f"{env.wrkdir}/style/style.qss", 'r') as f:
         app.setStyleSheet(f.read())
     w = MainWindow()
     w.setWindowTitle("CacheQueuer")
     w.setGeometry(0, 0, 1000, 500)
     w.show()
     sys.exit(app.exec_())
+
+    def helloWorld():
+        print("hello world!!!")
+        for i in (1, 1, 2 ,3 ):
+            print(i)
+

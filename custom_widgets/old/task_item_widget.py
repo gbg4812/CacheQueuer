@@ -19,8 +19,9 @@ from PySide2.QtCore import (
 )
 from PySide2.QtGui import QPainter, QMouseEvent, QPixmap, QColor, QPen
 
-from global_enums import TaskState, TaskEvent, CustomRoles
-from delegate_subitems import WidgetState, IconButton, RailLayout, TextItem
+from custom_widgets import TaskUi
+from delegate_subitems import IconButton
+from delegate_subitems import IconButton, RailLayout, TextItem
 
 wrkdir, _ = path.split(__file__)
 wrkdir += "/"
