@@ -1,18 +1,18 @@
 # std imports:
-import logging
 import enum
 from typing import List, Optional
 
 # PySide2 imports:
 from PySide2.QtCore import QModelIndex, QSize, QPoint, QEvent, Qt
+from logger import Logger
 
 # local imports:
 from .delegate_sub_item import DelegateSubItem
 from custom_types import Vec2
 
+flog = Logger(__name__)
+flog.level = Logger.Level.DEBUG 
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 # RailLayout is a tool class usefull to stack QRects in the left and rigth of a bounding QRect:
 class RailLayout:
@@ -20,7 +20,7 @@ class RailLayout:
         # Tracker Variables
         self.right_pile: List[DelegateSubItem] = []
         self.left_pile: List[DelegateSubItem] = []
-        self.size = Vec2(0, 0)
+        self.size: Vec2[int] = Vec2(0, 0)
         self.pos = Vec2(0, 0)
 
         # margins between items and with the bounding rect
@@ -40,12 +40,12 @@ class RailLayout:
         # increment the height
         if self.size.y < item.height():
             self.size.y = item.height()
-        
+
         # add item to the pile
         self.right_pile.append(item)
 
     def sizeHint(self) -> QSize:
-        print("Size Hint Called: {}x, {}y".format(self.size.x, self.size.y))
+        flog.debug("Size Hint Called: {}x, {}y".format(self.size.x, self.size.y))
         return QSize(self.size.x, self.size.y)
 
     def setWidth(self, width: int):
@@ -65,6 +65,7 @@ class RailLayout:
         if pos.x or pos.y:
             self.pos.x = pos.x()
             self.pos.y = pos.y()
+        flog.debug("Position is: {}, {}".format(self.pos.x, self.pos.y))
 
         # Compute max height and total width
         self.size.x += self.margin
@@ -82,6 +83,7 @@ class RailLayout:
                 self.size.x += self.spacing
 
         self.size.y += 2 * self.margin
+        flog.debug("Item size is: {}, {}".format(self.size.x, self.size.y))
 
         r_ptr = self.size.x - self.margin
 
@@ -89,13 +91,13 @@ class RailLayout:
         for litem in self.left_pile:
             litem.moveLeft(l_ptr)
             l_ptr += litem.width() + self.spacing
-            litem.moveBottom(self.size.y - ((self.size.y - litem.height()) / 2))
+            litem.moveBottom(int(self.size.y - ((self.size.y - litem.height()) / 2)))
             litem.translate(pos)
 
         for ritem in self.right_pile:
             ritem.moveRight(r_ptr)
             r_ptr -= ritem.width() + self.spacing
-            ritem.moveBottom(self.size.y - ((self.size.y - ritem.height()) / 2))
+            ritem.moveBottom(int(self.size.y - ((self.size.y - ritem.height()) / 2)))
             ritem.translate(pos)
 
     def draw(self, painter):
@@ -105,7 +107,7 @@ class RailLayout:
         for item in self.left_pile:
             item.draw(painter)
 
-    def handleEvent(self, event: QEvent) -> Optional[enum.IntEnum]: 
+    def handleEvent(self, event: QEvent) -> Optional[enum.IntEnum]:
         result_ev = None
         for item in self.right_pile:
             result_ev = item.handleEvent(event)
@@ -115,4 +117,3 @@ class RailLayout:
             result_ev = item.handleEvent(event)
             if result_ev:
                 return result_ev
-         

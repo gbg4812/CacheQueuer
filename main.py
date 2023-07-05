@@ -7,30 +7,36 @@ import logging
 # PySide2 Imports
 from PySide2.QtCore import Qt
 from PySide2.QtWidgets import (
-    QMainWindow, QApplication,
+    QMainWindow,
+    QApplication,
+    QMessageBox,
     QPushButton,
-    QHBoxLayout, QVBoxLayout, QWidget,
-    QTreeWidgetItem, QSplitter
+    QHBoxLayout,
+    QVBoxLayout,
+    QWidget,
+    QTreeWidgetItem,
+    QSplitter,
 )
 from custom_widgets import ItemDelegate
 
 # Local Imports
 from renderers import RenderManager
 from global_enums import DataRoles
-from custom_widgets import TasksTree, ParmsWidget, SysInfoWidget 
+from custom_widgets import TasksTree, ParmsWidget, SysInfoWidget
 
 
 # Configure logger
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+
 # Configure env variables
 class env:
     wrkdir, _ = path.split(__file__)
 
+
 # Class that represents the main application window
 class MainWindow(QMainWindow):
-
     def __init__(self):
         super(MainWindow, self).__init__()
 
@@ -78,7 +84,7 @@ class MainWindow(QMainWindow):
 
     def reload(self):
         try:
-            with open(self.data_file, 'r') as f:
+            with open(self.data_file, "r") as f:
                 tasks = json.load(f)
                 for task in tasks:
                     task: dict
@@ -86,8 +92,9 @@ class MainWindow(QMainWindow):
                     item.setData(0, DataRoles.TYPE, ItemDelegate.UiTypes.TASK_ITEM)
                     item.setData(0, DataRoles.NAME, task.get("name"))
                     item.setData(0, DataRoles.DATA, task)
-                    item.setFlags((item.flags() | Qt.ItemIsEditable)
-                                  ^ Qt.ItemIsDropEnabled)
+                    item.setFlags(
+                        (item.flags() | Qt.ItemIsEditable) ^ Qt.ItemIsDropEnabled
+                    )
                     self.task_tree.addTopLevelItem(item)
                     self.task_tree.resizeColumnToContents(0)
 
@@ -103,19 +110,29 @@ class MainWindow(QMainWindow):
     def renderTree(self):
         self.task_tree.render_dir(self.task_tree.rootIndex())
 
+    def closeEvent(self, event: QCloseEvent) -> None:
+        if self.renderManager.is_rendering:
+            replay = QMessageBox.question(
+                self,
+                "Close",
+                "If you close the window now, the current render will be killed!!!",
+                QMessageBox.Yes,
+                QMessageBox.No,
+            )
 
-if __name__ == '__main__':
+            if replay == QMessageBox.Yes:
+                self.renderManager.
+                event.accept()
+            else:
+                event.ignore()
+
+
+if __name__ == "__main__":
     app = QApplication(sys.argv)
-    with open(f"{env.wrkdir}/style/style.qss", 'r') as f:
+    with open(f"{env.wrkdir}/style/style.qss", "r") as f:
         app.setStyleSheet(f.read())
     w = MainWindow()
     w.setWindowTitle("CacheQueuer")
     w.setGeometry(0, 0, 1000, 500)
     w.show()
     sys.exit(app.exec_())
-
-    def helloWorld():
-        print("hello world!!!")
-        for i in (1, 1, 2 ,3 ):
-            print(i)
-

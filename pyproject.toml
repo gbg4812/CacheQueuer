@@ -1,3 +1,14 @@
+[project]
+name = "CacheQueuer"
+version = "1.0"
+requires-python = ">=3.9"
+authors = [{name = "Guillem Baldi", email = "guillembaldi@gmail.com"}]
+dependencies = [
+    "PySide2",
+    "psutil",
+]
+[project.gui-scripts]
+cachequeuer-gui = "cachequeuer:main"
 [tool.pyright]
 exclude = ["**/__pycache__"]
 venv = ".venv"

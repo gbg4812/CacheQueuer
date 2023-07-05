@@ -7,25 +7,33 @@ from typing import Any
 from delegate_subitems import DelegateUi, IconButton
 
 # vendor imports
-from PySide2.QtGui import QBrush, QColor, QPen, QPixmap, QPainter 
-from PySide2.QtCore import QMargins, QPoint, QSize, QModelIndex, Qt, QEvent, QRect, QLine
+from PySide2.QtGui import QBrush, QColor, QPen, QPixmap, QPainter
+from PySide2.QtCore import (
+    QMargins,
+    QPoint,
+    QSize,
+    QModelIndex,
+    Qt,
+    QEvent,
+    QRect,
+    QLine,
+)
 from PySide2.QtWidgets import QStyleOption, QStyle
 
 
 class TaskUi(DelegateUi):
-    # The value is only a key, it doesn't mather so, 1+ values are fore general 
+    # The value is only a key, it doesn't mather so, 1+ values are fore general
     # roles and 100+ values for ui especific roles.
     class DataRoles(IntEnum):
-        RENDER = 100,
-        ENABLE = 101,
-        DEPENDENT = 102,
+        RENDER = (100,)
+        ENABLE = (101,)
+        DEPENDENT = (102,)
 
     class UiEvents(IntEnum):
         NONE = 0
         REMOVE = 1
         RENDER = 2
         DATACHANGED = 3
-
 
     def __init__(self) -> None:
         super().__init__()
@@ -50,7 +58,9 @@ class TaskUi(DelegateUi):
         self.render = IconButton(QSize(36, 36), paint_rect=True, radius=5)
         self.render.onReleaseReturn(self.UiEvents.RENDER)
         self.render.addStateColors(state_colors)
-        self.render.addIcon("self.render", QPixmap(wrkdir + "res/icons/self.render.png"))
+        self.render.addIcon(
+            "self.render", QPixmap(wrkdir + "res/icons/self.render.png")
+        )
         self.layout.addLItem(self.render)
         self.layout.computeLayout()
 
@@ -81,7 +91,7 @@ class TaskUi(DelegateUi):
     def sizeHint(self, option: QStyleOption, index: QModelIndex):
         pos = option.rect.topLeft()
         self.layout.computeLayout(pos)
-        return self.layout.sizeHint()
+        return self.layout.sizeHint().grownBy(self.content_margins)
 
     def handleEvents(
         self, event: QEvent, option: QStyleOption, index: QModelIndex
@@ -107,7 +117,9 @@ class TaskUi(DelegateUi):
         model.setData(index, self.render.end(), self.DataRoles.RENDER)
 
     @staticmethod
-    def paintBackground(painter: QPainter, rect: QRect, border_col: QColor, fill_col: QColor ):
+    def paintBackground(
+        painter: QPainter, rect: QRect, border_col: QColor, fill_col: QColor
+    ):
         painter.save()
 
         # Paint Background

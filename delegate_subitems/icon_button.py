@@ -1,20 +1,19 @@
 # std imports:
 from __future__ import annotations
 from typing import Dict, Optional
-import logging
 
-# PySide2 imports:
+# Third party imports
 from PySide2.QtCore import QSize, QEvent
 from PySide2.QtGui import QPainter, QPixmap, QColor, QPainterPath, QBrush, QMouseEvent
+
+from logger import Logger
 
 # local imports:
 from enum import IntEnum
 from .delegate_sub_item import DelegateSubItem
 
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
+flog = Logger(__name__)
+flog.level = Logger.Level.ERROR 
 
 class IconButton(DelegateSubItem):
     class ButtonStates(IntEnum):
@@ -43,12 +42,16 @@ class IconButton(DelegateSubItem):
         self.release_return = None
 
     def init(self, state: Dict[str, str | IconButton.ButtonStates]) -> bool:
-        try:
-            self.view_state = state["view_state"]
-            self.current_icon = state["current_icon"]
-        except:
+        if state:
+            try:
+                self.view_state = state["view_state"]
+                self.current_icon = state["current_icon"]
+            except KeyError:
+                return False
+            return True
+
+        else:
             return False
-        return True
 
     def end(self) -> dict:
         state = {"view_state": self.view_state, "current_icon": self.current_icon}
@@ -70,6 +73,7 @@ class IconButton(DelegateSubItem):
             self.icons[key] = pixmap
 
     def draw(self, painter: QPainter):
+        flog.debug("drawing button")
         if self.paint_rect:
             try:
                 color = self.bg_colors[self.view_state]
@@ -93,22 +97,26 @@ class IconButton(DelegateSubItem):
             self.current_icon = name
 
         except KeyError:
-            print("no icon for this name")
+            flog.error("no icon for this name")
 
     def handleEvent(self, event: QMouseEvent):
         if isinstance(event, QMouseEvent):
             pos = event.pos()
 
             if self.contains(pos):
-                if event.type == QMouseEvent.Type.MouseButtonPress:
-                    print("Button Clicked")
+                flog.debug("Contained By Button")
+                if event.type() == QMouseEvent.Type.MouseButtonPress:
+                    flog.debug("Button Clicked")
                     self.view_state = self.ButtonStates.CLICKED
                     return None
 
-                elif event.type == QMouseEvent.Type.MouseButtonRelease:
-                    if self.view_state == self.ButtonStates.CLICKED:
-                        return self.release_return
+                elif event.type() == QMouseEvent.Type.MouseButtonRelease:
+                    flog.debug("Button Released")
+                    self.view_state = self.ButtonStates.NORMAL
+                    return self.release_return
+
             self.view_state = self.ButtonStates.NORMAL
 
     def onReleaseReturn(self, value) -> None:
         self.release_return = value
+
