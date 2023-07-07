@@ -4,14 +4,13 @@ from typing import List, Optional
 
 # PySide2 imports:
 from PySide2.QtCore import QModelIndex, QSize, QPoint, QEvent, Qt
-from logger import Logger
+from utils import Logger , Level
 
 # local imports:
 from .delegate_sub_item import DelegateSubItem
 from custom_types import Vec2
 
-flog = Logger(__name__)
-flog.level = Logger.Level.DEBUG 
+flog = Logger(__name__, Level.ERROR)
 
 
 # RailLayout is a tool class usefull to stack QRects in the left and rigth of a bounding QRect:

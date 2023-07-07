@@ -6,14 +6,13 @@ from typing import Dict, Optional
 from PySide2.QtCore import QSize, QEvent
 from PySide2.QtGui import QPainter, QPixmap, QColor, QPainterPath, QBrush, QMouseEvent
 
-from logger import Logger
+from utils import Logger, Level
 
 # local imports:
 from enum import IntEnum
 from .delegate_sub_item import DelegateSubItem
 
-flog = Logger(__name__)
-flog.level = Logger.Level.ERROR 
+flog = Logger(__name__, Level.ERROR)
 
 class IconButton(DelegateSubItem):
     class ButtonStates(IntEnum):

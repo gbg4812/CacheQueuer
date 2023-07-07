@@ -3,76 +3,88 @@ from typing import List, Dict, NoReturn, Any
 from subprocess import Popen, PIPE
 import json
 
-from PySide2.QtCore import QRunnable, QThreadPool, Signal, QObject, QModelIndex, Slot
+from PySide2.QtCore import (
+    QThread,
+    QMutex,
+    QMutexLocker,
+    QWaitCondition,
+    Signal,
+    QObject,
+    QModelIndex,
+    Slot,
+)
 from global_enums import TaskStates, DataRoles
+from utils import Logger
+from utils.logger import Level
+
+flog = Logger(__name__, Level.DEBUG)
 
 
-class RenderManager(QObject):
-    progress_update = Signal(dict)
-    render_finished = Signal()
-
-    def __init__(self, parent=None) -> None:
-        super(RenderManager, self).__init__(parent)
-        self.is_rendering = False
-        self.thread_pool = QThreadPool()
-        self.task_list: List[dict] = []
-
-    def render(self, task_list: list) -> None:
-        if not self.is_rendering:
-            self.task_list = task_list
-            self.is_rendering = True
-            renderWorker = RenderWorker(task_list)
-            renderWorker.progress_updated.connect(self.progressUpdate)
-            renderWorker.finished.connect(self.renderFinished)
-            self.thread_pool.start(renderWorker)
-        else:
-            pass
-
-    def progressUpdate(self, progress):
-        self.progress_update.emit(progress)
-
-    def renderFinished(self):
-        self.is_rendering = False
-
-
-class RenderWorker(QObject, QRunnable):
+class RenderThread(QThread):
     finished = Signal()
     progress_updated = Signal(dict)
 
-    def __init__(self, task_list: list):
-        super(RenderWorker, self).__init__()
-        self.task_list: List[Dict] = task_list
+    def __init__(self, parent: QObject | None = None):
+        super().__init__(parent)
+        self.task_list: List[Dict] = [{}]
+        self.rendering = False
+        self.mutex = QMutex()
+        self.condition = QWaitCondition()
 
-    @Slot()
     def run(self) -> None:
-        for bundle in self.task_list:
-            dependent = bundle.get("dependent")
-            indexes: List[QModelIndex] = bundle["indexes"]
-            success = True
-            for index in indexes:
-                index.model().setData(index, TaskStates.WAITING, DataRoles.TASKSTATE)
+        while True:
+            self.mutex.lock()
+            task_list = self.task_list
+            self.mutex.unlock()
 
-            for index in indexes:
-                if dependent and not success:
-                    continue
-                else:
+            for bundle in task_list:
+                dependent = bundle.get("dependent")
+                indexes: List[QModelIndex] = bundle["indexes"]
+                success = True
+                for index in indexes:
                     index.model().setData(
-                        index, TaskStates.RENDERING, DataRoles.TASKSTATE
+                        index, TaskStates.WAITING, DataRoles.TASKSTATE
                     )
 
-                    task: dict = index.data(DataRoles.DATA)
-                    success = self.renderTask(task)
-
-                    if success:
-                        index.model().setData(
-                            index, TaskStates.SUCCESSFUL, DataRoles.TASKSTATE
-                        )
+                for index in indexes:
+                    if dependent and not success:
+                        continue
                     else:
                         index.model().setData(
-                            index, TaskStates.FAILED, DataRoles.TASKSTATE
+                            index, TaskStates.RENDERING, DataRoles.TASKSTATE
                         )
 
-    def renderTask(self, task: Dict[str, str]):
+                        task: dict = index.data(DataRoles.DATA)
+                        success = self._renderTask(task)
+
+                        if success:
+                            flog.debug("Task rendered succesfully")
+                            index.model().setData(
+                                index, TaskStates.SUCCESSFUL, DataRoles.TASKSTATE
+                            )
+                        else:
+                            index.model().setData(
+                                index, TaskStates.FAILED, DataRoles.TASKSTATE
+                            )
+
+            self.finished.emit()
+
+            self.mutex.lock()
+            self.rendering = False
+            self.mutex.unlock()
+
+            self.mutex.lock()
+            flog.debug("Thread Waiting...")
+            self.condition.wait(self.mutex)
+            flog.debug("Thread awaken")
+            self.mutex.unlock()
+
+            flog.debug("checking for interruptions")
+            if self.isInterruptionRequested():
+                flog.debug("Abort is true")
+                break
+
+    def _renderTask(self, task: Dict[str, str]):
         script = task["shell_script"]
         prog, arg = script.split(" ")
         task_str = json.dumps(task)
@@ -80,7 +92,12 @@ class RenderWorker(QObject, QRunnable):
 
         objdata = dict()
         while True:
-            if self.kill_render:
+            self.mutex.lock()
+            rendering = self.rendering
+            self.mutex.unlock()
+
+            if not rendering:
+                flog.debug("Rendering should stop")
                 subp.kill()
                 break
 
@@ -95,12 +112,38 @@ class RenderWorker(QObject, QRunnable):
                     print(data.decode("utf-8"))
 
             if subp.poll() is not None:
+                flog.debug("Process ended")
                 break
 
         return 1 - subp.returncode
-    
+
+    @Slot()
+    def render(self, task_list: List[Dict]):
+        locker = QMutexLocker(self.mutex)
+        if not self.rendering:
+            self.rendering = True
+            self.task_list = task_list
+            if not self.isRunning():
+                self.start()
+            else:
+                self.condition.wakeAll()
+        else:
+            flog.info("Task is still rendering, kill it to start a new render")
+
     @Slot()
     def killRender(self):
-        self.kill_render = True
+        locker = QMutexLocker(self.mutex)
+        self.rendering = False
 
+    @Slot()
+    def killThread(self):
+        flog.debug("Thread about to be killed")
+        self.killRender()
+        self.requestInterruption()
 
+        self.mutex.lock()
+        self.condition.wakeAll()
+        self.mutex.unlock()
+
+        flog.debug("Waiting for thread to dye...")
+        self.wait()

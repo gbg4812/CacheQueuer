@@ -2,10 +2,9 @@
 import sys
 from os import path
 import json
-import logging
 
 # PySide2 Imports
-from PySide2.QtCore import Qt
+from PySide2.QtCore import Qt 
 from PySide2.QtWidgets import (
     QMainWindow,
     QApplication,
@@ -17,17 +16,18 @@ from PySide2.QtWidgets import (
     QTreeWidgetItem,
     QSplitter,
 )
+from PySide2.QtGui import QCloseEvent
 from custom_widgets import ItemDelegate
 
 # Local Imports
-from renderers import RenderManager
+from renderers import RenderThread 
 from global_enums import DataRoles
 from custom_widgets import TasksTree, ParmsWidget, SysInfoWidget
+from utils import Logger
 
 
 # Configure logger
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+flog = Logger(__name__)
 
 
 # Configure env variables
@@ -43,7 +43,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Cache Queuer")
 
         self.data_file = f"{env.wrkdir}/data/task_data.json"
-        self.renderManager = RenderManager()
+        self.render_thread = RenderThread()
 
         # Init UI
         central_w = QWidget()
@@ -52,7 +52,7 @@ class MainWindow(QMainWindow):
 
         # Task Tree
         self.task_tree = TasksTree()
-        self.task_tree.render_tasks.connect(self.renderManager.render)
+        self.task_tree.render_tasks.connect(self.render_thread.render)
         splitter.addWidget(self.task_tree)
 
         # Utils Bar. Render and Reload buttons + system info
@@ -74,7 +74,7 @@ class MainWindow(QMainWindow):
         # Parameters
         self.parms = ParmsWidget()
 
-        self.renderManager.progress_update.connect(self.parms.update_handler)
+        self.render_thread.progress_updated.connect(self.parms.update_handler)
         splitter.addWidget(self.parms)
         self.task_tree.itemSelectionChanged.connect(self.itemSelectionChanged)
 
@@ -111,7 +111,7 @@ class MainWindow(QMainWindow):
         self.task_tree.render_dir(self.task_tree.rootIndex())
 
     def closeEvent(self, event: QCloseEvent) -> None:
-        if self.renderManager.is_rendering:
+        if self.render_thread.rendering:
             replay = QMessageBox.question(
                 self,
                 "Close",
@@ -120,11 +120,11 @@ class MainWindow(QMainWindow):
                 QMessageBox.No,
             )
 
-            if replay == QMessageBox.Yes:
-                self.renderManager.
-                event.accept()
-            else:
+            if replay == QMessageBox.No:
                 event.ignore()
+        else:
+            self.render_thread.killThread()
+            event.accept()
 
 
 if __name__ == "__main__":

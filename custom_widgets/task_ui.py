@@ -25,9 +25,10 @@ class TaskUi(DelegateUi):
     # The value is only a key, it doesn't mather so, 1+ values are fore general
     # roles and 100+ values for ui especific roles.
     class DataRoles(IntEnum):
-        RENDER = (100,)
-        ENABLE = (101,)
-        DEPENDENT = (102,)
+        RENDER = 100
+        REMOVE = 101
+        ENABLE = 102
+        DEPENDENT = 103
 
     class UiEvents(IntEnum):
         NONE = 0
@@ -55,13 +56,23 @@ class TaskUi(DelegateUi):
         self.layout.spacing = 10
 
         # Create Buttons:
+        # Render Button:
         self.render = IconButton(QSize(36, 36), paint_rect=True, radius=5)
         self.render.onReleaseReturn(self.UiEvents.RENDER)
         self.render.addStateColors(state_colors)
         self.render.addIcon(
-            "self.render", QPixmap(wrkdir + "res/icons/self.render.png")
+            "render", QPixmap(wrkdir + "res/icons/render.png")
         )
-        self.layout.addLItem(self.render)
+        self.render.setIcon("render")
+        # Remove Button:
+        self.remove = IconButton(QSize(36, 36), paint_rect=True, radius=5)
+        self.remove.onReleaseReturn(self.UiEvents.REMOVE)
+        self.remove.addStateColors(state_colors)
+        self.remove.addIcon("remove", QPixmap(wrkdir + "res/icons/trash.png"))
+        self.remove.setIcon("remove")
+
+        self.layout.addRItem(self.render)
+        self.layout.addRItem(self.remove)
         self.layout.computeLayout()
 
     def draw(self, painter: QPainter, option: QStyleOption, index: QModelIndex):
@@ -101,13 +112,18 @@ class TaskUi(DelegateUi):
         print("handling task ui events")
 
         self.initItems(index, pos)
-        event = self.layout.handleEvent(event)
+        tevent = self.layout.handleEvent(event)
         self.endItems(index)
-        return event
+        return tevent
 
     def initItems(self, index: QModelIndex, pos: QPoint):
+
+        model = index.model()
+
         if not self.render.init(index.data(self.DataRoles.RENDER)):
-            model = index.model()
+            model.setData(index, self.render.end(), self.DataRoles.RENDER)
+
+        if not self.remove.init(index.data(self.DataRoles.REMOVE)):
             model.setData(index, self.render.end(), self.DataRoles.RENDER)
 
         self.layout.computeLayout(pos)

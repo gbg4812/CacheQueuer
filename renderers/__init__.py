@@ -1,1 +1,1 @@
-from .render_manager import RenderManager
+from .render_manager import RenderThread
