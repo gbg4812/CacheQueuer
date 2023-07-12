@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Dict, Optional
 
 # Third party imports
-from PySide2.QtCore import QSize, QEvent
+from PySide2.QtCore import QPoint, QRect, QSize, QEvent
 from PySide2.QtGui import QPainter, QPixmap, QColor, QPainterPath, QBrush, QMouseEvent
 
 from utils import Logger, Level
@@ -22,7 +22,7 @@ class IconButton(DelegateSubItem):
 
     def __init__(
         self,
-        size: QSize = QSize(30, 30),
+        size: QSize = QSize(36, 36),
         paint_rect: bool = False,
         radius: int = 5,
     ):
@@ -72,6 +72,7 @@ class IconButton(DelegateSubItem):
             self.icons[key] = pixmap
 
     def draw(self, painter: QPainter):
+        painter.save()
         flog.debug("drawing button")
         if self.paint_rect:
             try:
@@ -88,7 +89,12 @@ class IconButton(DelegateSubItem):
                 pass
 
         if self.current_icon:
-            painter.drawPixmap(self, self.icons[self.current_icon])
+            icon = self.icons[self.current_icon]
+            posx = self.x() + ((self.width() - icon.width()) >> 1)
+            posy = self.y() + ((self.height() - icon.height()) >> 1)
+            painter.drawPixmap(posx, posy, icon)
+
+        painter.restore()
 
     def setIcon(self, name: str) -> None:
         try:

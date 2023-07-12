@@ -4,7 +4,9 @@ from enum import IntEnum
 from typing import Any
 
 # local imports
-from delegate_subitems import DelegateUi, IconButton
+from delegate_subitems import DelegateUi, IconButton, TextItem
+from utils import Logger, Level
+import config
 
 # vendor imports
 from PySide2.QtGui import QBrush, QColor, QPen, QPixmap, QPainter
@@ -20,6 +22,8 @@ from PySide2.QtCore import (
 )
 from PySide2.QtWidgets import QStyleOption, QStyle
 
+flog = Logger(__name__, level=Level.ERROR)
+
 
 class TaskUi(DelegateUi):
     # The value is only a key, it doesn't mather so, 1+ values are fore general
@@ -29,6 +33,7 @@ class TaskUi(DelegateUi):
         REMOVE = 101
         ENABLE = 102
         DEPENDENT = 103
+        NAME = 104
 
     class UiEvents(IntEnum):
         NONE = 0
@@ -38,9 +43,6 @@ class TaskUi(DelegateUi):
 
     def __init__(self) -> None:
         super().__init__()
-
-        wrkdir, _ = path.split(__file__)
-        wrkdir += "/"
 
         # Define State Palette
         state_colors = {
@@ -57,27 +59,28 @@ class TaskUi(DelegateUi):
 
         # Create Buttons:
         # Render Button:
-        self.render = IconButton(QSize(36, 36), paint_rect=True, radius=5)
+        self.render = IconButton(QSize(40, 40), paint_rect=True, radius=5)
         self.render.onReleaseReturn(self.UiEvents.RENDER)
         self.render.addStateColors(state_colors)
-        self.render.addIcon(
-            "render", QPixmap(wrkdir + "res/icons/render.png")
-        )
+        self.render.addIcon("render", QPixmap(config.ROOT_DIR + "/icons/render.png"))
         self.render.setIcon("render")
         # Remove Button:
-        self.remove = IconButton(QSize(36, 36), paint_rect=True, radius=5)
+        self.remove = IconButton(QSize(40, 40), paint_rect=True, radius=5)
         self.remove.onReleaseReturn(self.UiEvents.REMOVE)
         self.remove.addStateColors(state_colors)
-        self.remove.addIcon("remove", QPixmap(wrkdir + "res/icons/trash.png"))
+        self.remove.addIcon("remove", QPixmap(config.ROOT_DIR + "/icons/trash.png"))
         self.remove.setIcon("remove")
+        # Name
+        self.name = TextItem(min_letters=10)
+        self.name.setText("New Task")
 
         self.layout.addRItem(self.render)
         self.layout.addRItem(self.remove)
+        self.layout.addLItem(self.name)
         self.layout.computeLayout()
 
     def draw(self, painter: QPainter, option: QStyleOption, index: QModelIndex):
         rect: QRect = option.rect.marginsRemoved(self.content_margins)
-        pos = rect.topLeft()
 
         TextColor1_disabled = QColor("#698181")
         Primary3_disabled = QColor("#8cb2be")
@@ -96,37 +99,39 @@ class TaskUi(DelegateUi):
         else:
             self.paintBackground(painter, rect, Border1, Primary3)
 
-        self.initItems(index, pos)
+        self.initItems(index, rect)
+        flog.debug("Width: {}".format(rect.width()))
         self.layout.draw(painter)
 
     def sizeHint(self, option: QStyleOption, index: QModelIndex):
-        pos = option.rect.topLeft()
-        self.layout.computeLayout(pos)
+        self.layout.computeLayout()
         return self.layout.sizeHint().grownBy(self.content_margins)
 
     def handleEvents(
         self, event: QEvent, option: QStyleOption, index: QModelIndex
     ) -> Any:
         rect: QRect = option.rect.marginsRemoved(self.content_margins)
-        pos = rect.topLeft()
-        print("handling task ui events")
+        flog.debug("handling task ui events")
 
-        self.initItems(index, pos)
+        self.initItems(index, rect)
         tevent = self.layout.handleEvent(event)
         self.endItems(index)
         return tevent
 
-    def initItems(self, index: QModelIndex, pos: QPoint):
-
+    def initItems(self, index: QModelIndex, rect: QRect):
+        pos = rect.topLeft()
         model = index.model()
 
         if not self.render.init(index.data(self.DataRoles.RENDER)):
             model.setData(index, self.render.end(), self.DataRoles.RENDER)
 
         if not self.remove.init(index.data(self.DataRoles.REMOVE)):
-            model.setData(index, self.render.end(), self.DataRoles.RENDER)
+            model.setData(index, self.remove.end(), self.DataRoles.REMOVE)
 
-        self.layout.computeLayout(pos)
+        if not self.name.init(index.data(self.DataRoles.NAME)):
+            model.setData(index, self.name.end(), self.DataRoles.NAME)
+
+        self.layout.computeLayout(rect.width(), pos)
 
     def endItems(self, index: QModelIndex):
         model = index.model()

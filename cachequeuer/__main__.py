@@ -1,10 +1,9 @@
 # Std library Imports
 import sys
-from os import path
 import json
 
 # PySide2 Imports
-from PySide2.QtCore import Qt 
+from PySide2.QtCore import Qt
 from PySide2.QtWidgets import (
     QMainWindow,
     QApplication,
@@ -20,20 +19,16 @@ from PySide2.QtGui import QCloseEvent
 from custom_widgets import ItemDelegate
 
 # Local Imports
-from renderers import RenderThread 
+import config
+from renderers import RenderThread
 from global_enums import DataRoles
 from custom_widgets import TasksTree, ParmsWidget, SysInfoWidget
 from utils import Logger
 
 
+
 # Configure logger
 flog = Logger(__name__)
-
-
-# Configure env variables
-class env:
-    wrkdir, _ = path.split(__file__)
-
 
 # Class that represents the main application window
 class MainWindow(QMainWindow):
@@ -42,7 +37,7 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Cache Queuer")
 
-        self.data_file = f"{env.wrkdir}/data/task_data.json"
+        self.data_file = f"{config.ROOT_DIR}/data/task_data.json"
         self.render_thread = RenderThread()
 
         # Init UI
@@ -129,8 +124,10 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    with open(f"{env.wrkdir}/style/style.qss", "r") as f:
+
+    with open(f"{config.ROOT_DIR}/style/style.qss", "r") as f:
         app.setStyleSheet(f.read())
+
     w = MainWindow()
     w.setWindowTitle("CacheQueuer")
     w.setGeometry(0, 0, 1000, 500)

@@ -21,12 +21,29 @@ class TextItem(DelegateSubItem):
     ):
         super().__init__(QSize(0, 0))
         self.font = QFont("Arial", text_size, QFont.Normal)
-        self.pen = QPen(text_color)
+        self.color = text_color
         self.text = ""
         self.min_letters = min_letters + 4
+        self.editing
+
+    def init(self, state: dict) -> bool:
+        if state:
+            try:
+                self.text = state["text"]
+                self.color = state["color"]
+                return True
+            except KeyError:
+                return False
+        else:
+            return False
+
+    def end(self) -> dict:
+        state = {"text" : self.text, "color": self.color}
+        return state
 
     def draw(self, painter: QPainter) -> None:
-        painter.setPen(self.pen)
+        painter.save()
+        painter.setPen(QPen(self.color))
         painter.setFont(self.font)
         fm = QFontMetrics(self.font)
         allowed_len = floor(self.width() / fm.averageCharWidth()) - 4
@@ -34,7 +51,9 @@ class TextItem(DelegateSubItem):
         if allowed_len < len(self.text):
             def_text = self.text[0:allowed_len]
             def_text += "..."
+        painter.setRenderHint(QPainter.Antialiasing)
         painter.drawText(self, def_text)
+        painter.restore()
 
     def setText(self, text: str) -> None:
         self.text = text
@@ -43,4 +62,9 @@ class TextItem(DelegateSubItem):
         self.setHeight(f_metrics.height())
 
     def setTextColor(self, color: QColor):
-        self.pen.setColor(color)
+        self.color = color
+
+    def handleEvent(self, event: QEvent):
+        if self.contains(event.pos()):
+            self.editing = True
+

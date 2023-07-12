@@ -48,15 +48,15 @@ class RailLayout:
         return QSize(self.size.x, self.size.y)
 
     def setWidth(self, width: int):
+        flog.debug("layout size: {}, new size: {}".format(self.size.x, width))
         if width > self.size.x:
             dx = 0
             for ritem in self.right_pile:
                 dx = width - self.size.x
                 ritem.moveRight(ritem.right() + dx)
             self.size.x = width
-            self.left_pile[len(self.left_pile) - 1].adjust(0, 0, dx, 0)
 
-    def computeLayout(self, pos: QPoint = QPoint(0, 0)) -> None:
+    def computeLayout(self, width: int = 0, pos: QPoint = QPoint(0, 0)) -> None:
         l_ptr = self.margin
         r_ptr = 0
         self.size.x = 0
@@ -98,6 +98,9 @@ class RailLayout:
             r_ptr -= ritem.width() + self.spacing
             ritem.moveBottom(int(self.size.y - ((self.size.y - ritem.height()) / 2)))
             ritem.translate(pos)
+
+        if width:
+            self.setWidth(width)
 
     def draw(self, painter):
         for item in self.right_pile:

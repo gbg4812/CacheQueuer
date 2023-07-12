@@ -1,5 +1,5 @@
-geo/
 backup/
 .vscode/
 __pycache__/
 .venv/
+data/
