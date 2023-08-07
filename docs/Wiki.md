@@ -4,8 +4,10 @@ CacheQueuer Is a tool to Queue tasks easily and user friendly.
 
 I got the motivation to do this project after countless hours spend trying to automatize tasks inside SideFx Houdini. The first plan was to make a Houdini specific "plugin" to manage the tasks but I realized that the program would be easy to make generic. So I designed the code with flexibility and scalability in mind and i hope that some day it will be may loyal companion whenever i need to automatize a process.
 
-
-
+## Index
+```dataview
+list where file != this.file
+```
 
 ## Integration
 
@@ -48,7 +50,6 @@ They have `init()` and `end()` methods that should be called in the beginning an
 
 ### Button subitem
 The Button delegate sub item is the base for any button, it can render a icon or/and a background plain color. Each icon/bg_color is associated with a view state. View states are used to paint de button in diferent ways depending on the user interaction. Every time a color or an icon is added to the subitem, it is associated with a state represented as a `enum.IntEnum`. 
-
 
 
 

@@ -7,7 +7,7 @@ from .delegate_sub_item import DelegateSubItem
 
 # PySide2 imports
 from PySide2.QtGui import QPainter, QFont, QColor, QPen, QFontMetrics
-from PySide2.QtCore import Qt, QPoint, QSize
+from PySide2.QtCore import Qt, QPoint, QSize, QEvent
 
 
 
