@@ -12,7 +12,7 @@ from utils import Logger, Level
 from enum import IntEnum
 from .delegate_sub_item import DelegateSubItem
 
-flog = Logger(__name__, Level.ERROR)
+flog = Logger(__name__, Level.DEBUG)
 
 class IconButton(DelegateSubItem):
     class ButtonStates(IntEnum):
@@ -39,12 +39,25 @@ class IconButton(DelegateSubItem):
 
         self.view_state = IconButton.ButtonStates.NORMAL
         self.release_return = None
+        self.initialized = False
+
+    def manualInit(self, view_state: IconButton.ButtonStates, current_icon: str):
+        if self.initialized:
+            flog.error("Initializing initialized button")
+
+        self.view_state = view_state
+        self.current_icon = current_icon
+        self.initialized = True
 
     def init(self, state: Dict[str, str | IconButton.ButtonStates]) -> bool:
+        if self.initialized:
+            flog.error("Initializing initialized button")
+
         if state:
             try:
                 self.view_state = state["view_state"]
                 self.current_icon = state["current_icon"]
+                self.initialized = True
             except KeyError:
                 return False
             return True
@@ -54,6 +67,7 @@ class IconButton(DelegateSubItem):
 
     def end(self) -> dict:
         state = {"view_state": self.view_state, "current_icon": self.current_icon}
+        self.initialized = False
         return state
 
     def addIcon(self, name: str, icon: QPixmap) -> None:
@@ -73,7 +87,11 @@ class IconButton(DelegateSubItem):
 
     def draw(self, painter: QPainter):
         painter.save()
-        flog.debug("drawing button")
+        if not self.initialized:
+            flog.error("Painting uninitialized button")
+            return
+
+        flog.debug("drawing button with state {}".format(self.view_state))
         if self.paint_rect:
             try:
                 color = self.bg_colors[self.view_state]
@@ -86,7 +104,7 @@ class IconButton(DelegateSubItem):
                 painter.fillPath(path, brush)
 
             except KeyError:
-                pass
+                flog.error("Button Color Missing")
 
         if self.current_icon:
             icon = self.icons[self.current_icon]
@@ -105,6 +123,9 @@ class IconButton(DelegateSubItem):
             flog.error("no icon for this name")
 
     def handleEvent(self, event: QMouseEvent):
+        if not self.initialized:
+            flog.error("Handeling uninitialized button")
+            return
         if isinstance(event, QMouseEvent):
             pos = event.pos()
 
@@ -120,7 +141,6 @@ class IconButton(DelegateSubItem):
                     self.view_state = self.ButtonStates.NORMAL
                     return self.release_return
 
-            self.view_state = self.ButtonStates.NORMAL
 
     def onReleaseReturn(self, value) -> None:
         self.release_return = value

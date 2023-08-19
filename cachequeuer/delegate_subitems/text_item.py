@@ -7,7 +7,7 @@ from .delegate_sub_item import DelegateSubItem
 
 # PySide2 imports
 from PySide2.QtGui import QPainter, QFont, QColor, QPen, QFontMetrics
-from PySide2.QtCore import Qt, QPoint, QSize
+from PySide2.QtCore import Qt, QPoint, QSize, QEvent
 
 
 
@@ -24,7 +24,7 @@ class TextItem(DelegateSubItem):
         self.color = text_color
         self.text = ""
         self.min_letters = min_letters + 4
-        self.editing
+        self.editing = False
 
     def init(self, state: dict) -> bool:
         if state:
@@ -67,4 +67,3 @@ class TextItem(DelegateSubItem):
     def handleEvent(self, event: QEvent):
         if self.contains(event.pos()):
             self.editing = True
-

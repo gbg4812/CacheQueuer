@@ -1,15 +1,16 @@
 # std imports
 from os import path
 from enum import IntEnum
-from typing import Any
+from typing import Any, Optional
 
 # local imports
 from delegate_subitems import DelegateUi, IconButton, TextItem
+from global_enums import DataRoles
 from utils import Logger, Level
 import config
 
 # vendor imports
-from PySide2.QtGui import QBrush, QColor, QPen, QPixmap, QPainter
+from PySide2.QtGui import QBrush, QColor, QPen, QPixmap, QPainter, QStandardItemModel
 from PySide2.QtCore import (
     QMargins,
     QPoint,
@@ -20,7 +21,7 @@ from PySide2.QtCore import (
     QRect,
     QLine,
 )
-from PySide2.QtWidgets import QStyleOption, QStyle
+from PySide2.QtWidgets import QLineEdit, QStyleOption, QStyle, QWidget
 
 flog = Logger(__name__, level=Level.ERROR)
 
@@ -63,19 +64,21 @@ class TaskUi(DelegateUi):
         self.render.onReleaseReturn(self.UiEvents.RENDER)
         self.render.addStateColors(state_colors)
         self.render.addIcon("render", QPixmap(config.ROOT_DIR + "/icons/render.png"))
-        self.render.setIcon("render")
+        self.render.manualInit(IconButton.ButtonStates.NORMAL, "render")
+
         # Remove Button:
         self.remove = IconButton(QSize(40, 40), paint_rect=True, radius=5)
         self.remove.onReleaseReturn(self.UiEvents.REMOVE)
         self.remove.addStateColors(state_colors)
         self.remove.addIcon("remove", QPixmap(config.ROOT_DIR + "/icons/trash.png"))
-        self.remove.setIcon("remove")
+        self.remove.manualInit(IconButton.ButtonStates.NORMAL, "remove")
+
         # Name
         self.name = TextItem(min_letters=10)
         self.name.setText("New Task")
 
-        self.layout.addRItem(self.render)
         self.layout.addRItem(self.remove)
+        self.layout.addRItem(self.render)
         self.layout.addLItem(self.name)
         self.layout.computeLayout()
 
@@ -131,11 +134,14 @@ class TaskUi(DelegateUi):
         if not self.name.init(index.data(self.DataRoles.NAME)):
             model.setData(index, self.name.end(), self.DataRoles.NAME)
 
+        self.name.setText(index.data(DataRoles.NAME))
         self.layout.computeLayout(rect.width(), pos)
 
     def endItems(self, index: QModelIndex):
         model = index.model()
         model.setData(index, self.render.end(), self.DataRoles.RENDER)
+        model.setData(index, self.remove.end(), self.DataRoles.REMOVE)
+        model.setData(index, self.name.end(), self.DataRoles.NAME)
 
     @staticmethod
     def paintBackground(
@@ -160,3 +166,12 @@ class TaskUi(DelegateUi):
         painter.drawLine(bottLine)
 
         painter.restore()
+
+    def createEditor(self, parent: QWidget, option: QStyleOption, index: QModelIndex) -> Optional[QWidget]:
+        editor = QLineEdit(parent)
+        editor.setText(index.data(DataRoles.NAME))
+        return editor
+
+    def setEditorData(self, editor: QWidget, model: QStandardItemModel, index: QModelIndex) -> None:
+        line_edit : QLineEdit = editor
+        model.setData(index, line_edit.text(), DataRoles.NAME)

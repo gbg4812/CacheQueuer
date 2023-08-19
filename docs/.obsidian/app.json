@@ -1,9 +1,6 @@
 {
   "vimMode": true,
-  "spellcheckLanguages": [
-    "ca",
-    "en"
-  ],
+  "spellcheckLanguages": null,
   "spellcheck": true,
   "showLineNumber": true,
   "livePreview": true

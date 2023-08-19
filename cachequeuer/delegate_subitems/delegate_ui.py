@@ -1,7 +1,7 @@
-from typing import Any
+from typing import Any, Optional
 from PySide2.QtGui import QPainter
-from PySide2.QtCore import QEvent, QModelIndex
-from PySide2.QtWidgets import QStyleOption
+from PySide2.QtCore import QEvent, QModelIndex 
+from PySide2.QtWidgets import QStyleOption, QWidget, QStyleOptionViewItem
 
 from .rail_layout import RailLayout
 
@@ -23,3 +23,17 @@ class DelegateUi:
 
     def initItems(self, option: QStyleOption, index: QModelIndex):
         pass
+
+    def createEditor(
+        self, parent: QWidget, option: QStyleOption, index: QModelIndex
+    ) -> Optional[QWidget]:
+        pass
+
+    def updateEditorGeometry(
+        self, editor: QWidget, option: QStyleOptionViewItem, index: QModelIndex
+    ) -> None:
+        editor.setGeometry(option.rect)
+        return
+
+    def setEditorData(self, editor: QWidget, index: QModelIndex) -> None:
+       pass
