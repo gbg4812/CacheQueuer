@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import Dict, Optional
 
 # Third party imports
-from PySide2.QtCore import QPoint, QRect, QSize, QEvent
-from PySide2.QtGui import QPainter, QPixmap, QColor, QPainterPath, QBrush, QMouseEvent
+from PySide6.QtCore import QPoint, QRect, QSize, QEvent
+from PySide6.QtGui import QPainter, QPixmap, QColor, QPainterPath, QBrush, QMouseEvent
 
 from utils import Logger, Level
 

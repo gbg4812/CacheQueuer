@@ -1,8 +1,8 @@
 # std imports
 from typing import List, Union, Optional, Dict
 
-# PySide2 imports
-from PySide2.QtWidgets import (
+# PySide6 imports
+from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
     QLabel,
@@ -12,7 +12,7 @@ from PySide2.QtWidgets import (
     QFrame,
     QLineEdit,
 )
-from PySide2.QtCore import Signal, QModelIndex, QItemSelection, Qt, Slot
+from PySide6.QtCore import Signal, QModelIndex, QItemSelection, Qt, Slot
 from custom_widgets.item_delegate import ItemDelegate
 from custom_widgets.task_ui import TaskUi
 from utils import Logger

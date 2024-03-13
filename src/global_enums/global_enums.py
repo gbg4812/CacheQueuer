@@ -1,5 +1,5 @@
 import enum
-from PySide2.QtCore import Qt
+from PySide6.QtCore import Qt
 Qt.ItemDataRole
 
 class DataRoles(enum.IntEnum):

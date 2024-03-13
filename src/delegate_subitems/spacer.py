@@ -1,5 +1,5 @@
 from .delegate_sub_item import DelegateSubItem
-from PySide2.QtCore import QPoint, QRect, QSize
+from PySide6.QtCore import QPoint, QRect, QSize
 
 class Spacer(DelegateSubItem):
     def __init__(self, width: int, height: int = 0):

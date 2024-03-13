@@ -2,9 +2,9 @@
 from enum import IntEnum
 
 # PySide imports
-from PySide2.QtWidgets import QStyledItemDelegate, QStyleOptionViewItem, QWidget
-from PySide2.QtCore import QModelIndex, QSize, QAbstractItemModel, QEvent, Signal 
-from PySide2.QtGui import QPainter, QStandardItemModel 
+from PySide6.QtWidgets import QStyledItemDelegate, QStyleOptionViewItem, QWidget
+from PySide6.QtCore import QModelIndex, QSize, QAbstractItemModel, QEvent, Signal 
+from PySide6.QtGui import QPainter, QStandardItemModel 
 
 # local imports
 from .task_ui import TaskUi

@@ -2,8 +2,8 @@
 import enum
 from typing import List, Optional
 
-# PySide2 imports:
-from PySide2.QtCore import QModelIndex, QSize, QPoint, QEvent, Qt
+# PySide6 imports:
+from PySide6.QtCore import QModelIndex, QSize, QPoint, QEvent, Qt
 from utils import Logger , Level
 
 # local imports:

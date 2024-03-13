@@ -2,9 +2,9 @@
 import sys
 import json
 
-# PySide2 Imports
-from PySide2.QtCore import Qt
-from PySide2.QtWidgets import (
+# PySide6 Imports
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import (
     QMainWindow,
     QApplication,
     QMessageBox,
@@ -15,7 +15,7 @@ from PySide2.QtWidgets import (
     QTreeWidgetItem,
     QSplitter,
 )
-from PySide2.QtGui import QCloseEvent
+from PySide6.QtGui import QCloseEvent
 from custom_widgets import ItemDelegate
 
 # Local Imports
@@ -26,9 +26,9 @@ from custom_widgets import TasksTree, ParmsWidget, SysInfoWidget
 from utils import Logger
 
 
-
 # Configure logger
 flog = Logger(__name__)
+
 
 # Class that represents the main application window
 class MainWindow(QMainWindow):

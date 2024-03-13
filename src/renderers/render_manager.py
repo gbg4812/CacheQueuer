@@ -3,7 +3,7 @@ from typing import List, Dict, NoReturn, Any
 from subprocess import Popen, PIPE
 import json
 
-from PySide2.QtCore import (
+from PySide6.QtCore import (
     QThread,
     QMutex,
     QMutexLocker,

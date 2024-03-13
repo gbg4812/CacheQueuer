@@ -10,8 +10,8 @@ from utils import Logger, Level
 import config
 
 # vendor imports
-from PySide2.QtGui import QBrush, QColor, QPen, QPixmap, QPainter, QStandardItemModel
-from PySide2.QtCore import (
+from PySide6.QtGui import QBrush, QColor, QPen, QPixmap, QPainter, QStandardItemModel
+from PySide6.QtCore import (
     QMargins,
     QPoint,
     QSize,
@@ -21,7 +21,7 @@ from PySide2.QtCore import (
     QRect,
     QLine,
 )
-from PySide2.QtWidgets import QLineEdit, QStyleOption, QStyle, QWidget
+from PySide6.QtWidgets import QLineEdit, QStyleOption, QStyle, QWidget
 
 flog = Logger(__name__, level=Level.ERROR)
 

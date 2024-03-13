@@ -5,9 +5,9 @@ from math import floor
 # Local Imports
 from .delegate_sub_item import DelegateSubItem
 
-# PySide2 imports
-from PySide2.QtGui import QPainter, QFont, QColor, QPen, QFontMetrics
-from PySide2.QtCore import Qt, QPoint, QSize, QEvent
+# PySide6 imports
+from PySide6.QtGui import QPainter, QFont, QColor, QPen, QFontMetrics
+from PySide6.QtCore import Qt, QPoint, QSize, QEvent
 
 
 

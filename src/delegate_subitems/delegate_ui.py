@@ -1,7 +1,7 @@
 from typing import Any, Optional
-from PySide2.QtGui import QPainter
-from PySide2.QtCore import QEvent, QModelIndex 
-from PySide2.QtWidgets import QStyleOption, QWidget, QStyleOptionViewItem
+from PySide6.QtGui import QPainter
+from PySide6.QtCore import QEvent, QModelIndex 
+from PySide6.QtWidgets import QStyleOption, QWidget, QStyleOptionViewItem
 
 from .rail_layout import RailLayout
 

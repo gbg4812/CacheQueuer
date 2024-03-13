@@ -1,6 +1,6 @@
 from typing import Optional
-# PySide2 imports
-from PySide2.QtCore import QRect, QSize, QPoint, QEvent
+# PySide6 imports
+from PySide6.QtCore import QRect, QSize, QPoint, QEvent
 
 
 class DelegateSubItem(QRect):

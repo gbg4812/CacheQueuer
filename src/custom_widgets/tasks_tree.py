@@ -1,10 +1,10 @@
 # std imports
 from __future__ import annotations
 
-# PySide2 imports
-from PySide2.QtWidgets import QTreeWidget, QWidget, QPushButton, QLabel, QHBoxLayout, QTreeWidgetItem
-from PySide2.QtCore import Qt, Signal, QModelIndex, QItemSelectionModel
-from PySide2.QtGui import QDropEvent
+# PySide6 imports
+from PySide6.QtWidgets import QTreeWidget, QWidget, QPushButton, QLabel, QHBoxLayout, QTreeWidgetItem
+from PySide6.QtCore import Qt, Signal, QModelIndex, QItemSelectionModel
+from PySide6.QtGui import QDropEvent
 
 # local imports
 from .item_delegate import ItemDelegate 
@@ -55,7 +55,7 @@ class TasksTree(QTreeWidget):
 
         #Enable Drag And Drop
         self.setDragEnabled(True)
-        self.setDragDropMode(self.InternalMove)
+        self.setDragDropMode(self.DragDropMode.InternalMove)
 
         #Enable Item Editing and se Correct Delegate
         self.setEditTriggers(QTreeWidget.EditTrigger.DoubleClicked)
